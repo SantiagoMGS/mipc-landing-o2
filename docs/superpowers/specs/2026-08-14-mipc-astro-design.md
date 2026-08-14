@@ -72,7 +72,7 @@ Como Keystatic lee exactamente los mismos archivos Markdown, se puede enchufar m
 | `/home/actualidad/` | `/blog/` | 301 |
 | `/home/contacto/` | `/contacto/` | 301 |
 | `/garantias/` | `/garantias/` | Sin cambio |
-| `/recursos/` | `/recursos/` | Sin cambio |
+| `/recursos/` | `/recursos/` | Misma URL; se retira «Pack Office» (ver §12) |
 | `/intel-anuncia-nuevos-procesadores-de-escritorio-core-de-12a-generacion/` | `/blog/` | 301 |
 | `/amazon-anuncia-la-adquisicion-de-la-empresa-de-tecnologia-cuantica-psiquantum/` | `/blog/` | 301 |
 | `/google-anuncia-actualizaciones-de-sus-productos-de-realidad-virtual-y-aumentada/` | `/blog/` | 301 |
@@ -160,7 +160,7 @@ De las 21 fotos disponibles se seleccionan 12. Están a 1600 px en el lado largo
 | Seguridad y altura | 20, 21, 18, 14 |
 | Redes y CCTV en sitio | 11, 16, 17 (recortando el collage) |
 | Reparación, detalle | 06, 07, 09 |
-| Cliente identificable | 04 (Belén Arrendamientos), sujeto a permiso |
+| Cliente identificable | 04 (Belén Arrendamientos) |
 
 Se descartan la 12 (obra de construcción, mensaje equivocado), la 13 (sujeto demasiado lejano) y las 05, 08 y 10 (interiores de PC genéricos sin persona ni marca).
 
@@ -312,14 +312,18 @@ Lo siguiente queda explícitamente fuera de este proyecto, para evitar que se ex
 | Riesgo | Mitigación |
 |---|---|
 | Pérdida de posiciones tras el corte | 301 verificadas una por una, línea base en Search Console, rollback por DNS con TTL bajo |
-| Los 6 logos faltantes no se consiguen | Van como nombre en texto en la misma retícula |
+| Los 6 logos faltantes no se consiguen | Van como nombre en texto en la misma retícula. Con el permiso de nombrar clientes confirmado, esto es una decisión de diseño válida y no una degradación |
 | Las 4 fotos pendientes no se toman | Componentes con imagen opcional; sustitutos definidos |
 | El sitio vuelve a quedar sin dueño | Sin plugins ni PHP que actualizar, un sitio estático no se degrada ni se compromete por abandono |
 | Redacción B2B pendiente de aprobación | Se redactan borradores para revisión del cliente, no se publica sin visto bueno |
 
 ---
 
-## 12. Pendientes de confirmación
+## 12. Decisiones resueltas por el cliente
 
-- **«Pack Office» en `/recursos/`**: verificar si es la Office Deployment Tool oficial de Microsoft. Si incluye licencia, debe retirarse antes de salir a vender soporte TI corporativo.
-- **Permiso para nombrar clientes** en casos de éxito y para usar la foto 04 (Belén Arrendamientos).
+Confirmadas el 2026-08-14, sin pendientes abiertos.
+
+- **«Pack Office» se retira de `/recursos/`.** La página nueva lleva cuatro herramientas: AnyDesk, DeskIn, CrystalDiskInfo y el comando de UUID. No se migra la quinta entrada ni su archivo. La descarga tampoco debe quedar accesible por URL directa en el sitio nuevo.
+- **Hay permiso para nombrar clientes.** Los casos de éxito usan nombres reales, el muro de clientes puede llevar los nombres en texto junto a los logos, y la foto 04 (Belén Arrendamientos) es utilizable.
+
+Esto último tiene una consecuencia de diseño que conviene explotar: los seis logos faltantes dejan de ser un problema. Un muro que combina logo y nombre en texto es coherente por diseño, no un remiendo — y el nombre en texto es además indexable, cosa que un logo no es.

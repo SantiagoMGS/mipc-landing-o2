@@ -746,20 +746,42 @@ Expected: FAIL — no se puede resolver `../src/schemas`.
 ```ts
 import { z } from 'astro/zod';
 
-/** Imagen con alt obligatorio y descriptivo. Corrige SEO-07. */
+/**
+ * Imagen con alt obligatorio y descriptivo. Corrige SEO-07.
+ *
+ * La longitud mínima no basta: `foto-tecnico-instalando-servidor.jpg` tiene
+ * 37 caracteres y sigue siendo un nombre de archivo sin valor descriptivo,
+ * que es exactamente el defecto que la auditoría encontró. Por eso hay que
+ * rechazar además el patrón de extensión de imagen.
+ */
 const imagen = z.object({
   src: z.string(),
-  alt: z.string().min(10, 'El alt debe describir la escena, no ser el nombre del archivo'),
+  alt: z
+    .string()
+    .min(10, 'El alt debe describir la escena, no ser el nombre del archivo')
+    .refine((a) => !/\.(jpe?g|png|gif|svg|webp|avif)$/i.test(a.trim()), {
+      message: 'El alt es un nombre de archivo. Describe qué se ve en la imagen.',
+    }),
 });
 
-/** Campos de SEO que toda página de contenido debe traer. */
+/**
+ * Campos de SEO que toda página de contenido debe traer.
+ *
+ * El título lleva DOS comprobaciones, no una: exigir el sufijo de marca no
+ * impide que el dominio aparezca en medio. «Servicios de mipc.com.co en
+ * Medellín | MiPC Tecnología» termina bien y sigue mostrando el dominio
+ * como marca, que es el hallazgo SEO-03.
+ */
 const seo = {
   metaTitle: z
     .string()
-    .min(20)
-    .max(65)
+    .min(20, 'Demasiado corto para incluir el servicio y la ciudad')
+    .max(65, 'Google lo truncará en el resultado de búsqueda')
     .refine((t) => t.endsWith('| MiPC Tecnología'), {
-      message: 'El title debe terminar en "| MiPC Tecnología", nunca en el dominio',
+      message: 'El título debe terminar en "| MiPC Tecnología"',
+    })
+    .refine((t) => !t.includes('mipc.com.co'), {
+      message: 'El título no puede contener el dominio: la marca es MiPC Tecnología',
     }),
   metaDescription: z
     .string()
@@ -771,7 +793,7 @@ export const esquemaServicio = z.object({
   titulo: z.string(),
   h1: z.string(),
   ...seo,
-  resumen: z.string().min(20),
+  resumen: z.string().min(20, 'El resumen debe decir algo, no ser una etiqueta'),
   publico: z.enum(['empresa', 'persona', 'ambos']),
   orden: z.number().int(),
   imagen: imagen.optional(),
@@ -800,7 +822,7 @@ export const esquemaEntrada = z.object({
   titulo: z.string(),
   ...seo,
   fecha: z.coerce.date(),
-  resumen: z.string().min(20),
+  resumen: z.string().min(20, 'El resumen debe decir algo, no ser una etiqueta'),
   imagen: imagen.optional(),
 });
 

@@ -576,7 +576,7 @@ Expected: FAIL — no hay meta description ni JSON-LD.
 import { localBusiness } from '../lib/jsonld';
 import { empresa } from '../data/empresa';
 
-interface Props {
+export interface Props {
   title: string;
   metaDescription: string;
   jsonld?: object[];
@@ -612,17 +612,17 @@ const bloques = [localBusiness(), ...jsonld];
 
 `src/layouts/Base.astro`:
 
+`Base.astro` **deriva** su tipo de props del de `SEO.astro` en vez de redeclararlo. Si se redeclara, añadir un prop al componente SEO más adelante lo deja sin propagar en silencio a través del layout — y las Tasks 10 a 14 consumen todas este layout.
+
+Para que funcione, `SEO.astro` debe declarar su interfaz como `export interface Props`.
+
 ```astro
 ---
 import SEO from '../components/SEO.astro';
+import type { Props as PropsSEO } from '../components/SEO.astro';
 import '../styles/global.css';
 
-interface Props {
-  title: string;
-  metaDescription: string;
-  jsonld?: object[];
-  imagenOg?: string;
-}
+type Props = PropsSEO;
 const { title, metaDescription, jsonld, imagenOg } = Astro.props;
 ---
 <!doctype html>
@@ -1269,7 +1269,7 @@ El filete lateral se enciende en naranja al pasar el cursor, según el spec.
 
 ```astro
 ---
-interface Props {
+export interface Props {
   servicio: { id: string; data: { titulo: string; resumen: string; publico: string } };
 }
 const { servicio } = Astro.props;

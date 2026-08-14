@@ -248,7 +248,7 @@ Cada prueba corresponde a un hallazgo de la auditoría que debe volverse irrepet
 
 | Prueba | Hallazgo que impide |
 |---|---|
-| Verificador de enlaces rotos en cada build | CRIT-01, CRIT-06 |
+| Verificador de enlaces rotos en cada build | CRIT-01, CRIT-06 (presentes en varias páginas, no solo la home) |
 | Exactamente una `<h1>` por página | SEO-01 |
 | `metaDescription` obligatoria vía Zod | SEO-02 |
 | `alt` obligatorio en toda imagen | SEO-07 |
@@ -323,7 +323,19 @@ Lo siguiente queda explícitamente fuera de este proyecto, para evitar que se ex
 
 Confirmadas el 2026-08-14, sin pendientes abiertos.
 
-- **«Pack Office» se retira de `/recursos/`.** La página nueva lleva cuatro herramientas: AnyDesk, DeskIn, CrystalDiskInfo y el comando de UUID. No se migra la quinta entrada ni su archivo. La descarga tampoco debe quedar accesible por URL directa en el sitio nuevo.
+- **«Pack Office» se retira de `/recursos/`.** La página nueva lleva cuatro entradas: AnyDesk, DeskIn, CrystalDiskInfo y el comando de UUID. No se migra la quinta entrada ni su enlace.
+
+### `/recursos/` deja de servir instaladores propios
+
+Al verificar la página se encontró que **las cinco descargas apuntan a archivos alojados en MEGA**, no a los sitios oficiales de cada fabricante. La página nueva cambia ese modelo: **cada herramienta enlaza a su página de descarga oficial** (anydesk.com, deskin.io, crystalmark.info), y el comando de UUID se muestra como texto copiable en vez de como descarga.
+
+Tres razones, en orden de importancia:
+
+1. **Confianza B2B.** Distribuir instaladores de terceros desde un MEGA propio es el patrón que usa la distribución de malware. Un responsable de TI corporativo lo nota, y es justo el cliente que este proyecto busca.
+2. **Versiones.** Los archivos en MEGA envejecen; los enlaces oficiales sirven siempre la versión vigente y parcheada.
+3. **Cero mantenimiento**, que es el criterio rector de todo el proyecto.
+
+Como efecto secundario, esto convierte `/recursos/` en una página legítimamente útil y enlazable, en lugar de un repositorio de archivos.
 - **Hay permiso para nombrar clientes.** Los casos de éxito usan nombres reales, el muro de clientes puede llevar los nombres en texto junto a los logos, y la foto 04 (Belén Arrendamientos) es utilizable.
 
 Esto último tiene una consecuencia de diseño que conviene explotar: los seis logos faltantes dejan de ser un problema. Un muro que combina logo y nombre en texto es coherente por diseño, no un remiendo — y el nombre en texto es además indexable, cosa que un logo no es.

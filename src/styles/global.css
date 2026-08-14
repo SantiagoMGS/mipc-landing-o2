@@ -1,1 +1,52 @@
 @import "tailwindcss";
+@import "@fontsource-variable/archivo";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/600.css";
+
+@theme {
+  --color-fondo: #f2f4f5;
+  --color-superficie: #ffffff;
+  --color-tinta: #0f1620;
+  --color-tinta-2: #5a636b;
+  --color-ancla: #1e3a47;
+  --color-senal: #eb3a00;
+  --color-borde: #dce1e4;
+
+  --font-display: "Archivo Variable", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 100;
+}
+
+/* Titulares en el ancho expandido del MISMO archivo variable.
+   No existe ni hace falta una familia "Archivo Expanded" aparte. */
+h1, h2, h3 {
+  font-variation-settings: "wdth" 118;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Cifras: mono con numerales tabulares. Un dato medido, no un eslogan. */
+.cifra {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-senal);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

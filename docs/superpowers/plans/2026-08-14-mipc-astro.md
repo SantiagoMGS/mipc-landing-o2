@@ -221,7 +221,11 @@ git commit -m "feat: andamiaje Astro 7 con Tailwind, Vitest y scripts de verific
 
 **Interfaces:**
 - Consumes: nada
-- Produces: `empresa` — objeto congelado con los campos `nombre`, `nombreLegal`, `descripcionCorta`, `fundacion`, `telefono`, `telefonoE164`, `whatsapp`, `email`, `direccion{calle,barrio,ciudad,departamento,pais,codigoPostal}`, `horario[]`, `zonaServicio[]`, `redes{facebook,instagram}`, `url`. Consumido por Tasks 3, 4, 7, 13.
+- Produces: `empresa` — objeto congelado en profundidad con los campos `nombre`, `nombreLegal`, `descripcionCorta`, `fundacion`, `telefono`, `telefonoE164`, `whatsapp`, `email`, `direccion{calle,barrio,ciudad,departamento,pais}`, `horario[]`, `zonaServicio[]`, `redes{facebook,instagram}`, `url`. Consumido por Tasks 3, 4, 7, 13.
+
+> **Sin `codigoPostal`.** Una versión anterior de esta línea lo listaba. Ningún consumidor lo usa —la Task 3 construye `PostalAddress` sin `postalCode`, y las Tasks 7 y 13 solo leen calle, barrio, ciudad y departamento— y schema.org no lo exige. Como no se conoce el código postal real de la dirección, inventarlo metería un dato falso en el `LocalBusiness`, que para posicionamiento local es peor que omitir el campo.
+
+> **El congelado debe ser profundo.** `Object.freeze` no es recursivo: congelar una entrada de `horario` deja su array `dias` mutable. Si el módulo promete que nadie lo mute en tiempo de render, la promesa tiene que ser cierta en todos los niveles, y el test tiene que verificarlo en todos los niveles — `Object.isFrozen(empresa)` por sí solo pasa aunque se borren todos los congelados internos.
 
 > **Dato a confirmar antes del lanzamiento:** el horario de atención. El valor de abajo es el que se usará mientras el cliente no indique otro, y **debe coincidir exactamente con el que se publique en Google Business Profile** — una discrepancia entre el schema del sitio y la ficha de Google es una señal negativa para el posicionamiento local. Añadir a la lista de verificación previa al corte (Task 17).
 

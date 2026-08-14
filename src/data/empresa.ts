@@ -28,8 +28,8 @@ export const empresa = Object.freeze({
 
   // Confirmar con el cliente y hacer coincidir con Google Business Profile.
   horario: Object.freeze([
-    Object.freeze({ dias: ['Mo', 'Tu', 'We', 'Th', 'Fr'], abre: '08:00', cierra: '18:00' }),
-    Object.freeze({ dias: ['Sa'], abre: '08:00', cierra: '12:00' }),
+    Object.freeze({ dias: Object.freeze(['Mo', 'Tu', 'We', 'Th', 'Fr']), abre: '08:00', cierra: '18:00' }),
+    Object.freeze({ dias: Object.freeze(['Sa']), abre: '08:00', cierra: '12:00' }),
   ]),
 
   zonaServicio: Object.freeze([

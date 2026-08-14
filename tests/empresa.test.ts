@@ -22,5 +22,13 @@ describe('empresa (NAP)', () => {
 
   it('es inmutable, para que nadie lo mute en tiempo de render', () => {
     expect(Object.isFrozen(empresa)).toBe(true);
+    expect(Object.isFrozen(empresa.direccion)).toBe(true);
+    expect(Object.isFrozen(empresa.redes)).toBe(true);
+    expect(Object.isFrozen(empresa.zonaServicio)).toBe(true);
+    expect(Object.isFrozen(empresa.horario)).toBe(true);
+    expect(Object.isFrozen(empresa.horario[0])).toBe(true);
+    expect(Object.isFrozen(empresa.horario[0].dias)).toBe(true);
+    expect(Object.isFrozen(empresa.horario[1])).toBe(true);
+    expect(Object.isFrozen(empresa.horario[1].dias)).toBe(true);
   });
 });

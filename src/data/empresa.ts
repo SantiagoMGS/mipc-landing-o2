@@ -27,9 +27,14 @@ export const empresa = Object.freeze({
   }),
 
   // Confirmar con el cliente y hacer coincidir con Google Business Profile.
+  // `dias` usa los valores canónicos de la enumeración DayOfWeek de schema.org.
+  // NO abreviaturas: 'Mo' es válido en la propiedad de texto `openingHours`,
+  // pero `openingHoursSpecification.dayOfWeek` exige el nombre completo, y
+  // Google descarta el horario si no lo encuentra. La traducción al español
+  // ocurre en la capa de presentación (Tasks 7 y 13), no en el dato.
   horario: Object.freeze([
-    Object.freeze({ dias: Object.freeze(['Mo', 'Tu', 'We', 'Th', 'Fr']), abre: '08:00', cierra: '18:00' }),
-    Object.freeze({ dias: Object.freeze(['Sa']), abre: '08:00', cierra: '12:00' }),
+    Object.freeze({ dias: Object.freeze(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']), abre: '08:00', cierra: '18:00' }),
+    Object.freeze({ dias: Object.freeze(['Saturday']), abre: '08:00', cierra: '12:00' }),
   ]),
 
   zonaServicio: Object.freeze([

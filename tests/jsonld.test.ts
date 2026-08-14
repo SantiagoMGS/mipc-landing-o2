@@ -23,6 +23,17 @@ describe('localBusiness', () => {
   it('lista la zona de servicio', () => {
     expect(ld.areaServed.map((a: any) => a.name)).toContain('Envigado');
   });
+
+  it('emite dayOfWeek con valores canónicos de schema.org, nunca abreviaturas', () => {
+    const validDayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    ld.openingHoursSpecification.forEach((spec: any) => {
+      spec.dayOfWeek.forEach((day: string) => {
+        expect(validDayOfWeek).toContain(day);
+        // Rechaza abreviaturas como 'Mo', 'Tu', etc., que Google no reconoce.
+        expect(day).not.toMatch(/^[A-Z][a-z]$/);
+      });
+    });
+  });
 });
 
 describe('service', () => {

@@ -23,7 +23,7 @@ export function localBusiness() {
     },
     openingHoursSpecification: empresa.horario.map((h) => ({
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: h.dias,
+      dayOfWeek: [...h.dias],
       opens: h.abre,
       closes: h.cierra,
     })),

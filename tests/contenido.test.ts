@@ -36,4 +36,16 @@ describe('esquema de servicio', () => {
       esquemaServicio.parse({ ...valido, imagen: { src: './foto.jpg' } })
     ).toThrow();
   });
+
+  it('rechaza un metaTitle que contiene el dominio aunque termine correctamente', () => {
+    expect(() =>
+      esquemaServicio.parse({ ...valido, metaTitle: 'Servicios de mipc.com.co en Medellín | MiPC Tecnología' })
+    ).toThrow();
+  });
+
+  it('rechaza un alt que es un nombre de archivo largo', () => {
+    expect(() =>
+      esquemaServicio.parse({ ...valido, imagen: { src: './foto.jpg', alt: 'foto-tecnico-instalando-servidor.jpg' } })
+    ).toThrow();
+  });
 });

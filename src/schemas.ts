@@ -3,17 +3,25 @@ import { z } from 'astro/zod';
 /** Imagen con alt obligatorio y descriptivo. Corrige SEO-07. */
 const imagen = z.object({
   src: z.string(),
-  alt: z.string().min(10, 'El alt debe describir la escena, no ser el nombre del archivo'),
+  alt: z
+    .string()
+    .min(10, 'El alt debe describir la escena, no ser el nombre del archivo')
+    .refine((a) => !/\.(jpe?g|png|gif|svg|webp|avif)$/i.test(a.trim()), {
+      message: 'El alt es un nombre de archivo. Describe qué se ve en la imagen.',
+    }),
 });
 
 /** Campos de SEO que toda página de contenido debe traer. */
 const seo = {
   metaTitle: z
     .string()
-    .min(20)
-    .max(65)
+    .min(20, 'Demasiado corto para incluir el servicio y la ciudad')
+    .max(65, 'Google lo truncará en el resultado de búsqueda')
     .refine((t) => t.endsWith('| MiPC Tecnología'), {
-      message: 'El title debe terminar en "| MiPC Tecnología", nunca en el dominio',
+      message: 'El título debe terminar en "| MiPC Tecnología"',
+    })
+    .refine((t) => !t.includes('mipc.com.co'), {
+      message: 'El título no puede contener el dominio: la marca es MiPC Tecnología',
     }),
   metaDescription: z
     .string()
@@ -25,7 +33,7 @@ export const esquemaServicio = z.object({
   titulo: z.string(),
   h1: z.string(),
   ...seo,
-  resumen: z.string().min(20),
+  resumen: z.string().min(20, 'El resumen debe decir algo, no ser una etiqueta'),
   publico: z.enum(['empresa', 'persona', 'ambos']),
   orden: z.number().int(),
   imagen: imagen.optional(),
@@ -54,7 +62,7 @@ export const esquemaEntrada = z.object({
   titulo: z.string(),
   ...seo,
   fecha: z.coerce.date(),
-  resumen: z.string().min(20),
+  resumen: z.string().min(20, 'El resumen debe decir algo, no ser una etiqueta'),
   imagen: imagen.optional(),
 });
 

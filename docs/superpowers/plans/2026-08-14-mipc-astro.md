@@ -301,9 +301,18 @@ export const empresa = Object.freeze({
   }),
 
   // Confirmar con el cliente y hacer coincidir con Google Business Profile.
+  // `dias` usa los valores canónicos de la enumeración DayOfWeek de schema.org.
+  // NO abreviaturas: 'Mo' es válido en la propiedad de texto `openingHours`,
+  // pero `openingHoursSpecification.dayOfWeek` exige el nombre completo, y
+  // Google descarta el horario si no lo encuentra. La traducción al español
+  // ocurre en la capa de presentación (Tasks 7 y 13), no en el dato.
   horario: Object.freeze([
-    Object.freeze({ dias: ['Mo', 'Tu', 'We', 'Th', 'Fr'], abre: '08:00', cierra: '18:00' }),
-    Object.freeze({ dias: ['Sa'], abre: '08:00', cierra: '12:00' }),
+    Object.freeze({
+      dias: Object.freeze(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
+      abre: '08:00',
+      cierra: '18:00',
+    }),
+    Object.freeze({ dias: Object.freeze(['Saturday']), abre: '08:00', cierra: '12:00' }),
   ]),
 
   zonaServicio: Object.freeze([
@@ -435,7 +444,7 @@ export function localBusiness() {
     },
     openingHoursSpecification: empresa.horario.map((h) => ({
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: h.dias,
+      dayOfWeek: [...h.dias],
       opens: h.abre,
       closes: h.cierra,
     })),
@@ -1067,8 +1076,11 @@ const actual = Astro.url.pathname;
 ---
 import { empresa } from '../../data/empresa';
 
+// `empresa.horario[].dias` guarda los valores canónicos de schema.org.
+// La traducción al español vive aquí, en la capa de presentación.
 const dias: Record<string, string> = {
-  Mo: 'Lun', Tu: 'Mar', We: 'Mié', Th: 'Jue', Fr: 'Vie', Sa: 'Sáb', Su: 'Dom',
+  Monday: 'Lun', Tuesday: 'Mar', Wednesday: 'Mié',
+  Thursday: 'Jue', Friday: 'Vie', Saturday: 'Sáb', Sunday: 'Dom',
 };
 const franja = (h: (typeof empresa.horario)[number]) =>
   `${dias[h.dias[0]]}${h.dias.length > 1 ? ` a ${dias[h.dias[h.dias.length - 1]]}` : ''}: ${h.abre} a ${h.cierra}`;
@@ -2369,7 +2381,11 @@ import Formulario from '../components/ui/Formulario.astro';
 import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
 import { empresa } from '../data/empresa';
 
-const dias: Record<string, string> = { Mo:'Lun', Tu:'Mar', We:'Mié', Th:'Jue', Fr:'Vie', Sa:'Sáb', Su:'Dom' };
+// Misma traducción que el pie: el dato guarda los valores de schema.org.
+const dias: Record<string, string> = {
+  Monday: 'Lun', Tuesday: 'Mar', Wednesday: 'Mié',
+  Thursday: 'Jue', Friday: 'Vie', Saturday: 'Sáb', Sunday: 'Dom',
+};
 ---
 <Base
   title="Contacto: Soporte TI en Medellín | MiPC Tecnología"

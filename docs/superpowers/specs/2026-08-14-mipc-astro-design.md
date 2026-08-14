@@ -42,7 +42,7 @@ Reconstruir el sitio como estático en Astro, eliminando la carga de mantenimien
 
 | Decisión | Elección | Razón |
 |---|---|---|
-| Plataforma | Astro 5, salida 100% estática | Sin servidor que parchear |
+| Plataforma | Astro 7, salida 100% estática | Sin servidor que parchear |
 | Edición de contenido | Markdown en el repo, sin CMS | El único editor es técnico. Keystatic lee los mismos archivos y se puede añadir después sin migrar |
 | Estilos | Tailwind | Sin CSS huérfano acumulándose |
 | Hosting | Cloudflare Pages | Gratuito, CDN global, despliegue por `git push` |
@@ -192,6 +192,12 @@ Faltan 6 de los 18 logos que muestra el sitio: Radio Tiempo, La Paisana, Vanex, 
 ---
 
 ## 7. Arquitectura técnica
+
+### Versión de Astro
+
+**Astro 7** (7.2.2 al momento de escribir esto). Astro 7.0 salió el 2026-06-22 y la rama 6 dejó de recibir releases al publicarse; empezar en la 6 sería nacer en una rama superada, justo lo contrario del objetivo del proyecto.
+
+Los cambios que rompen compatibilidad en la 7 no afectan a este sitio: compilador Rust más estricto con HTML inválido (se escribe HTML válido de todos modos), Sätteri como procesador Markdown por defecto en lugar de remark/rehype, y `compressHTML` con valor por defecto `'jsx'`. Si el procesador Markdown diera problemas, la salida de emergencia es reinstalar `@astrojs/markdown-remark`.
 
 ### Estructura de contenido
 

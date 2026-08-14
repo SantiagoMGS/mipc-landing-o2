@@ -1,0 +1,21 @@
+---
+import SEO from '../components/SEO.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  metaDescription: string;
+  jsonld?: object[];
+  imagenOg?: string;
+}
+const { title, metaDescription, jsonld, imagenOg } = Astro.props;
+---
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <SEO {title} {metaDescription} {jsonld} {imagenOg} />
+  </head>
+  <body class="bg-fondo text-tinta antialiased">
+    <slot />
+  </body>
+</html>

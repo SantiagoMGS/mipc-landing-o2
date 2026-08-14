@@ -1,13 +1,9 @@
 ---
 import SEO from '../components/SEO.astro';
+import type { Props as PropsSEO } from '../components/SEO.astro';
 import '../styles/global.css';
 
-interface Props {
-  title: string;
-  metaDescription: string;
-  jsonld?: object[];
-  imagenOg?: string;
-}
+type Props = PropsSEO;
 const { title, metaDescription, jsonld, imagenOg } = Astro.props;
 ---
 <!doctype html>

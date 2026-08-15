@@ -9,11 +9,18 @@ describe('mapa de redirecciones', () => {
     for (const vieja of [
       '/home/servicios/',
       '/home/servicios-mipc-tecnologia-copy/',
+      '/servicios-mipc-tecnologia/',
       '/home/experiencia/',
       '/home/actualidad/',
       '/home/contacto/',
+      '/home/',
+      '/intel-anuncia-nuevos-procesadores-de-escritorio-core-de-12a-generacion/',
+      '/amazon-anuncia-la-adquisicion-de-la-empresa-de-tecnologia-cuantica-psiquantum/',
+      '/google-anuncia-actualizaciones-de-sus-productos-de-realidad-virtual-y-aumentada/',
       '/category/uncategorized/',
       '/author/santiago-martinezmipc-com-co/',
+      '/wp-sitemap.xml',
+      '/feed/',
     ]) {
       expect(destinos.has(vieja)).toBe(true);
     }
@@ -59,5 +66,15 @@ describe('archivo _redirects generado', () => {
   it('todas las reglas son 301 (permanentes), ninguna 302', () => {
     const contenido = readFileSync(ruta, 'utf-8');
     expect(contenido).not.toMatch(/\s302\b/);
+  });
+
+  it('el build emite dist/_redirects: si prebuild no corrió, esto falla', () => {
+    // public/_redirects está gitignoreado y solo lo genera prebuild. Si la
+    // plataforma ejecuta `astro build` directamente, el hook no dispara y
+    // producción sale sin redirecciones. Este test lo convierte en un fallo
+    // ruidoso antes del despliegue, en vez de un silencio después.
+    const salida = readFileSync('dist/_redirects', 'utf-8').trim().split('\n');
+    expect(salida).toHaveLength(redirecciones.length);
+    expect(salida.every((l) => l.endsWith(' 301'))).toBe(true);
   });
 });

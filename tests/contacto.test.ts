@@ -12,7 +12,9 @@ describe('contacto', () => {
 
   it('el formulario redirige a /gracias/ para poder medir la conversión', () => {
     const redirect = doc.querySelector('input[name="redirect"]')?.getAttribute('value');
-    expect(redirect).toContain('/gracias/');
+    // Web3Forms redirige desde su servidor: una ruta relativa no funcionaría.
+    // Comprobar solo que contiene '/gracias/' dejaría pasar esa regresión.
+    expect(redirect).toMatch(/^https:\/\/mipc\.com\.co\/gracias\/$/);
   });
 
   it('tiene honeypot antispam oculto', () => {
@@ -24,5 +26,20 @@ describe('contacto', () => {
       expect(doc.querySelector(`label[for="${id}"]`)).toBeTruthy();
       expect(doc.querySelector(`#${id}`)).toBeTruthy();
     }
+  });
+});
+
+describe('gracias (SEO-05: página de agradecimiento sin valor en búsqueda)', () => {
+  it('/gracias/ lleva noindex,follow — útil al visitante, invisible para Google', () => {
+    const doc = parse(readFileSync('dist/gracias/index.html', 'utf-8'));
+    const robots = doc.querySelector('meta[name="robots"]')?.getAttribute('content');
+    expect(robots).toBe('noindex,follow');
+  });
+
+  // Un noindex que se filtre a una página real sería peor que el problema
+  // que resuelve: nos quitaría del buscador sin que nadie lo note.
+  it('el resto del sitio NO lleva noindex por accidente', () => {
+    const doc = parse(readFileSync('dist/index.html', 'utf-8'));
+    expect(doc.querySelector('meta[name="robots"]')).toBeFalsy();
   });
 });

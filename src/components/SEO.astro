@@ -7,9 +7,11 @@ export interface Props {
   metaDescription: string;
   jsonld?: object[];
   imagenOg?: string;
+  /** Para páginas útiles al visitante pero sin valor en búsqueda: /gracias/. */
+  noindex?: boolean;
 }
 
-const { title, metaDescription, jsonld = [], imagenOg } = Astro.props;
+const { title, metaDescription, jsonld = [], imagenOg, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const og = new URL(imagenOg ?? '/og-default.jpg', Astro.site).href;
 const bloques = [localBusiness(), ...jsonld];
@@ -18,6 +20,7 @@ const bloques = [localBusiness(), ...jsonld];
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{title}</title>
 <meta name="description" content={metaDescription} />
+{noindex && <meta name="robots" content="noindex,follow" />}
 <link rel="canonical" href={canonical} />
 
 <meta property="og:type" content="website" />

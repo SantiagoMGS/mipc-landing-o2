@@ -7,6 +7,8 @@ export default defineConfig({
   site: 'https://mipc.com.co',
   output: 'static',
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  // /gracias/ es útil al visitante pero no tiene valor en búsqueda: se
+  // excluye del sitemap y además emite noindex desde el componente SEO.
+  integrations: [sitemap({ filter: (url) => !url.includes('/gracias/') })],
   vite: { plugins: [tailwindcss()] },
 });

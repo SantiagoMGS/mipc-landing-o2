@@ -7,7 +7,7 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
 <form action="https://api.web3forms.com/submit" method="POST" class="grid gap-4">
   <input type="hidden" name="access_key" value={clave} />
   <input type="hidden" name="redirect" value={gracias} />
-  <input type="hidden" name="subject" value="Nueva solicitud desde mipc.com.co" />
+  <input type="hidden" name="subject" value={`Nueva solicitud desde ${new URL(empresa.url).host}`} />
   <input type="hidden" name="ccemail" value={empresa.emailCopia} />
   <input type="hidden" name="from_name" value={empresa.nombre} />
   <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />

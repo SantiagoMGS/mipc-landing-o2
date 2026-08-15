@@ -27,7 +27,10 @@ describe('home', () => {
     // orden solo se ejercita cuando la sección existe. En cuanto la Task 14
     // añada entradas, `blog` dejará de ser -1 y esta rama sí comprobará el
     // orden de verdad.
-    const blog = raw.indexOf('Actualidad');
+    // Se busca el marcado del encabezado, no la palabra suelta: «Actualidad»
+    // podría aparecer en un enlace o en el menú y entonces compararíamos
+    // contra la posición equivocada.
+    const blog = raw.indexOf('>Actualidad<');
     if (blog > -1) {
       expect(muro).toBeLessThan(blog);
     }

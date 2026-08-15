@@ -1446,14 +1446,29 @@ describe('muro de clientes', () => {
     expect(doc.querySelectorAll('[data-cliente]')).toHaveLength(18);
   });
 
-  it('los logos se exhiben a 88px para verse nítidos en pantalla 2x', () => {
-    const img = doc.querySelector('[data-cliente] img');
-    expect(img?.getAttribute('width')).toBe('88');
+  it('TODOS los logos se exhiben a 88px, no solo el primero', () => {
+    const imgs = doc.querySelectorAll('[data-cliente] img');
+    expect(imgs).toHaveLength(12);
+    expect(imgs.every((i) => i.getAttribute('width') === '88')).toBe(true);
+    expect(imgs.every((i) => i.getAttribute('height') === '52')).toBe(true);
   });
 
-  it('cada logo tiene alt con el nombre del cliente', () => {
-    const alts = doc.querySelectorAll('[data-cliente] img').map((i) => i.getAttribute('alt'));
-    expect(alts.every((a) => a && a.length > 5)).toBe(true);
+  it('cada alt nombra a su cliente, no es texto de relleno', () => {
+    // Comprobar solo la longitud dejaría pasar un alt genérico repetido.
+    const imgs = doc.querySelectorAll('[data-cliente] img');
+    for (const img of imgs) {
+      const alt = img.getAttribute('alt') ?? '';
+      const src = img.getAttribute('src') ?? '';
+      const slug = src.split('/').pop()!.replace('.png', '');
+      const primeraPalabra = slug.split('-')[0];
+      expect(alt.toLowerCase()).toContain(primeraPalabra.toLowerCase());
+      expect(alt).not.toContain('.png');
+    }
+  });
+
+  it('las primeras marcas no van diferidas: el muro está arriba de la página', () => {
+    const imgs = doc.querySelectorAll('[data-cliente] img');
+    expect(imgs.slice(0, 6).every((i) => i.getAttribute('loading') === 'eager')).toBe(true);
   });
 });
 ```
@@ -1479,7 +1494,7 @@ const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden -
     </p>
 
     <ul class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] items-center gap-x-8 gap-y-7">
-      {clientes.map((c) => (
+      {clientes.map((c, i) => (
         <li data-cliente class="flex items-center justify-center" title={c.data.sector}>
           {c.data.logo ? (
             <img
@@ -1487,9 +1502,9 @@ const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden -
               alt={`Logotipo de ${c.data.nombre}, cliente de MiPC Tecnología`}
               width="88"
               height="52"
-              loading="lazy"
+              loading={i < 6 ? 'eager' : 'lazy'}
               decoding="async"
-              class="h-auto w-[88px] opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
+              class="h-auto w-[88px] grayscale transition hover:grayscale-0"
             />
           ) : (
             <span class="text-center text-xs font-semibold leading-tight text-tinta-2">

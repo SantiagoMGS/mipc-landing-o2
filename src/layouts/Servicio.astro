@@ -1,8 +1,12 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import Base from './Base.astro';
 import Boton from '../components/ui/Boton.astro';
 import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
 import { service, breadcrumb } from '../lib/jsonld';
+
+/** Derivado de la colección, no una forma suelta: si el esquema cambia, esto rompe. */
+type FAQ = CollectionEntry<'servicios'>['data']['faq'][number];
 
 const { entrada } = Astro.props;
 const d = entrada.data;
@@ -19,7 +23,7 @@ const jsonld = [
     ? [{
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: d.faq.map((f: { pregunta: string; respuesta: string }) => ({
+        mainEntity: d.faq.map((f: FAQ) => ({
           '@type': 'Question',
           name: f.pregunta,
           acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
@@ -31,6 +35,7 @@ const jsonld = [
 <Base title={d.metaTitle} metaDescription={d.metaDescription} {jsonld}>
   <article class="mx-auto max-w-3xl px-5 py-16">
     <nav aria-label="Ruta" class="cifra text-xs uppercase tracking-widest text-tinta-2">
+      <a href="/" class="hover:text-senal">Inicio</a> /
       <a href="/servicios/" class="hover:text-senal">Servicios</a> / {d.titulo}
     </nav>
 
@@ -56,7 +61,7 @@ const jsonld = [
       <section class="mt-14">
         <h2 class="text-2xl font-semibold">Preguntas frecuentes</h2>
         <dl class="mt-6 space-y-6">
-          {d.faq.map((f: { pregunta: string; respuesta: string }) => (
+          {d.faq.map((f: FAQ) => (
             <div class="border-t border-borde pt-4">
               <dt class="font-semibold">{f.pregunta}</dt>
               <dd class="mt-2 text-tinta-2">{f.respuesta}</dd>

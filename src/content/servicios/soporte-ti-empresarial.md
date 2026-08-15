@@ -10,7 +10,7 @@ beneficios:
   - Soporte remoto y en sitio en el área metropolitana
   - Escalamiento y seguimiento de incidentes hasta su cierre
   - Inventario y control de equipos
-  - Personal certificado para trabajo en alturas
+  - Trabajo en alturas con arnés y equipo de protección
 faq:
   - pregunta: ¿Atienden fuera de Medellín?
     respuesta: Sí. Cubrimos Envigado, Sabaneta, Itagüí, Bello y La Estrella, además de Medellín.

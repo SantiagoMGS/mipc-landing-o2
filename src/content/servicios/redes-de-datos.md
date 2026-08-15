@@ -2,7 +2,7 @@
 titulo: Redes de Datos
 h1: Redes de datos y cableado estructurado en Medellín
 metaTitle: Redes de Datos y Cableado en Medellín | MiPC Tecnología
-metaDescription: Diseño, instalación y administración de redes de datos y eléctricas para empresas en Medellín. Cableado estructurado y puntos de red certificados.
+metaDescription: Diseño, instalación y administración de redes de datos y eléctricas para empresas en Medellín. Cableado estructurado documentado e identificado.
 resumen: Diseño, instalación y administración de redes de datos y eléctricas.
 publico: empresa
 orden: 4
@@ -10,7 +10,7 @@ beneficios:
   - Cableado estructurado y puntos de red
   - Configuración y administración de equipos activos
   - Redes eléctricas reguladas
-  - Documentación y certificación de puntos
+  - Documentación e identificación de cada punto
 faq:
   - pregunta: ¿Entregan documentación de la red?
     respuesta: Sí. Cada instalación se entrega con el diagrama y la identificación de los puntos, para que cualquier técnico pueda intervenirla después.

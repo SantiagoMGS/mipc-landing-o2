@@ -32,32 +32,27 @@ const jornada = empresa.horario[0];
   </div>
 </div>
 
-<!-- Logo y teléfono comparten la primera fila y la navegación va debajo.
-     Antes los tres competían por una sola línea que se partía en móvil y
-     dejaba el teléfono flotando solo en una tercera fila. Sin JavaScript:
-     la jerarquía la da la estructura, no un menú desplegable. -->
+<!-- Una sola fila en escritorio, donde hay ancho de sobra para logo, menú y
+     teléfono. Por debajo de lg el menú baja a su propia línea con
+     desplazamiento horizontal, que es donde la fila única sí se rompía.
+     El orden visual se reordena con `order` sin alterar el orden del
+     documento, así que la navegación por teclado sigue el recorrido
+     natural: logo, menú, teléfono. Sin JavaScript. -->
 <header class="border-b border-borde bg-superficie">
-  <div class="mx-auto max-w-6xl px-5">
-    <div class="flex items-center justify-between gap-4 py-4">
-      <a href="/" class="shrink-0" aria-label={`${empresa.nombre} — inicio`}>
-        <img
-          src="/logo-mipc.png"
-          alt="Logotipo de MiPC Tecnología"
-          width="187"
-          height="90"
-          class="h-10 w-auto"
-        />
-      </a>
-
-      <a
-        href={`tel:${empresa.telefonoE164}`}
-        class="cifra shrink-0 rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-senal-oscuro"
-      >{empresa.telefono}</a>
-    </div>
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 px-5 py-3 lg:flex-nowrap lg:py-4">
+    <a href="/" class="order-1 shrink-0" aria-label={`${empresa.nombre} — inicio`}>
+      <img
+        src="/logo-mipc.png"
+        alt="Logotipo de MiPC Tecnología"
+        width="187"
+        height="90"
+        class="h-9 w-auto lg:h-10"
+      />
+    </a>
 
     <nav
       aria-label="Principal"
-      class="-mx-5 flex gap-x-6 overflow-x-auto px-5 pb-3 text-sm lg:mx-0 lg:px-0"
+      class="order-3 -mx-5 mt-2 flex w-full gap-x-6 overflow-x-auto px-5 text-sm lg:order-2 lg:mx-0 lg:mt-0 lg:w-auto lg:overflow-visible lg:px-0"
     >
       {enlaces.map((e) => (
         <a
@@ -70,5 +65,10 @@ const jornada = empresa.horario[0];
         >{e.texto}</a>
       ))}
     </nav>
+
+    <a
+      href={`tel:${empresa.telefonoE164}`}
+      class="cifra order-2 ml-auto shrink-0 rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-senal-oscuro lg:order-3"
+    >{empresa.telefono}</a>
   </div>
 </header>

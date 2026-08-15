@@ -1484,6 +1484,16 @@ Expected: FAIL — no hay elementos `[data-cliente]`.
 ---
 import { getCollection } from 'astro:content';
 const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden - b.data.orden);
+
+/**
+ * Las primeras seis IMÁGENES visibles van eager, no los primeros seis
+ * clientes de la lista: los que no tienen logo se intercalan entre ellos,
+ * así que indexar por posición en `clientes` deja menos de seis imágenes
+ * eager en cuanto hay un cliente sin logo en medio.
+ */
+const idsEager = new Set(
+  clientes.filter((c) => c.data.logo).slice(0, 6).map((c) => c.id)
+);
 ---
 <section class="border-y border-borde bg-superficie py-14">
   <div class="mx-auto max-w-6xl px-5">
@@ -1494,7 +1504,7 @@ const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden -
     </p>
 
     <ul class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] items-center gap-x-8 gap-y-7">
-      {clientes.map((c, i) => (
+      {clientes.map((c) => (
         <li data-cliente class="flex items-center justify-center" title={c.data.sector}>
           {c.data.logo ? (
             <img
@@ -1502,7 +1512,7 @@ const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden -
               alt={`Logotipo de ${c.data.nombre}, cliente de MiPC Tecnología`}
               width="88"
               height="52"
-              loading={i < 6 ? 'eager' : 'lazy'}
+              loading={idsEager.has(c.id) ? 'eager' : 'lazy'}
               decoding="async"
               class="h-auto w-[88px] grayscale transition hover:grayscale-0"
             />

@@ -21,6 +21,8 @@ describe('sistema visual', () => {
     expect(css).toContain('#f2f4f5');
     expect(css).toContain('#eb3a00');
     expect(css).toContain('#1e3a47');
+    expect(css).toContain('#0f1620');
+    expect(css).toContain('#d33400');
   });
 
   it('no enlaza Google Fonts: las fuentes van autoalojadas', () => {

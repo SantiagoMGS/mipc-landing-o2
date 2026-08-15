@@ -244,7 +244,7 @@ describe('empresa (NAP)', () => {
   });
 
   it('tiene dirección completa, no solo la ciudad', () => {
-    expect(empresa.direccion.calle).toBe('Carrera 87A # 32-81, Interior 305');
+    expect(empresa.direccion.calle).toBe('Carrera 66A # 34-48, Interior 101');
     expect(empresa.direccion.ciudad).toBe('Medellín');
     expect(empresa.direccion.barrio).toBe('Laureles');
   });
@@ -292,9 +292,10 @@ export const empresa = Object.freeze({
   telefonoE164: '+573148889078',
   whatsapp: '573148889078',
   email: 'gerencia@mipc.com.co',
+  emailCopia: 'santiago.martinez@mipc.com.co',
 
   direccion: Object.freeze({
-    calle: 'Carrera 87A # 32-81, Interior 305',
+    calle: 'Carrera 66A # 34-48, Interior 101',
     barrio: 'Laureles',
     ciudad: 'Medellín',
     departamento: 'Antioquia',
@@ -369,7 +370,7 @@ describe('localBusiness', () => {
     expect(ld['@type']).toBe('LocalBusiness');
     expect(ld.address['@type']).toBe('PostalAddress');
     expect(ld.address.addressLocality).toBe('Medellín');
-    expect(ld.address.streetAddress).toContain('Carrera 87A');
+    expect(ld.address.streetAddress).toContain('Carrera 66A');
   });
 
   it('usa el teléfono en E.164', () => {
@@ -1211,7 +1212,7 @@ describe('pie de página (CRIT-04)', () => {
   const html = readFileSync('dist/index.html', 'utf-8');
 
   it('publica la dirección completa, no solo la ciudad', () => {
-    expect(html).toContain('Carrera 87A # 32-81');
+    expect(html).toContain('Carrera 66A # 34-48');
     expect(html).toContain('Laureles');
   });
 
@@ -2420,7 +2421,7 @@ describe('contacto', () => {
 
   it('publica la dirección completa para el posicionamiento local', () => {
     const html = doc.toString();
-    expect(html).toContain('Carrera 87A # 32-81');
+    expect(html).toContain('Carrera 66A # 34-48');
   });
 
   it('el formulario redirige a /gracias/ para poder medir la conversión', () => {
@@ -2461,6 +2462,7 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
   <input type="hidden" name="access_key" value={clave} />
   <input type="hidden" name="redirect" value={gracias} />
   <input type="hidden" name="subject" value="Nueva solicitud desde mipc.com.co" />
+  <input type="hidden" name="ccemail" value={empresa.emailCopia} />
   <input type="hidden" name="from_name" value={empresa.nombre} />
   <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 

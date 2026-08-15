@@ -24,6 +24,7 @@ export const empresa = Object.freeze({
     ciudad: 'Medellín',
     departamento: 'Antioquia',
     pais: 'CO',
+    paisNombre: 'Colombia',
   }),
 
   // Confirmar con el cliente y hacer coincidir con Google Business Profile.

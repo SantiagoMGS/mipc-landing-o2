@@ -1,0 +1,10 @@
+---
+import { enlaceWhatsApp } from '../../lib/whatsapp';
+interface Props { mensaje: string; texto?: string; }
+const { mensaje, texto = 'Escríbenos por WhatsApp' } = Astro.props;
+---
+<a
+  href={enlaceWhatsApp(mensaje)}
+  rel="noopener"
+  class="inline-flex items-center gap-2 rounded-sm bg-[#25d366] px-5 py-3 text-sm font-semibold text-[#0b3d24] transition-opacity hover:opacity-90"
+>{texto}</a>

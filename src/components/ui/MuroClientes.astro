@@ -1,6 +1,16 @@
 ---
 import { getCollection } from 'astro:content';
 const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden - b.data.orden);
+
+/**
+ * Las primeras seis IMÁGENES visibles van eager, no los primeros seis
+ * clientes de la lista: Radio Tiempo y otros sin logo se intercalan entre
+ * ellos, así que indexar por posición en `clientes` deja menos de seis
+ * imágenes eager cuando hay un cliente sin logo en medio.
+ */
+const idsEager = new Set(
+  clientes.filter((c) => c.data.logo).slice(0, 6).map((c) => c.id)
+);
 ---
 <section class="border-y border-borde bg-superficie py-14">
   <div class="mx-auto max-w-6xl px-5">
@@ -19,9 +29,9 @@ const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden -
               alt={`Logotipo de ${c.data.nombre}, cliente de MiPC Tecnología`}
               width="88"
               height="52"
-              loading="lazy"
+              loading={idsEager.has(c.id) ? 'eager' : 'lazy'}
               decoding="async"
-              class="h-auto w-[88px] opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
+              class="h-auto w-[88px] grayscale transition hover:grayscale-0"
             />
           ) : (
             <span class="text-center text-xs font-semibold leading-tight text-tinta-2">

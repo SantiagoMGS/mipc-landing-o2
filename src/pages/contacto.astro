@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import Formulario from '../components/ui/Formulario.astro';
+import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
+import { empresa } from '../data/empresa';
+import { franja } from '../lib/horario';
+---
+<Base
+  title="Contacto: Soporte TI en Medellín | MiPC Tecnología"
+  metaDescription="Escríbenos para cotizar soporte TI, redes, cámaras de seguridad o alquiler de equipos en Medellín. Atención por WhatsApp, teléfono y correo."
+>
+  <div class="mx-auto grid max-w-6xl gap-12 px-5 py-16 lg:grid-cols-2">
+    <div>
+      <h1 class="text-4xl font-semibold">Hablemos</h1>
+      <p class="mt-4 text-lg text-tinta-2">
+        Cuéntanos qué necesitas y te respondemos con una propuesta concreta.
+      </p>
+
+      <dl class="mt-10 space-y-5 text-sm">
+        <div>
+          <dt class="font-semibold">Dirección</dt>
+          <dd class="text-tinta-2">
+            {empresa.direccion.calle}<br />
+            {empresa.direccion.barrio}, {empresa.direccion.ciudad}, {empresa.direccion.departamento}
+          </dd>
+        </div>
+        <div>
+          <dt class="font-semibold">Teléfono</dt>
+          <dd><a class="cifra text-tinta-2 hover:text-senal" href={`tel:${empresa.telefonoE164}`}>{empresa.telefono}</a></dd>
+        </div>
+        <div>
+          <dt class="font-semibold">Correo</dt>
+          <dd><a class="text-tinta-2 hover:text-senal" href={`mailto:${empresa.email}`}>{empresa.email}</a></dd>
+        </div>
+        <div>
+          <dt class="font-semibold">Horario</dt>
+          <dd class="text-tinta-2">
+            {empresa.horario.map((h) => <span class="cifra block">{franja(h)}</span>)}
+          </dd>
+        </div>
+        <div>
+          <dt class="font-semibold">Cobertura</dt>
+          <dd class="text-tinta-2">{empresa.zonaServicio.join(' · ')}</dd>
+        </div>
+      </dl>
+
+      <div class="mt-8">
+        <CTAWhatsApp mensaje="Hola, quiero cotizar un servicio para mi empresa" />
+      </div>
+    </div>
+
+    <div class="border border-borde bg-superficie p-6">
+      <h2 class="text-xl font-semibold">Solicita tu cotización</h2>
+      <div class="mt-6"><Formulario /></div>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import Boton from '../components/ui/Boton.astro';
+---
+<Base
+  title="Solicitud recibida | MiPC Tecnología"
+  metaDescription="Recibimos tu solicitud de cotización. Te responderemos en el transcurso del siguiente día hábil desde MiPC Tecnología en Medellín."
+>
+  <div class="mx-auto max-w-2xl px-5 py-24">
+    <h1 class="text-4xl font-semibold">Recibimos tu solicitud</h1>
+    <p class="mt-4 text-lg text-tinta-2">
+      Te respondemos en el transcurso del siguiente día hábil. Si necesitas atención
+      inmediata, escríbenos por WhatsApp.
+    </p>
+    <div class="mt-8"><Boton href="/servicios/">Ver los servicios</Boton></div>
+  </div>
+</Base>

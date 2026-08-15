@@ -1,0 +1,35 @@
+---
+import { empresa } from '../../data/empresa';
+const clave = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+const gracias = new URL('/gracias/', Astro.site).href;
+const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 text-sm';
+---
+<form action="https://api.web3forms.com/submit" method="POST" class="grid gap-4">
+  <input type="hidden" name="access_key" value={clave} />
+  <input type="hidden" name="redirect" value={gracias} />
+  <input type="hidden" name="subject" value="Nueva solicitud desde mipc.com.co" />
+  <input type="hidden" name="ccemail" value={empresa.emailCopia} />
+  <input type="hidden" name="from_name" value={empresa.nombre} />
+  <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
+
+  <div>
+    <label for="nombre" class="text-sm font-semibold">Nombre</label>
+    <input id="nombre" name="nombre" type="text" required class={`mt-1 ${campo}`} />
+  </div>
+  <div>
+    <label for="email" class="text-sm font-semibold">Correo</label>
+    <input id="email" name="email" type="email" required class={`mt-1 ${campo}`} />
+  </div>
+  <div>
+    <label for="telefono" class="text-sm font-semibold">Teléfono</label>
+    <input id="telefono" name="telefono" type="tel" required class={`mt-1 cifra ${campo}`} />
+  </div>
+  <div>
+    <label for="mensaje" class="text-sm font-semibold">¿Qué necesitas?</label>
+    <textarea id="mensaje" name="mensaje" rows="5" required class={`mt-1 ${campo}`}></textarea>
+  </div>
+
+  <button type="submit" class="rounded-sm bg-senal-fuerte px-5 py-3 text-sm font-semibold text-white hover:bg-senal-oscuro">
+    Enviar solicitud
+  </button>
+</form>

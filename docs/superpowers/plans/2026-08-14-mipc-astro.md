@@ -1573,7 +1573,7 @@ beneficios:
   - Soporte remoto y en sitio en el área metropolitana
   - Escalamiento y seguimiento de incidentes hasta su cierre
   - Inventario y control de equipos
-  - Personal certificado para trabajo en alturas
+  - Trabajo en alturas con arnés y equipo de protección
 faq:
   - pregunta: ¿Atienden fuera de Medellín?
     respuesta: Sí. Cubrimos Envigado, Sabaneta, Itagüí, Bello y La Estrella, además de Medellín.
@@ -1635,7 +1635,7 @@ equipo crítico falle en el peor momento.
 titulo: Cámaras de Seguridad
 h1: Cámaras de seguridad y control de acceso en Medellín
 metaTitle: Cámaras de Seguridad y CCTV en Medellín | MiPC Tecnología
-metaDescription: Instalación y mantenimiento de CCTV, alarmas y control de acceso para empresas en Medellín. Personal certificado para trabajo en alturas.
+metaDescription: Instalación y mantenimiento de CCTV, alarmas y control de acceso para empresas en Medellín. Trabajo en alturas con arnés y equipo de protección.
 resumen: Instalación y mantenimiento de CCTV, alarmas y control de acceso.
 publico: empresa
 orden: 3
@@ -1643,7 +1643,7 @@ beneficios:
   - Diseño e instalación de circuito cerrado de televisión
   - Alarmas y control de acceso
   - Mantenimiento preventivo de los sistemas instalados
-  - Personal certificado para trabajo en alturas
+  - Trabajo en alturas con arnés y equipo de protección
 faq:
   - pregunta: ¿Hacen mantenimiento de cámaras que instaló otro proveedor?
     respuesta: Sí. Hacemos diagnóstico del sistema existente y proponemos el mantenimiento o las mejoras necesarias.
@@ -1652,9 +1652,9 @@ faq:
 Instalamos y mantenemos sistemas de videovigilancia, alarmas y control de acceso para
 establecimientos comerciales, instituciones educativas y sedes empresariales.
 
-El trabajo en fachadas y postes lo ejecuta personal con certificación de trabajo en
-alturas y equipo de protección. Para un cliente institucional eso no es un detalle: es
-un requisito de cumplimiento.
+El trabajo en fachadas y postes se ejecuta con arnés, casco y equipo de protección.
+Para un cliente institucional eso no es un detalle estético: es parte del cumplimiento
+que le van a auditar.
 ```
 
 `src/content/servicios/redes-de-datos.md`:
@@ -1664,7 +1664,7 @@ un requisito de cumplimiento.
 titulo: Redes de Datos
 h1: Redes de datos y cableado estructurado en Medellín
 metaTitle: Redes de Datos y Cableado en Medellín | MiPC Tecnología
-metaDescription: Diseño, instalación y administración de redes de datos y eléctricas para empresas en Medellín. Cableado estructurado y puntos de red certificados.
+metaDescription: Diseño, instalación y administración de redes de datos y eléctricas para empresas en Medellín. Cableado estructurado documentado e identificado.
 resumen: Diseño, instalación y administración de redes de datos y eléctricas.
 publico: empresa
 orden: 4
@@ -1672,7 +1672,7 @@ beneficios:
   - Cableado estructurado y puntos de red
   - Configuración y administración de equipos activos
   - Redes eléctricas reguladas
-  - Documentación y certificación de puntos
+  - Documentación e identificación de cada punto
 faq:
   - pregunta: ¿Entregan documentación de la red?
     respuesta: Sí. Cada instalación se entrega con el diagrama y la identificación de los puntos, para que cualquier técnico pueda intervenirla después.
@@ -1778,7 +1778,11 @@ Expected: FAIL — las rutas no existen.
 import Base from './Base.astro';
 import Boton from '../components/ui/Boton.astro';
 import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
+import type { CollectionEntry } from 'astro:content';
 import { service, breadcrumb } from '../lib/jsonld';
+
+/** Derivado de la colección, no una forma suelta: si el esquema cambia, esto rompe. */
+type FAQ = CollectionEntry<'servicios'>['data']['faq'][number];
 
 const { entrada } = Astro.props;
 const d = entrada.data;
@@ -1795,7 +1799,7 @@ const jsonld = [
     ? [{
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: d.faq.map((f: { pregunta: string; respuesta: string }) => ({
+        mainEntity: d.faq.map((f: FAQ) => ({
           '@type': 'Question',
           name: f.pregunta,
           acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
@@ -1807,6 +1811,7 @@ const jsonld = [
 <Base title={d.metaTitle} metaDescription={d.metaDescription} {jsonld}>
   <article class="mx-auto max-w-3xl px-5 py-16">
     <nav aria-label="Ruta" class="cifra text-xs uppercase tracking-widest text-tinta-2">
+      <a href="/" class="hover:text-senal">Inicio</a> /
       <a href="/servicios/" class="hover:text-senal">Servicios</a> / {d.titulo}
     </nav>
 
@@ -1832,7 +1837,7 @@ const jsonld = [
       <section class="mt-14">
         <h2 class="text-2xl font-semibold">Preguntas frecuentes</h2>
         <dl class="mt-6 space-y-6">
-          {d.faq.map((f: { pregunta: string; respuesta: string }) => (
+          {d.faq.map((f: FAQ) => (
             <div class="border-t border-borde pt-4">
               <dt class="font-semibold">{f.pregunta}</dt>
               <dd class="mt-2 text-tinta-2">{f.respuesta}</dd>
@@ -2180,10 +2185,10 @@ const anios = new Date().getFullYear() - empresa.fundacion;
     <section class="mt-14">
       <h2 class="text-2xl font-semibold">Cómo trabajamos</h2>
       <p class="mt-4 text-tinta-2">
-        Nuestros técnicos trabajan uniformados e identificados, y el personal que interviene
-        fachadas, postes y techos cuenta con certificación de trabajo en alturas y equipo de
-        protección. Para un cliente institucional eso no es un detalle estético: es un
-        requisito de cumplimiento que pedimos que nos exijan.
+        Nuestros técnicos trabajan uniformados e identificados, y quien interviene fachadas,
+        postes y techos lo hace con arnés, casco y equipo de protección. Para un cliente
+        institucional eso no es un detalle estético: es parte del cumplimiento que le van a
+        auditar, y preferimos que nos lo exijan.
       </p>
       <p class="mt-4 text-tinta-2">
         Cada instalación de red se entrega documentada e identificada, de modo que cualquier
@@ -3118,7 +3123,7 @@ import foto from '../assets/fotos/equipo-fachada-alturas.jpg';
 <Figura
   src={foto}
   alt="Dos técnicos de MiPC Tecnología con arnés de seguridad instalan cableado en la fachada de una edificación industrial"
-  pie="Personal certificado para trabajo en alturas"
+  pie="Trabajo en alturas con arnés y equipo de protección"
 />
 ```
 

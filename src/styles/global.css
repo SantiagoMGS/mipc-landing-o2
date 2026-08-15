@@ -42,10 +42,12 @@ h1, h2, h3 {
   font-feature-settings: "tnum";
 }
 
-/* Gradación de color unificada para la fotografía del sitio: empuja hacia
-   el azul petróleo de la marca y baja ligeramente la saturación, para que
-   fotos tomadas con teléfonos distintos, en años distintos, luzcan como
-   parte de un mismo sistema visual. */
+/* Gradación de color unificada para la fotografía del sitio: reduce
+   ligeramente la saturación y sube un poco el contraste, para que fotos
+   tomadas con teléfonos distintos, en años distintos, luzcan más uniformes
+   entre sí. No desplaza el tono hacia el azul petróleo de la marca —
+   saturate()/contrast() no pueden hacer eso, solo un hue-rotate o un
+   duotono lo lograrían, y no es lo que este filtro aplica. */
 .foto-tratada {
   filter: saturate(0.82) contrast(1.04);
 }
@@ -53,6 +55,16 @@ h1, h2, h3 {
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--color-senal);
   outline-offset: 3px;
+}
+
+/* El pie de página vive sobre --color-ancla (#1e3a47), donde CUALQUIER
+   naranja de la paleta da menos de 3:1 (senal mide 2.93:1) — por debajo del
+   mínimo de WCAG 1.4.11 para indicadores de foco. Un anillo claro sobre
+   fondo oscuro sí cumple; se limita al pie con un selector descendiente en
+   vez de tocar la regla general, que sigue sirviendo a las superficies
+   claras del resto del sitio. */
+footer :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline-color: #ffffff;
 }
 
 @media (prefers-reduced-motion: reduce) {

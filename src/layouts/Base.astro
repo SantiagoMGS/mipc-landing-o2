@@ -8,12 +8,27 @@ import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-stand
 
 type Props = PropsSEO;
 const { title, metaDescription, jsonld, imagenOg, noindex } = Astro.props;
+// Sin PUBLIC_GA4_ID no se emite ningún <script>: nada de etiquetas vacías
+// "por si acaso". El día que el cliente entregue el ID de GA4, esto se
+// activa solo con la variable de entorno, sin tocar código.
+const ga4Id = import.meta.env.PUBLIC_GA4_ID;
 ---
 <!doctype html>
 <html lang="es-CO">
   <head>
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
     <SEO {title} {metaDescription} {jsonld} {imagenOg} {noindex} />
+    {ga4Id && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+        <script is:inline define:vars={{ ga4Id }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){ dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', ga4Id);
+        </script>
+      </>
+    )}
   </head>
   <body class="flex min-h-screen flex-col bg-fondo text-tinta antialiased">
     <Header />

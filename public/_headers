@@ -1,2 +1,6 @@
+# PROYECTO es un marcador de posición: reemplázalo por el nombre real que
+# Cloudflare Pages asigne al proyecto (el que aparece en la URL
+# https://<nombre-real>.pages.dev) antes de confiar en esta regla. Retirar
+# esta regla por completo al cortar el dominio real (ver docs/despliegue-corte-dominio.md).
 https://PROYECTO.pages.dev/*
   X-Robots-Tag: noindex

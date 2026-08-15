@@ -57,9 +57,43 @@ staging queda indexable por accidente.
 En un móvil real, contra la URL de `pages.dev`:
 
 - [ ] No hay desbordamiento horizontal en ninguna página (regresión CRIT-02).
-- [ ] El formulario de contacto envía y confirma en `/gracias/`.
+- [ ] El formulario de contacto envía y llega a la bandeja de Web3Forms (o al
+      correo configurado). **No** se puede verificar que redirige a
+      `/gracias/` en `pages.dev`: el campo `redirect` del formulario es
+      absoluto a `https://mipc.com.co/gracias/`, y hasta el corte ese dominio
+      sigue sirviendo el WordPress viejo. Confirmar el envío por la llegada
+      real del mensaje, no por la pantalla de destino.
 - [ ] El botón de WhatsApp abre con el mensaje precargado.
 - [ ] Los enlaces de las tarjetas de servicio llevan a su página correspondiente (regresión CRIT-01).
+- [ ] Correr el verificador de redirecciones contra el propio `pages.dev`,
+      **antes** de mover el DNS:
+
+  ```bash
+  node --experimental-strip-types scripts/check-redirecciones.mjs https://<proyecto>.pages.dev
+  ```
+
+  El script acepta cualquier URL base por parámetro, así que esto sí se
+  puede correr antes del corte (a diferencia de la verificación del Paso 6,
+  que necesita el dominio real ya apuntando al sitio nuevo). **Esta es la
+  única comprobación de esta lista capaz de atrapar un comando de build mal
+  configurado en Cloudflare antes de que el DNS se mueva**: si Cloudflare
+  quedó corriendo `astro build` en vez de `npm run build` — o si redetectó el
+  preset y descartó el comando personalizado —, `dist/_redirects` de todas
+  formas se genera ahora vía el hook `astro:build:done` de
+  `astro.config.mjs`, pero correr esto contra `pages.dev` es lo que confirma
+  que las 14 reglas realmente están sirviendo, en vez de asumirlo.
+- [ ] Con `curl -I`, comparar la misma URL con y sin barra final contra
+      `pages.dev`, para confirmar qué forma responde 200:
+
+  ```bash
+  curl -I https://<proyecto>.pages.dev/servicios
+  curl -I https://<proyecto>.pages.dev/servicios/
+  ```
+
+  El proyecto está configurado con `trailingSlash: 'always'` y las 14
+  fuentes del mapa de redirecciones terminan todas en `/`. Si la plataforma
+  normaliza al revés (sin barra final), tanto las URLs canónicas del sitio
+  nuevo como las 14 redirecciones heredadas de WordPress fallan silenciosamente.
 
 ## Paso 4: Lista de verificación previa al corte
 
@@ -75,6 +109,13 @@ En un móvil real, contra la URL de `pages.dev`:
 
 - [ ] Apuntar el DNS de `mipc.com.co` a Cloudflare Pages.
 - [ ] Retirar la regla de `noindex` de `public/_headers` (o eliminar el archivo, o eliminar solo esa línea) y volver a desplegar — un dominio de producción con `X-Robots-Tag: noindex` no aparece en buscadores aunque el resto del SEO esté perfecto.
+- [ ] Configurar en `mipctecnologia.com` (dominio que hoy responde HTTP 500)
+      un 301 hacia `https://mipc.com.co/`. El spec lo exige y ninguna tarea
+      del proyecto lo posee porque vive fuera de este repositorio: es
+      configuración del registrador o de Cloudflare para ese segundo
+      dominio, no del sitio Astro. Sin este paso, cualquier enlace o
+      posicionamiento heredado de `mipctecnologia.com` sigue muriendo en un
+      error 500 después del corte.
 - [ ] **No borrar el WordPress.** Apagarlo pero mantenerlo recuperable durante 60 días, por si algo del corte falla y hay que volver atrás.
 
 ## Paso 6: Verificar las redirecciones en producción
@@ -86,12 +127,17 @@ node --experimental-strip-types scripts/check-redirecciones.mjs https://mipc.com
 ```
 
 Se espera: las 14 redirecciones definidas en `src/data/redirecciones.ts`
-responden 301 al destino correcto. Este comando **no se puede ejecutar antes
-del corte** — apunta a `https://mipc.com.co`, que hasta el corte sigue sirviendo
-el WordPress viejo, así que correrlo antes no prueba nada sobre el sitio nuevo.
+responden 301 al destino correcto. Esta invocación concreta, contra
+`https://mipc.com.co`, **no se puede ejecutar antes del corte** — hasta el
+corte ese dominio sigue sirviendo el WordPress viejo, así que correrla antes
+no prueba nada sobre el sitio nuevo. El mismo script sí se corrió antes del
+corte, contra `pages.dev`, en el Paso 3: esa es la comprobación temprana:
+esta de aquí es la confirmación final contra producción.
 
 - [ ] Ejecutar el comando anterior contra el dominio real, después del corte.
 - [ ] Si alguna redirección falla, no continuar con el paso 7 hasta corregirla.
+- [ ] Confirmar con `curl -I https://mipctecnologia.com/` que responde 301 a
+      `https://mipc.com.co/` (Paso 5) y ya no el error 500 anterior.
 
 ## Paso 7: Enviar el sitemap y arrancar la vigilancia
 
@@ -113,7 +159,9 @@ el WordPress viejo, así que correrlo antes no prueba nada sobre el sitio nuevo.
   ajustar el nombre real del proyecto, ver Paso 2).
 - Este documento.
 
-Ver `.superpowers/sdd/2026-08-14-mipc-astro/task-17-report.md` para el detalle
-completo: dimensiones de cada fotografía, qué contenía el recorte de la foto
-17, dónde quedó cada imagen, resultado de `npm run verify` y peso del build
-antes/después.
+El detalle completo (dimensiones de cada fotografía, qué contenía el recorte
+de la foto 17, dónde quedó cada imagen, resultado de `npm run verify` y peso
+del build antes/después) vivía en `.superpowers/sdd/2026-08-14-mipc-astro/task-17-report.md`.
+Ese directorio está en `.gitignore` y no persiste después de clonar el
+repositorio, así que ese registro no está disponible aquí; lo relevante para
+el corte es exactamente lo que este documento ya enumera arriba.

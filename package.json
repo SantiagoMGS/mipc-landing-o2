@@ -7,8 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node --experimental-strip-types scripts/generar-redirecciones.mjs",
-    "build": "astro build",
+    "build": "astro build && node scripts/check-html.mjs",
     "preview": "astro preview",
     "test": "vitest run",
     "check:html": "node scripts/check-html.mjs",

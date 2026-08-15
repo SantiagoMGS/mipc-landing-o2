@@ -8,16 +8,17 @@ metaDescription: Condiciones de garantía de los servicios de reparación, mante
 ## 1. Generales
 
 <!--
-  El teléfono y la ciudad de este bloque son texto migrado literal, no
-  interpolado desde empresa.ts (esta página es una migración verbatim del
-  texto legal, no una plantilla). Hoy coinciden con empresa.telefono y
-  empresa.direccion.ciudad, pero nada los mantiene sincronizados: si el
-  teléfono cambia, hay que actualizarlo aquí a mano también.
+  El teléfono, el correo y la ciudad de este bloque son texto migrado
+  literal, no interpolado desde empresa.ts (esta página es una migración
+  verbatim del texto legal, no una plantilla). Hoy coinciden con
+  empresa.telefono, empresa.email y empresa.direccion.ciudad, pero nada los
+  mantiene sincronizados: si cualquiera de esos datos cambia, hay que
+  actualizarlo aquí a mano también.
 -->
 1.1. Para dar seguimiento a su trámite o recibir asesoría personalizada, considere los siguientes datos de contacto:
 
-- Atención en línea desde: mipc.com.co y/o mipctecnologia.com
-- Correo electrónico: soporte@mipc.com.co
+- Atención en línea desde: mipc.com.co
+- Correo electrónico: gerencia@mipc.com.co
 - Vía telefónica: 314 888 90 78
 - Atención personal: Medellín
 

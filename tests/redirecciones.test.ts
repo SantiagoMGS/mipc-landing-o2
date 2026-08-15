@@ -46,9 +46,14 @@ describe('mapa de redirecciones', () => {
 });
 
 describe('archivo _redirects generado', () => {
-  const ruta = 'public/_redirects';
+  // dist/_redirects, no public/_redirects: lo escribe el hook
+  // astro:build:done de astro.config.mjs, así que solo existe después de
+  // `astro build`. Verificarlo aquí es exactamente la comprobación que un
+  // `astro build` directo (sin pasar por npm) necesita: si el hook no
+  // corrió o produjo algo distinto, este test falla antes del despliegue.
+  const ruta = 'dist/_redirects';
 
-  it('existe (lo genera el script de prebuild)', () => {
+  it('existe (lo genera el hook astro:build:done)', () => {
     expect(existsSync(ruta)).toBe(true);
   });
 
@@ -66,15 +71,5 @@ describe('archivo _redirects generado', () => {
   it('todas las reglas son 301 (permanentes), ninguna 302', () => {
     const contenido = readFileSync(ruta, 'utf-8');
     expect(contenido).not.toMatch(/\s302\b/);
-  });
-
-  it('el build emite dist/_redirects: si prebuild no corrió, esto falla', () => {
-    // public/_redirects está gitignoreado y solo lo genera prebuild. Si la
-    // plataforma ejecuta `astro build` directamente, el hook no dispara y
-    // producción sale sin redirecciones. Este test lo convierte en un fallo
-    // ruidoso antes del despliegue, en vez de un silencio después.
-    const salida = readFileSync('dist/_redirects', 'utf-8').trim().split('\n');
-    expect(salida).toHaveLength(redirecciones.length);
-    expect(salida.every((l) => l.endsWith(' 301'))).toBe(true);
   });
 });

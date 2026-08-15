@@ -19,7 +19,7 @@ const entradas = (await getCollection('blog'))
             {formatearFecha(e.data.fecha)}
           </time>
           <h2 class="mt-2 text-2xl font-semibold">
-            <a href={`/blog/${e.id}/`} class="hover:text-senal">{e.data.titulo}</a>
+            <a href={`/blog/${e.id}/`} class="hover:text-senal-oscuro">{e.data.titulo}</a>
           </h2>
           <p class="mt-2 text-tinta-2">{e.data.resumen}</p>
         </article>

@@ -5,7 +5,3 @@ dist/
 .superpowers/
 .DS_Store
 *.log
-
-# Generado por scripts/generar-redirecciones.mjs (prebuild) a partir de
-# src/data/redirecciones.ts. Nunca se edita a mano ni se versiona.
-public/_redirects

@@ -20,9 +20,9 @@ import { franja } from '../../lib/horario';
         {empresa.direccion.departamento}, {empresa.direccion.paisNombre}
       </address>
       <p class="mt-3">
-        <a class="cifra hover:text-senal" href={`tel:${empresa.telefonoE164}`}>{empresa.telefono}</a>
+        <a class="cifra hover:underline" href={`tel:${empresa.telefonoE164}`}>{empresa.telefono}</a>
       </p>
-      <p><a class="hover:text-senal" href={`mailto:${empresa.email}`}>{empresa.email}</a></p>
+      <p><a class="hover:underline" href={`mailto:${empresa.email}`}>{empresa.email}</a></p>
     </div>
 
     <div class="text-sm">
@@ -38,9 +38,9 @@ import { franja } from '../../lib/horario';
   <div class="border-t border-white/10">
     <div class="mx-auto flex max-w-6xl flex-wrap gap-4 px-5 py-5 text-xs text-white/60">
       <p>© {new Date().getFullYear()} {empresa.nombreLegal}</p>
-      <a class="hover:text-senal" href="/garantias/">Políticas y garantías</a>
-      <a class="ml-auto hover:text-senal" href={empresa.redes.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
-      <a class="hover:text-senal" href={empresa.redes.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="hover:underline" href="/garantias/">Políticas y garantías</a>
+      <a class="ml-auto hover:underline" href={empresa.redes.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a class="hover:underline" href={empresa.redes.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
     </div>
   </div>
 </footer>

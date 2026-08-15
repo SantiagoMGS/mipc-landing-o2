@@ -26,7 +26,7 @@ const municipios = empresa.zonaServicio.length;
 >
   <section class="border-b border-borde bg-superficie">
     <div class="mx-auto max-w-6xl px-5 py-20">
-      <p class="cifra text-xs uppercase tracking-widest text-senal">
+      <p class="cifra text-xs uppercase tracking-widest text-senal-oscuro">
         Medellín y área metropolitana
       </p>
       <h1 class="mt-4 max-w-3xl text-5xl font-semibold leading-[1.08]">
@@ -65,7 +65,7 @@ const municipios = empresa.zonaServicio.length;
     <ul class="mt-8 grid gap-6 sm:grid-cols-3">
       {entradas.map((e) => (
         <li class="border border-borde bg-superficie p-6">
-          <a href={`/blog/${e.id}/`} class="font-semibold hover:text-senal">{e.data.titulo}</a>
+          <a href={`/blog/${e.id}/`} class="font-semibold hover:text-senal-oscuro">{e.data.titulo}</a>
           <p class="mt-2 text-sm text-tinta-2">{e.data.resumen}</p>
         </li>
       ))}

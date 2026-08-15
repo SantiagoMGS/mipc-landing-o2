@@ -33,5 +33,10 @@ const bloques = [localBusiness(), ...jsonld];
 <meta name="twitter:card" content="summary_large_image" />
 
 {bloques.map((b) => (
-  <script type="application/ld+json" set:html={JSON.stringify(b)} />
+  // FAQ y descripciones de servicio vienen de Markdown y llegan aquí sin
+  // pasar por un sanitizador de HTML. Un `</script>` literal dentro de un
+  // valor de cadena rompería fuera del bloque ld+json e inyectaría markup
+  // arbitrario en la página. Escapar `<` a su forma unicode lo neutraliza
+  // sin alterar el JSON (JSON.parse no distingue `<` de `<`).
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(b).replace(/</g, '\\u003c')} />
 ))}

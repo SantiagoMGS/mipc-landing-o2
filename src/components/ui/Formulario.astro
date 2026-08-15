@@ -1,11 +1,24 @@
 ---
 import { empresa } from '../../data/empresa';
-const clave = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+
+const clave = import.meta.env.PUBLIC_WEB3FORMS_KEY;
+// Falla el build solo en la plataforma de despliegue (Cloudflare Pages fija
+// CF_PAGES), no en local ni en CI: así el equipo sigue pudiendo compilar y
+// revisar el sitio sin la clave real, pero un build que sí va a producción
+// sin ella se detiene aquí en vez de publicar un formulario que acepta
+// envíos y los pierde silenciosamente (Web3Forms responde con un error y el
+// visitante nunca llega a /gracias/).
+if (!clave && process.env.CF_PAGES) {
+  throw new Error(
+    'Falta PUBLIC_WEB3FORMS_KEY. Sin ella el formulario acepta envíos y los pierde: ' +
+    'Web3Forms devuelve un error y el visitante nunca llega a /gracias/.'
+  );
+}
 const gracias = new URL('/gracias/', Astro.site).href;
 const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 text-sm';
 ---
 <form action="https://api.web3forms.com/submit" method="POST" class="grid gap-4">
-  <input type="hidden" name="access_key" value={clave} />
+  <input type="hidden" name="access_key" value={clave ?? ''} />
   <input type="hidden" name="redirect" value={gracias} />
   <input type="hidden" name="subject" value={`Nueva solicitud desde ${new URL(empresa.url).host}`} />
   <input type="hidden" name="ccemail" value={empresa.emailCopia} />

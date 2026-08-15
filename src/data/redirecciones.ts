@@ -1,9 +1,11 @@
 /**
  * Mapa de URLs del sitio de WordPress a sus equivalentes en el sitio nuevo.
  *
- * Es la fuente única de verdad: `scripts/generar-redirecciones.mjs` la lee
- * para producir `public/_redirects` (formato Cloudflare Pages) en cada build,
- * y `scripts/check-redirecciones.mjs` la usa para verificar, ya en producción,
+ * Es la fuente única de verdad: el hook `astro:build:done` en
+ * `astro.config.mjs` la lee para producir `dist/_redirects` (formato
+ * Cloudflare Pages) en cada `astro build` —sin depender del ciclo de vida
+ * `prebuild` de npm, que un `astro build` directo se salta—, y
+ * `scripts/check-redirecciones.mjs` la usa para verificar, ya en producción,
  * que cada URL vieja responde con el 301 correcto.
  *
  * Verificado contra el sitemap real de WordPress (wp-sitemap.xml y sus

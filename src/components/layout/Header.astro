@@ -29,7 +29,7 @@ const actual = Astro.url.pathname;
           href={e.href}
           aria-current={actual.startsWith(e.href) ? 'page' : undefined}
           class:list={[
-            'py-1 hover:text-senal',
+            'py-1 hover:text-senal-oscuro',
             actual.startsWith(e.href) ? 'border-b-2 border-senal font-semibold' : '',
           ]}
         >{e.texto}</a>

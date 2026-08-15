@@ -12,7 +12,12 @@ let fallos = 0;
 for (const r of redirecciones) {
   const res = await fetch(base + r.de, { redirect: 'manual' });
   const destino = res.headers.get('location') ?? '';
-  const ok = res.status === 301 && destino.endsWith(r.a);
+  // `endsWith(r.a)` hacía pasar cualquier destino que terminara en la misma
+  // barra que r.a — la fila '/home/' -> '/' pasaba con CUALQUIER destino
+  // terminado en '/', incluida una redirección rota a otra ruta. Comparar
+  // el pathname real, resuelto contra la base, exige coincidencia exacta.
+  const pathnameDestino = destino ? new URL(destino, base).pathname : '';
+  const ok = res.status === 301 && pathnameDestino === r.a;
   if (!ok) {
     fallos++;
     console.error(`FALLA ${r.de} -> esperaba 301 a ${r.a}, obtuvo ${res.status} ${destino}`);

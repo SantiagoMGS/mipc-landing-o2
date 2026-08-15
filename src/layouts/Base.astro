@@ -1,6 +1,8 @@
 ---
 import SEO from '../components/SEO.astro';
 import type { Props as PropsSEO } from '../components/SEO.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
 import '../styles/global.css';
 import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2?url';
 
@@ -13,7 +15,9 @@ const { title, metaDescription, jsonld, imagenOg } = Astro.props;
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
     <SEO {title} {metaDescription} {jsonld} {imagenOg} />
   </head>
-  <body class="bg-fondo text-tinta antialiased">
-    <slot />
+  <body class="flex min-h-screen flex-col bg-fondo text-tinta antialiased">
+    <Header />
+    <main class="flex-1"><slot /></main>
+    <Footer />
   </body>
 </html>

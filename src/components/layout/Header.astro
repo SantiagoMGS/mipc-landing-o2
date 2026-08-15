@@ -1,0 +1,44 @@
+---
+import { empresa } from '../../data/empresa';
+
+const enlaces = [
+  { texto: 'Servicios', href: '/servicios/' },
+  { texto: 'Clientes', href: '/clientes/' },
+  { texto: 'Nosotros', href: '/nosotros/' },
+  { texto: 'Recursos', href: '/recursos/' },
+  { texto: 'Blog', href: '/blog/' },
+  { texto: 'Contacto', href: '/contacto/' },
+];
+const actual = Astro.url.pathname;
+---
+<header class="border-b border-borde bg-superficie">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-3 px-5 py-4">
+    <a href="/" class="shrink-0" aria-label={`${empresa.nombre} — inicio`}>
+      <img
+        src="/logo-mipc.png"
+        alt="Logotipo de MiPC Tecnología"
+        width="187"
+        height="90"
+        class="h-10 w-auto"
+      />
+    </a>
+
+    <nav aria-label="Principal" class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+      {enlaces.map((e) => (
+        <a
+          href={e.href}
+          aria-current={actual.startsWith(e.href) ? 'page' : undefined}
+          class:list={[
+            'py-1 hover:text-senal',
+            actual.startsWith(e.href) ? 'border-b-2 border-senal font-semibold' : '',
+          ]}
+        >{e.texto}</a>
+      ))}
+    </nav>
+
+    <a
+      href={`tel:${empresa.telefonoE164}`}
+      class="cifra ml-auto rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-[#b32a00]"
+    >{empresa.telefono}</a>
+  </div>
+</header>

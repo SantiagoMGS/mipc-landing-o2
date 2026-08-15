@@ -1412,10 +1412,10 @@ Crear los 18 con estos datos:
 | `olimpica-stereo.md` | Olímpica Stereo | Medios y radiodifusión | sí |
 | `radio-tiempo.md` | Radio Tiempo | Medios y radiodifusión | no |
 | `mix-fm.md` | Mix 89.9 FM | Medios y radiodifusión | sí |
-| `la-paisana.md` | La Paisana | Medios y radiodifusión | no |
+| `la-paisana.md` | La Paisana | Medios y radiodifusión | sí |
 | `trauma-centro.md` | Trauma Centro | Salud | sí |
 | `ips-ser-integral.md` | IPS Ser Integral | Salud | sí |
-| `quirovida.md` | QuiroVida | Salud | sí |
+| `quirovida.md` | QuiroVida | Salud | no |
 | `ie-el-pedregal.md` | I. E. El Pedregal | Educación | sí |
 | `ie-progresar.md` | I. E. Progresar | Educación | sí |
 | `etdh-pedro-justo-berrio.md` | ETDH Pedro Justo Berrío | Educación | no |

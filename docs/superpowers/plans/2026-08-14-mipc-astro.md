@@ -945,6 +945,7 @@ Dos detalles del import que deciden si el diseño funciona:
   --color-senal: #eb3a00;
   --color-senal-fuerte: #d33400;
   --color-senal-oscuro: #b32a00;
+  --color-ancla-oscuro: #162c36;
   --color-borde: #dce1e4;
 
   --font-display: "Archivo Variable", system-ui, sans-serif;
@@ -1260,7 +1261,7 @@ interface Props { href: string; variante?: 'senal' | 'ancla' | 'borde'; }
 const { href, variante = 'senal' } = Astro.props;
 const estilos = {
   senal: 'bg-senal-fuerte text-white hover:bg-senal-oscuro',
-  ancla: 'bg-ancla text-white hover:bg-[#162c36]',
+  ancla: 'bg-ancla text-white hover:bg-ancla-oscuro',
   borde: 'border border-borde bg-superficie text-tinta hover:border-senal hover:text-senal',
 };
 ---
@@ -1312,7 +1313,8 @@ const { mensaje, texto = 'Escríbenos por WhatsApp' } = Astro.props;
 ---
 <a
   href={enlaceWhatsApp(mensaje)}
-  rel="noopener"
+  target="_blank"
+  rel="noopener noreferrer"
   class="inline-flex items-center gap-2 rounded-sm bg-[#25d366] px-5 py-3 text-sm font-semibold text-[#0b3d24] transition-opacity hover:opacity-90"
 >{texto}</a>
 ```
@@ -1323,18 +1325,31 @@ El filete lateral se enciende en naranja al pasar el cursor, según el spec.
 
 ```astro
 ---
+export import type { CollectionEntry } from 'astro:content';
+
 export interface Props {
-  servicio: { id: string; data: { titulo: string; resumen: string; publico: string } };
+  servicio: CollectionEntry<'servicios'>;
 }
 const { servicio } = Astro.props;
-const etiqueta = { empresa: 'Empresas', persona: 'Personas', ambos: 'Empresas y personas' };
+
+/**
+ * Tipar la prop con CollectionEntry en vez de una forma estructural suelta
+ * conecta esta etiqueta con el enum del esquema. Sin eso, añadir un cuarto
+ * valor a `publico` en schemas.ts no rompería nada: saldría una etiqueta
+ * vacía en silencio. Así falla la compilación, que es lo que queremos.
+ */
+const etiqueta: Record<CollectionEntry<'servicios'>['data']['publico'], string> = {
+  empresa: 'Empresas',
+  persona: 'Personas',
+  ambos: 'Empresas y personas',
+};
 ---
 <a
   href={`/servicios/${servicio.id}/`}
   class="group flex flex-col gap-3 border border-borde border-l-4 border-l-borde bg-superficie p-6 transition-colors hover:border-l-senal"
 >
   <span class="cifra text-xs uppercase tracking-widest text-tinta-2">
-    {etiqueta[servicio.data.publico as keyof typeof etiqueta]}
+    {etiqueta[servicio.data.publico]}
   </span>
   <h3 class="text-xl font-semibold group-hover:text-senal">{servicio.data.titulo}</h3>
   <p class="text-sm text-tinta-2">{servicio.data.resumen}</p>

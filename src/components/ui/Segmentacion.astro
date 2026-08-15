@@ -1,0 +1,50 @@
+---
+import Marcador from './Marcador.astro';
+import { enlaceWhatsApp } from '../../lib/whatsapp';
+
+/**
+ * Los dos públicos de la empresa no quieren lo mismo ni por el mismo canal:
+ * una persona con el computador dañado quiere escribir ya y que le
+ * respondan; una empresa quiere una propuesta que pueda pasar a compras.
+ *
+ * Por eso cada camino explica a quién sirve y termina en una acción
+ * distinta, en vez de dos botones que solo bifurcan la navegación.
+ */
+const mensajePersona = 'Hola, tengo un computador con problemas y necesito una revisión';
+---
+<section class="zona-oscura bg-ancla">
+  <div class="mx-auto max-w-6xl px-5 py-16">
+    <Marcador texto="A quién atendemos" tono="claro" />
+    <h2 class="mt-4 text-3xl font-semibold text-white">Dos formas de empezar</h2>
+
+    <div class="mt-10 grid gap-5 lg:grid-cols-2">
+      <div class="canto flex flex-col gap-3 bg-noche/60 p-7">
+        <p class="cifra text-xs uppercase tracking-widest text-white/60">Soy persona</p>
+        <h3 class="text-xl font-semibold text-white">Mi computador falla</h3>
+        <p class="text-sm text-white/70">
+          Escríbenos por WhatsApp y te decimos qué tiene y cuánto cuesta antes de
+          intervenirlo. Sin diagnóstico a ciegas.
+        </p>
+        <a
+          href={enlaceWhatsApp(mensajePersona)}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-3 inline-flex w-fit items-center gap-2 rounded-sm bg-[#25d366] px-5 py-3 text-sm font-semibold text-[#0b3d24] transition-opacity hover:opacity-90"
+        >Escribir por WhatsApp</a>
+      </div>
+
+      <div class="canto flex flex-col gap-3 bg-noche/60 p-7">
+        <p class="cifra text-xs uppercase tracking-widest text-white/60">Soy empresa</p>
+        <h3 class="text-xl font-semibold text-white">Necesito soporte continuo</h3>
+        <p class="text-sm text-white/70">
+          Mesa de ayuda, redes, CCTV o alquiler de equipos por contrato. Cuéntanos
+          tu operación y te enviamos una propuesta formal.
+        </p>
+        <a
+          href="/contacto/"
+          class="mt-3 inline-flex w-fit items-center gap-2 rounded-sm bg-senal-fuerte px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-senal-oscuro"
+        >Solicitar cotización</a>
+      </div>
+    </div>
+  </div>
+</section>

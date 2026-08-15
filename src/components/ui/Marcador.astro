@@ -1,0 +1,19 @@
+---
+/**
+ * Rótulo de sección precedido por la barra corta y pesada del marcado de
+ * alta visibilidad. Es el elemento que abre cada sección del sitio, de modo
+ * que el naranja aparece siempre en el mismo papel: señalar dónde empieza
+ * algo, nunca decorar.
+ */
+export interface Props {
+  /** El texto del rótulo. Va en versalitas por la clase, escríbelo normal. */
+  texto: string;
+  /** `claro` sobre fondos oscuros, `oscuro` sobre los claros. */
+  tono?: 'claro' | 'oscuro';
+}
+
+const { texto, tono = 'oscuro' } = Astro.props;
+---
+<p class:list={['marcador', tono === 'claro' ? 'text-white/70' : 'text-tinta-2']}>
+  {texto}
+</p>

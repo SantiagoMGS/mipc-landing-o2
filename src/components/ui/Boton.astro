@@ -1,10 +1,17 @@
 ---
-interface Props { href: string; variante?: 'senal' | 'ancla' | 'borde'; }
+export interface Props {
+  href: string;
+  variante?: 'senal' | 'ancla' | 'borde' | 'claro';
+}
 const { href, variante = 'senal' } = Astro.props;
 const estilos = {
   senal: 'bg-senal-fuerte text-white hover:bg-senal-oscuro',
   ancla: 'bg-ancla text-white hover:bg-ancla-oscuro',
   borde: 'border border-borde bg-superficie text-tinta hover:border-senal hover:text-senal-oscuro',
+  // Para fondos oscuros: contorno claro. Sobre noche el naranja de marca
+  // mide 2,4:1 y no puede llevar texto ni servir de borde legible, así que
+  // el secundario en zona oscura se resuelve en blanco.
+  claro: 'border border-white/40 text-white hover:border-white hover:bg-white/10',
 };
 ---
 <a

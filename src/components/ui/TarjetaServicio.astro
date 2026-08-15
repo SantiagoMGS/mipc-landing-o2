@@ -1,5 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { fotosPorServicio } from '../../data/fotos-servicios';
 
 export interface Props {
   servicio: CollectionEntry<'servicios'>;
@@ -17,14 +19,35 @@ const etiqueta: Record<CollectionEntry<'servicios'>['data']['publico'], string> 
   persona: 'Personas',
   ambos: 'Empresas y personas',
 };
+
+/** La primera foto real del servicio hace de miniatura. Si un servicio aún
+ *  no tiene fotografía, la tarjeta se compone sin ella en vez de dejar un
+ *  hueco: el diseño no depende de que exista el material. */
+const foto = fotosPorServicio[servicio.id]?.[0];
 ---
 <a
   href={`/servicios/${servicio.id}/`}
-  class="group flex flex-col gap-3 border border-borde border-l-4 border-l-borde bg-superficie p-6 transition-colors hover:border-l-senal"
+  class="canto group flex flex-col overflow-hidden bg-acero transition-colors hover:bg-[#1c303a]"
 >
-  <span class="cifra text-xs uppercase tracking-widest text-tinta-2">
-    {etiqueta[servicio.data.publico]}
-  </span>
-  <h3 class="text-xl font-semibold group-hover:text-senal-oscuro">{servicio.data.titulo}</h3>
-  <p class="text-sm text-tinta-2">{servicio.data.resumen}</p>
+  {foto && (
+    <div class="aspect-[16/9] overflow-hidden">
+      <Image
+        src={foto.src}
+        alt={foto.alt}
+        widths={[320, 640]}
+        sizes="(max-width: 640px) 100vw, 380px"
+        loading="lazy"
+        decoding="async"
+        class="foto-tratada h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+      />
+    </div>
+  )}
+
+  <div class="flex flex-1 flex-col gap-2.5 p-6">
+    <span class="cifra text-[0.6875rem] uppercase tracking-[0.16em] text-white/50">
+      {etiqueta[servicio.data.publico]}
+    </span>
+    <h3 class="text-xl font-semibold text-white">{servicio.data.titulo}</h3>
+    <p class="text-sm leading-relaxed text-white/70">{servicio.data.resumen}</p>
+  </div>
 </a>

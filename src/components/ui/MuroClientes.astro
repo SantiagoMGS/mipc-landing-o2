@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Marcador from './Marcador.astro';
 const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden - b.data.orden);
 
 /**
@@ -12,9 +13,12 @@ const idsEager = new Set(
   clientes.filter((c) => c.data.logo).slice(0, 6).map((c) => c.id)
 );
 ---
-<section class="border-y border-borde bg-superficie py-14">
+<section class="border-b border-borde bg-superficie py-14">
   <div class="mx-auto max-w-6xl px-5">
-    <h2 class="text-2xl font-semibold">Confían en nosotros</h2>
+    <Marcador texto="Confían en nosotros" />
+    <h2 class="mt-4 text-2xl font-semibold sm:text-3xl">
+      Su infraestructura no se detiene
+    </h2>
     <p class="mt-2 max-w-prose text-sm text-tinta-2">
       Emisoras, IPS, instituciones educativas y firmas de ingeniería del área metropolitana
       de Medellín.

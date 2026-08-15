@@ -1,0 +1,33 @@
+---
+/**
+ * Cifra presentada como etiqueta de equipo: canto naranja, texto
+ * monoespaciado, numerales tabulares.
+ *
+ * Es la firma visual del sitio, y no es arbitraria. El mundo de esta
+ * empresa rotula cosas físicas —cada puerto de un patch panel, cada cable,
+ * cada equipo lleva su etiqueta impresa— y su propio argumento comercial
+ * dice que entrega cada instalación «documentada e identificada». Etiquetar
+ * es lo que venden, así que etiquetar es como se presenta lo que miden.
+ */
+export interface Props {
+  valor: string;
+  etiqueta: string;
+  tono?: 'claro' | 'oscuro';
+}
+
+const { valor, etiqueta, tono = 'oscuro' } = Astro.props;
+---
+<div class="etiqueta flex flex-col gap-0.5">
+  <span
+    class:list={[
+      'text-3xl font-semibold leading-none tracking-tight sm:text-4xl',
+      tono === 'claro' ? 'text-white' : 'text-tinta',
+    ]}
+  >{valor}</span>
+  <span
+    class:list={[
+      'text-xs leading-tight',
+      tono === 'claro' ? 'text-white/60' : 'text-tinta-2',
+    ]}
+  >{etiqueta}</span>
+</div>

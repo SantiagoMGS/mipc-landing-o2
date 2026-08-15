@@ -3026,6 +3026,30 @@ console.log(fallos === 0
 process.exit(fallos === 0 ? 0 : 1);
 ```
 
+- [ ] **Step 5b: Blindar el punto único de fallo**
+
+`public/_redirects` está en `.gitignore` y solo lo produce `prebuild`. Si la plataforma ejecutara `astro build` en vez de `npm run build`, el hook no dispara y **producción saldría sin ninguna redirección**, en silencio. Es el fallo que esta tarea existe para evitar, causado por la propia tarea.
+
+Dos defensas. Primero, `.nvmrc` con la versión de Node, porque `--experimental-strip-types` exige 22.6 o superior y la imagen de Cloudflare podría traer una anterior:
+
+```
+22
+```
+
+Segundo, un test que mire la SALIDA compilada, no el archivo intermedio:
+
+```ts
+  it('el build emite dist/_redirects: si prebuild no corrió, esto falla', () => {
+    // public/_redirects está gitignoreado y solo lo genera prebuild. Si la
+    // plataforma ejecuta `astro build` directamente, el hook no dispara y
+    // producción sale sin redirecciones. Este test lo convierte en un fallo
+    // ruidoso antes del despliegue, en vez de un silencio después.
+    const salida = readFileSync('dist/_redirects', 'utf-8').trim().split('
+');
+    expect(salida).toHaveLength(redirecciones.length);
+    expect(salida.every((l) => l.endsWith(' 301'))).toBe(true);
+  });
+
 - [ ] **Step 6: Ejecutar los tests y generar**
 
 Run: `npx vitest run tests/redirecciones.test.ts && npm run build && cat public/_redirects`

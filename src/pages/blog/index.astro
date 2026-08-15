@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const entradas = (await getCollection('blog'))
+  .sort((a, b) => b.data.fecha.getTime() - a.data.fecha.getTime());
+---
+<Base
+  title="Blog sobre Tecnología para Empresas | MiPC Tecnología"
+  metaDescription="Guías prácticas sobre mantenimiento de equipos, redes, cámaras de seguridad y alquiler de computadores, escritas desde la experiencia en Medellín."
+>
+  <div class="mx-auto max-w-3xl px-5 py-16">
+    <h1 class="text-4xl font-semibold">Actualidad</h1>
+    <div class="mt-10 space-y-8">
+      {entradas.map((e) => (
+        <article class="border-t border-borde pt-6">
+          <time datetime={e.data.fecha.toISOString()} class="cifra text-xs uppercase tracking-widest text-tinta-2">
+            {e.data.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}
+          </time>
+          <h2 class="mt-2 text-2xl font-semibold">
+            <a href={`/blog/${e.id}/`} class="hover:text-senal">{e.data.titulo}</a>
+          </h2>
+          <p class="mt-2 text-tinta-2">{e.data.resumen}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</Base>

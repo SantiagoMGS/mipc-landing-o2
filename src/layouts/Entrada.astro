@@ -1,0 +1,27 @@
+---
+import Base from './Base.astro';
+import { article, breadcrumb } from '../lib/jsonld';
+
+const { entrada } = Astro.props;
+const d = entrada.data;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const fecha = d.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+const jsonld = [
+  article({ titulo: d.titulo, descripcion: d.metaDescription, url, fecha: d.fecha }),
+  breadcrumb([
+    { nombre: 'Inicio', url: new URL('/', Astro.site).href },
+    { nombre: 'Blog', url: new URL('/blog/', Astro.site).href },
+    { nombre: d.titulo, url },
+  ]),
+];
+---
+<Base title={d.metaTitle} metaDescription={d.metaDescription} {jsonld}>
+  <article class="mx-auto max-w-2xl px-5 py-16">
+    <time datetime={d.fecha.toISOString()} class="cifra text-xs uppercase tracking-widest text-tinta-2">
+      {fecha}
+    </time>
+    <h1 class="mt-3 text-4xl font-semibold">{d.titulo}</h1>
+    <div class="prose prose-neutral mt-8 max-w-none"><slot /></div>
+  </article>
+</Base>

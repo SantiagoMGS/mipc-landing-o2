@@ -3,7 +3,9 @@ import type { CollectionEntry } from 'astro:content';
 import Base from './Base.astro';
 import Boton from '../components/ui/Boton.astro';
 import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
+import Figura from '../components/ui/Figura.astro';
 import { service, breadcrumb } from '../lib/jsonld';
+import { fotosPorServicio } from '../data/fotos-servicios';
 
 /** Derivado de la colección, no una forma suelta: si el esquema cambia, esto rompe. */
 type FAQ = CollectionEntry<'servicios'>['data']['faq'][number];
@@ -11,6 +13,7 @@ type FAQ = CollectionEntry<'servicios'>['data']['faq'][number];
 const { entrada } = Astro.props;
 const d = entrada.data;
 const url = new URL(Astro.url.pathname, Astro.site).href;
+const fotos = fotosPorServicio[entrada.id] ?? [];
 
 const jsonld = [
   service({ nombre: d.titulo, descripcion: d.metaDescription, url }),
@@ -53,6 +56,12 @@ const jsonld = [
           <li class="border border-borde border-l-4 border-l-senal bg-superficie p-4 text-sm">{b}</li>
         ))}
       </ul>
+    )}
+
+    {fotos.length > 0 && (
+      <div class="mt-12 grid gap-6 sm:grid-cols-2">
+        {fotos.map((f) => <Figura src={f.src} alt={f.alt} pie={f.pie} />)}
+      </div>
     )}
 
     <div class="prose prose-neutral mt-12 max-w-none"><slot /></div>

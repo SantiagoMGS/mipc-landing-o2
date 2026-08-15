@@ -42,6 +42,14 @@ h1, h2, h3 {
   font-feature-settings: "tnum";
 }
 
+/* Gradación de color unificada para la fotografía del sitio: empuja hacia
+   el azul petróleo de la marca y baja ligeramente la saturación, para que
+   fotos tomadas con teléfonos distintos, en años distintos, luzcan como
+   parte de un mismo sistema visual. */
+.foto-tratada {
+  filter: saturate(0.82) contrast(1.04);
+}
+
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--color-senal);
   outline-offset: 3px;

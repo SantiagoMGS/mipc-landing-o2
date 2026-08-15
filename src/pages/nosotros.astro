@@ -3,7 +3,9 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Cifra from '../components/ui/Cifra.astro';
 import Boton from '../components/ui/Boton.astro';
+import Figura from '../components/ui/Figura.astro';
 import { empresa } from '../data/empresa';
+import fotoCableadoExterior from '../assets/fotos/tecnico-cableado-exterior.jpg';
 
 const clientes = await getCollection('clientes');
 const servicios = await getCollection('servicios');
@@ -46,6 +48,14 @@ const lineasDeServicio = servicios.length;
         Cada instalación de red se entrega documentada e identificada, de modo que cualquier
         técnico pueda intervenirla después. No creemos en dejar clientes atados a su proveedor.
       </p>
+
+      <div class="mt-8 max-w-md">
+        <Figura
+          src={fotoCableadoExterior}
+          alt="Técnico de MiPC Tecnología con arnés de seguridad, subido en una escalera de fibra de vidrio, hace mantenimiento de cableado en la parte alta de un poste de madera rodeado de árboles"
+          pie="Mantenimiento de cableado en un poste, con arnés de seguridad"
+        />
+      </div>
     </section>
 
     <div class="mt-12"><Boton href="/contacto/">Hablemos de tu operación</Boton></div>

@@ -17,9 +17,10 @@ export const empresa = Object.freeze({
   telefonoE164: '+573148889078',
   whatsapp: '573148889078',
   email: 'gerencia@mipc.com.co',
+  emailCopia: 'santiago.martinez@mipc.com.co',
 
   direccion: Object.freeze({
-    calle: 'Carrera 87A # 32-81, Interior 305',
+    calle: 'Carrera 66A # 34-48, Interior 101',
     barrio: 'Laureles',
     ciudad: 'Medellín',
     departamento: 'Antioquia',

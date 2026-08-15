@@ -5,7 +5,7 @@ describe('pie de página (CRIT-04)', () => {
   const html = readFileSync('dist/index.html', 'utf-8');
 
   it('publica la dirección completa, no solo la ciudad', () => {
-    expect(html).toContain('Carrera 87A # 32-81');
+    expect(html).toContain('Carrera 66A # 34-48');
     // El barrio no aparece en el JSON-LD (PostalAddress no lo modela), así
     // que esta es la única aserción de esta prueba que solo el pie puede
     // satisfacer.

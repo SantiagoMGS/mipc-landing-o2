@@ -8,7 +8,7 @@ describe('localBusiness', () => {
     expect(ld['@type']).toBe('LocalBusiness');
     expect(ld.address['@type']).toBe('PostalAddress');
     expect(ld.address.addressLocality).toBe('Medellín');
-    expect(ld.address.streetAddress).toContain('Carrera 87A');
+    expect(ld.address.streetAddress).toContain('Carrera 66A');
   });
 
   it('usa el teléfono en E.164', () => {

@@ -7,7 +7,7 @@ describe('empresa (NAP)', () => {
   });
 
   it('tiene dirección completa, no solo la ciudad', () => {
-    expect(empresa.direccion.calle).toBe('Carrera 87A # 32-81, Interior 305');
+    expect(empresa.direccion.calle).toBe('Carrera 66A # 34-48, Interior 101');
     expect(empresa.direccion.ciudad).toBe('Medellín');
     expect(empresa.direccion.barrio).toBe('Laureles');
   });

@@ -1,0 +1,9 @@
+---
+import { Image } from 'astro:assets';
+interface Props { src: ImageMetadata; alt: string; pie?: string; }
+const { src, alt, pie } = Astro.props;
+---
+<figure class="overflow-hidden rounded-sm border border-borde bg-superficie">
+  <Image {src} {alt} widths={[480, 800, 1200]} sizes="(max-width: 768px) 100vw, 50vw" class="foto-tratada w-full" />
+  {pie && <figcaption class="px-4 py-3 text-sm text-tinta-2">{pie}</figcaption>}
+</figure>

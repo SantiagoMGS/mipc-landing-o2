@@ -1,0 +1,42 @@
+---
+import { localBusiness } from '../lib/jsonld';
+import { empresa } from '../data/empresa';
+
+export interface Props {
+  title: string;
+  metaDescription: string;
+  jsonld?: object[];
+  imagenOg?: string;
+  /** Para páginas útiles al visitante pero sin valor en búsqueda: /gracias/. */
+  noindex?: boolean;
+}
+
+const { title, metaDescription, jsonld = [], imagenOg, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const og = new URL(imagenOg ?? '/og-default.jpg', Astro.site).href;
+const bloques = [localBusiness(), ...jsonld];
+---
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={metaDescription} />
+{noindex && <meta name="robots" content="noindex,follow" />}
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={empresa.nombre} />
+<meta property="og:locale" content="es_CO" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={og} />
+<meta name="twitter:card" content="summary_large_image" />
+
+{bloques.map((b) => (
+  // FAQ y descripciones de servicio vienen de Markdown y llegan aquí sin
+  // pasar por un sanitizador de HTML. Un `</script>` literal dentro de un
+  // valor de cadena rompería fuera del bloque ld+json e inyectaría markup
+  // arbitrario en la página. Escapar `<` a su forma unicode lo neutraliza
+  // sin alterar el JSON (JSON.parse no distingue `<` de `<`).
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(b).replace(/</g, '\\u003c')} />
+))}

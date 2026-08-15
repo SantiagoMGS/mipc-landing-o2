@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Boton from '../components/ui/Boton.astro';
+import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
+---
+<Base
+  title="Página no encontrada | MiPC Tecnología"
+  metaDescription="La página que buscas no existe o cambió de dirección. Estos son nuestros servicios de tecnología para empresas en Medellín."
+>
+  <div class="mx-auto max-w-3xl px-5 py-24">
+    <p class="cifra text-6xl font-semibold text-senal">404</p>
+    <h1 class="mt-4 text-4xl font-semibold">Esta página no existe</h1>
+    <p class="mt-4 text-lg text-tinta-2">
+      Puede que haya cambiado de dirección. Estos son los caminos que sí funcionan:
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <Boton href="/servicios/">Ver servicios</Boton>
+      <Boton href="/contacto/" variante="borde">Contacto</Boton>
+      <CTAWhatsApp mensaje="Hola, llegué a una página que no existe en el sitio y necesito ayuda" />
+    </div>
+  </div>
+</Base>

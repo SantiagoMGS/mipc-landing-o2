@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import MuroClientes from '../components/ui/MuroClientes.astro';
+import Boton from '../components/ui/Boton.astro';
+
+const casos = (await getCollection('casos')).sort((a, b) => a.data.orden - b.data.orden);
+---
+<Base
+  title="Clientes y Casos de Éxito en Medellín | MiPC Tecnología"
+  metaDescription="Emisoras, IPS, instituciones educativas y firmas de ingeniería que confían su infraestructura tecnológica a MiPC Tecnología en Medellín."
+>
+  <div class="mx-auto max-w-6xl px-5 pt-16">
+    <h1 class="text-4xl font-semibold">Clientes</h1>
+    <p class="mt-4 max-w-prose text-lg text-tinta-2">
+      Trabajamos con organizaciones cuya operación depende de que la tecnología no falle.
+    </p>
+  </div>
+
+  <div class="mt-12"><MuroClientes /></div>
+
+  <section class="mx-auto max-w-6xl px-5 py-16">
+    <h2 class="text-3xl font-semibold">Casos</h2>
+    <div class="mt-8 grid gap-6 lg:grid-cols-3">
+      {casos.map((c) => (
+        <article class="border border-borde bg-superficie p-6">
+          <p class="cifra text-xs uppercase tracking-widest text-tinta-2">{c.data.sector}</p>
+          <h3 class="mt-2 text-xl font-semibold">{c.data.cliente}</h3>
+          <dl class="mt-4 space-y-3 text-sm">
+            <div><dt class="font-semibold">Reto</dt><dd class="text-tinta-2">{c.data.reto}</dd></div>
+            <div><dt class="font-semibold">Solución</dt><dd class="text-tinta-2">{c.data.solucion}</dd></div>
+            <div><dt class="font-semibold">Resultado</dt><dd class="text-tinta-2">{c.data.resultado}</dd></div>
+          </dl>
+        </article>
+      ))}
+    </div>
+    <div class="mt-10"><Boton href="/contacto/">Quiero algo así para mi empresa</Boton></div>
+  </section>
+</Base>

@@ -1,0 +1,34 @@
+{
+  "name": "mipc-astro",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/check-html.mjs",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "check:html": "node scripts/check-html.mjs",
+    "check:links": "linkinator dist --recurse --silent --skip \"wa.me|api.web3forms.com|^https://mipc\\.com\\.co/\"",
+    "check:redirecciones": "node --experimental-strip-types scripts/check-redirecciones.mjs",
+    "verify": "astro check && npm run build && npm test && npm run check:html && npm run check:links"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.2",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@tailwindcss/typography": "^0.5.20",
+    "linkinator": "^8.0.3",
+    "node-html-parser": "^9.0.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  }
+}

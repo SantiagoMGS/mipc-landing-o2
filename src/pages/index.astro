@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import MuroClientes from '../components/ui/MuroClientes.astro';
+import TarjetaServicio from '../components/ui/TarjetaServicio.astro';
+import Boton from '../components/ui/Boton.astro';
+import Cifra from '../components/ui/Cifra.astro';
+import { empresa } from '../data/empresa';
+
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.orden - b.data.orden);
+const clientes = await getCollection('clientes');
+const entradas = (await getCollection('blog'))
+  .sort((a, b) => b.data.fecha.getTime() - a.data.fecha.getTime())
+  .slice(0, 3);
+
+// Cifras derivadas de los datos, no escritas a mano: siguen siendo correctas
+// el año que viene, o si se añade un cliente o un municipio, sin que nadie
+// tenga que acordarse de tocar esta página.
+const anios = new Date().getFullYear() - empresa.fundacion;
+const empresasAtendidas = clientes.length;
+const municipios = empresa.zonaServicio.length;
+---
+<Base
+  title="Soporte TI Empresarial en Medellín | MiPC Tecnología"
+  metaDescription="Soporte TI, redes de datos, CCTV y alquiler de equipos para empresas en Medellín. Atendemos emisoras, IPS e instituciones educativas desde 2009."
+>
+  <section class="border-b border-borde bg-superficie">
+    <div class="mx-auto max-w-6xl px-5 py-20">
+      <p class="cifra text-xs uppercase tracking-widest text-senal-oscuro">
+        Medellín y área metropolitana
+      </p>
+      <h1 class="mt-4 max-w-3xl text-5xl font-semibold leading-[1.08]">
+        La tecnología de tu empresa, funcionando todos los días
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg text-tinta-2">
+        Soporte TI, redes de datos, cámaras de seguridad y alquiler de equipos para
+        organizaciones que no se pueden dar el lujo de parar.
+      </p>
+
+      <div class="mt-10 flex flex-wrap gap-3">
+        <Boton href="/servicios/">Soy empresa</Boton>
+        <Boton href="/servicios/reparacion-de-computadores/" variante="borde">Soy persona</Boton>
+      </div>
+
+      <div class="mt-16 grid max-w-2xl grid-cols-2 gap-8 sm:grid-cols-3">
+        <Cifra valor={`${anios}+`} etiqueta="años de experiencia" />
+        <Cifra valor={`${empresasAtendidas}`} etiqueta="empresas atendidas" />
+        <Cifra valor={`${municipios}`} etiqueta="municipios cubiertos" />
+      </div>
+    </div>
+  </section>
+
+  <MuroClientes />
+
+  <section class="mx-auto max-w-6xl px-5 py-16">
+    <h2 class="text-3xl font-semibold">Qué hacemos</h2>
+    <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {servicios.map((s) => <TarjetaServicio servicio={s} />)}
+    </div>
+  </section>
+
+  {entradas.length > 0 && (
+  <section class="mx-auto max-w-6xl px-5 pb-20">
+    <h2 class="text-3xl font-semibold">Actualidad</h2>
+    <ul class="mt-8 grid gap-6 sm:grid-cols-3">
+      {entradas.map((e) => (
+        <li class="border border-borde bg-superficie p-6">
+          <a href={`/blog/${e.id}/`} class="font-semibold hover:text-senal-oscuro">{e.data.titulo}</a>
+          <p class="mt-2 text-sm text-tinta-2">{e.data.resumen}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+  )}
+</Base>

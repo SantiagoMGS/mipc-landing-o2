@@ -19,7 +19,8 @@ Estos requisitos aplican a **todas** las tareas. Copiados literalmente del spec.
 - **`metaDescription` obligatoria** en toda página. (Corrige SEO-02.)
 - **`alt` obligatorio y descriptivo** en toda imagen. Nunca el nombre del archivo. (Corrige SEO-07.)
 - **Formato de title:** `<Servicio o página> en Medellín | MiPC Tecnología`. Nunca terminar en `mipc.com.co`. (Corrige SEO-03.)
-- **Paleta exacta:** fondo `#F2F4F5`, superficie `#FFFFFF`, tinta `#0F1620`, ancla `#1E3A47`, señal `#EB3A00`.
+- **Paleta exacta:** fondo `#F2F4F5`, superficie `#FFFFFF`, tinta `#0F1620`, ancla `#1E3A47`, señal `#EB3A00`. Se admiten neutrales de apoyo (`tinta-2`, `borde`) derivados de esa base; lo que es exacto son los cinco valores de marca.
+- **Superficies rellenas que llevan texto usan `senal-fuerte` (`#D33400`), no `senal`.** El naranja de marca mide 4,09:1 contra blanco y 4,44:1 contra la tinta: falla AA para texto normal en ambas direcciones. `#D33400` da 4,93:1 contra blanco. `senal` se reserva para acentos, filetes, estados y focos, donde el umbral es 3:1 y sí cumple.
 - **Tipografía:** solo Archivo Variable e IBM Plex Mono, autoalojadas. Prohibido enlazar Google Fonts.
 - **Naranja `#EB3A00` solo como color de señal:** botones, estado activo, dato destacado. Nunca como fondo de secciones enteras.
 - **Contraste WCAG AA como mínimo** en todo texto. (Corrige DIS-02.)
@@ -104,7 +105,9 @@ export default defineConfig({
   site: 'https://mipc.com.co',
   output: 'static',
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  // /gracias/ es útil al visitante pero no tiene valor en búsqueda: se
+  // excluye del sitemap y además emite noindex desde el componente SEO.
+  integrations: [sitemap({ filter: (url) => !url.includes('/gracias/') })],
   vite: { plugins: [tailwindcss()] },
 });
 ```
@@ -221,7 +224,11 @@ git commit -m "feat: andamiaje Astro 7 con Tailwind, Vitest y scripts de verific
 
 **Interfaces:**
 - Consumes: nada
-- Produces: `empresa` — objeto congelado con los campos `nombre`, `nombreLegal`, `descripcionCorta`, `fundacion`, `telefono`, `telefonoE164`, `whatsapp`, `email`, `direccion{calle,barrio,ciudad,departamento,pais,codigoPostal}`, `horario[]`, `zonaServicio[]`, `redes{facebook,instagram}`, `url`. Consumido por Tasks 3, 4, 7, 13.
+- Produces: `empresa` — objeto congelado en profundidad con los campos `nombre`, `nombreLegal`, `descripcionCorta`, `fundacion`, `telefono`, `telefonoE164`, `whatsapp`, `email`, `direccion{calle,barrio,ciudad,departamento,pais,paisNombre}`, `horario[]`, `zonaServicio[]`, `redes{facebook,instagram}`, `url`. Consumido por Tasks 3, 4, 7, 13.
+
+> **Sin `codigoPostal`.** Una versión anterior de esta línea lo listaba. Ningún consumidor lo usa —la Task 3 construye `PostalAddress` sin `postalCode`, y las Tasks 7 y 13 solo leen calle, barrio, ciudad y departamento— y schema.org no lo exige. Como no se conoce el código postal real de la dirección, inventarlo metería un dato falso en el `LocalBusiness`, que para posicionamiento local es peor que omitir el campo.
+
+> **El congelado debe ser profundo.** `Object.freeze` no es recursivo: congelar una entrada de `horario` deja su array `dias` mutable. Si el módulo promete que nadie lo mute en tiempo de render, la promesa tiene que ser cierta en todos los niveles, y el test tiene que verificarlo en todos los niveles — `Object.isFrozen(empresa)` por sí solo pasa aunque se borren todos los congelados internos.
 
 > **Dato a confirmar antes del lanzamiento:** el horario de atención. El valor de abajo es el que se usará mientras el cliente no indique otro, y **debe coincidir exactamente con el que se publique en Google Business Profile** — una discrepancia entre el schema del sitio y la ficha de Google es una señal negativa para el posicionamiento local. Añadir a la lista de verificación previa al corte (Task 17).
 
@@ -239,7 +246,7 @@ describe('empresa (NAP)', () => {
   });
 
   it('tiene dirección completa, no solo la ciudad', () => {
-    expect(empresa.direccion.calle).toBe('Carrera 87A # 32-81, Interior 305');
+    expect(empresa.direccion.calle).toBe('Carrera 66A # 34-48, Interior 101');
     expect(empresa.direccion.ciudad).toBe('Medellín');
     expect(empresa.direccion.barrio).toBe('Laureles');
   });
@@ -287,19 +294,30 @@ export const empresa = Object.freeze({
   telefonoE164: '+573148889078',
   whatsapp: '573148889078',
   email: 'gerencia@mipc.com.co',
+  emailCopia: 'santiago.martinez@mipc.com.co',
 
   direccion: Object.freeze({
-    calle: 'Carrera 87A # 32-81, Interior 305',
+    calle: 'Carrera 66A # 34-48, Interior 101',
     barrio: 'Laureles',
     ciudad: 'Medellín',
     departamento: 'Antioquia',
     pais: 'CO',
+    paisNombre: 'Colombia',
   }),
 
   // Confirmar con el cliente y hacer coincidir con Google Business Profile.
+  // `dias` usa los valores canónicos de la enumeración DayOfWeek de schema.org.
+  // NO abreviaturas: 'Mo' es válido en la propiedad de texto `openingHours`,
+  // pero `openingHoursSpecification.dayOfWeek` exige el nombre completo, y
+  // Google descarta el horario si no lo encuentra. La traducción al español
+  // ocurre en la capa de presentación (Tasks 7 y 13), no en el dato.
   horario: Object.freeze([
-    Object.freeze({ dias: ['Mo', 'Tu', 'We', 'Th', 'Fr'], abre: '08:00', cierra: '18:00' }),
-    Object.freeze({ dias: ['Sa'], abre: '08:00', cierra: '12:00' }),
+    Object.freeze({
+      dias: Object.freeze(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
+      abre: '08:00',
+      cierra: '18:00',
+    }),
+    Object.freeze({ dias: Object.freeze(['Saturday']), abre: '08:00', cierra: '12:00' }),
   ]),
 
   zonaServicio: Object.freeze([
@@ -354,7 +372,7 @@ describe('localBusiness', () => {
     expect(ld['@type']).toBe('LocalBusiness');
     expect(ld.address['@type']).toBe('PostalAddress');
     expect(ld.address.addressLocality).toBe('Medellín');
-    expect(ld.address.streetAddress).toContain('Carrera 87A');
+    expect(ld.address.streetAddress).toContain('Carrera 66A');
   });
 
   it('usa el teléfono en E.164', () => {
@@ -431,7 +449,7 @@ export function localBusiness() {
     },
     openingHoursSpecification: empresa.horario.map((h) => ({
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: h.dias,
+      dayOfWeek: [...h.dias],
       opens: h.abre,
       closes: h.cierra,
     })),
@@ -563,14 +581,16 @@ Expected: FAIL — no hay meta description ni JSON-LD.
 import { localBusiness } from '../lib/jsonld';
 import { empresa } from '../data/empresa';
 
-interface Props {
+export interface Props {
   title: string;
   metaDescription: string;
   jsonld?: object[];
   imagenOg?: string;
+  /** Para páginas útiles al visitante pero sin valor en búsqueda: /gracias/. */
+  noindex?: boolean;
 }
 
-const { title, metaDescription, jsonld = [], imagenOg } = Astro.props;
+const { title, metaDescription, jsonld = [], imagenOg, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const og = new URL(imagenOg ?? '/og-default.jpg', Astro.site).href;
 const bloques = [localBusiness(), ...jsonld];
@@ -579,6 +599,7 @@ const bloques = [localBusiness(), ...jsonld];
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{title}</title>
 <meta name="description" content={metaDescription} />
+{noindex && <meta name="robots" content="noindex,follow" />}
 <link rel="canonical" href={canonical} />
 
 <meta property="og:type" content="website" />
@@ -599,23 +620,23 @@ const bloques = [localBusiness(), ...jsonld];
 
 `src/layouts/Base.astro`:
 
+`Base.astro` **deriva** su tipo de props del de `SEO.astro` en vez de redeclararlo. Si se redeclara, añadir un prop al componente SEO más adelante lo deja sin propagar en silencio a través del layout — y las Tasks 10 a 14 consumen todas este layout.
+
+Para que funcione, `SEO.astro` debe declarar su interfaz como `export interface Props`.
+
 ```astro
 ---
 import SEO from '../components/SEO.astro';
+import type { Props as PropsSEO } from '../components/SEO.astro';
 import '../styles/global.css';
 
-interface Props {
-  title: string;
-  metaDescription: string;
-  jsonld?: object[];
-  imagenOg?: string;
-}
-const { title, metaDescription, jsonld, imagenOg } = Astro.props;
+type Props = PropsSEO;
+const { title, metaDescription, jsonld, imagenOg, noindex } = Astro.props;
 ---
 <!doctype html>
 <html lang="es-CO">
   <head>
-    <SEO {title} {metaDescription} {jsonld} {imagenOg} />
+    <SEO {title} {metaDescription} {jsonld} {imagenOg} {noindex} />
   </head>
   <body class="bg-fondo text-tinta antialiased">
     <slot />
@@ -633,7 +654,7 @@ import Base from '../layouts/Base.astro';
 ---
 <Base
   title="Soporte TI Empresarial en Medellín | MiPC Tecnología"
-  metaDescription="Soporte TI, redes de datos, CCTV y alquiler de equipos para empresas en Medellín. Más de 15 años atendiendo emisoras, IPS e instituciones educativas."
+  metaDescription="Soporte TI, redes de datos, CCTV y alquiler de equipos para empresas en Medellín. Atendemos emisoras, IPS e instituciones educativas desde 2009."
 >
   <h1>MiPC Tecnología</h1>
 </Base>
@@ -733,20 +754,42 @@ Expected: FAIL — no se puede resolver `../src/schemas`.
 ```ts
 import { z } from 'astro/zod';
 
-/** Imagen con alt obligatorio y descriptivo. Corrige SEO-07. */
+/**
+ * Imagen con alt obligatorio y descriptivo. Corrige SEO-07.
+ *
+ * La longitud mínima no basta: `foto-tecnico-instalando-servidor.jpg` tiene
+ * 37 caracteres y sigue siendo un nombre de archivo sin valor descriptivo,
+ * que es exactamente el defecto que la auditoría encontró. Por eso hay que
+ * rechazar además el patrón de extensión de imagen.
+ */
 const imagen = z.object({
   src: z.string(),
-  alt: z.string().min(10, 'El alt debe describir la escena, no ser el nombre del archivo'),
+  alt: z
+    .string()
+    .min(10, 'El alt debe describir la escena, no ser el nombre del archivo')
+    .refine((a) => !/\.(jpe?g|png|gif|svg|webp|avif)$/i.test(a.trim()), {
+      message: 'El alt es un nombre de archivo. Describe qué se ve en la imagen.',
+    }),
 });
 
-/** Campos de SEO que toda página de contenido debe traer. */
+/**
+ * Campos de SEO que toda página de contenido debe traer.
+ *
+ * El título lleva DOS comprobaciones, no una: exigir el sufijo de marca no
+ * impide que el dominio aparezca en medio. «Servicios de mipc.com.co en
+ * Medellín | MiPC Tecnología» termina bien y sigue mostrando el dominio
+ * como marca, que es el hallazgo SEO-03.
+ */
 const seo = {
   metaTitle: z
     .string()
-    .min(20)
-    .max(65)
+    .min(20, 'Demasiado corto para incluir el servicio y la ciudad')
+    .max(65, 'Google lo truncará en el resultado de búsqueda')
     .refine((t) => t.endsWith('| MiPC Tecnología'), {
-      message: 'El title debe terminar en "| MiPC Tecnología", nunca en el dominio',
+      message: 'El título debe terminar en "| MiPC Tecnología"',
+    })
+    .refine((t) => !t.includes('mipc.com.co'), {
+      message: 'El título no puede contener el dominio: la marca es MiPC Tecnología',
     }),
   metaDescription: z
     .string()
@@ -758,7 +801,7 @@ export const esquemaServicio = z.object({
   titulo: z.string(),
   h1: z.string(),
   ...seo,
-  resumen: z.string().min(20),
+  resumen: z.string().min(20, 'El resumen debe decir algo, no ser una etiqueta'),
   publico: z.enum(['empresa', 'persona', 'ambos']),
   orden: z.number().int(),
   imagen: imagen.optional(),
@@ -787,7 +830,7 @@ export const esquemaEntrada = z.object({
   titulo: z.string(),
   ...seo,
   fecha: z.coerce.date(),
-  resumen: z.string().min(20),
+  resumen: z.string().min(20, 'El resumen debe decir algo, no ser una etiqueta'),
   imagen: imagen.optional(),
 });
 
@@ -888,11 +931,16 @@ Expected: FAIL — la paleta no está definida.
 
 `src/styles/global.css`:
 
+Dos detalles del import que deciden si el diseño funciona:
+
+- **`standard.css`, no el import a secas.** El punto de entrada por defecto de `@fontsource-variable/archivo` instancia solo el eje `wght` y **elimina el eje `wdth`**, con lo que `font-variation-settings: "wdth" 118` en los titulares no hace absolutamente nada. `standard.css` conserva ambos ejes.
+- **Subconjuntos latinos explícitos.** El import genérico de IBM Plex Mono arrastra cirílico, vietnamita y griego. El navegador no los descarga gracias a `unicode-range`, pero se emiten al build y contradicen el spec. Los latinos compensan de sobra los bytes que suma `standard.css`.
+
 ```css
 @import "tailwindcss";
-@import "@fontsource-variable/archivo";
-@import "@fontsource/ibm-plex-mono/400.css";
-@import "@fontsource/ibm-plex-mono/600.css";
+@import "@fontsource-variable/archivo/standard.css";
+@import "@fontsource/ibm-plex-mono/latin-400.css";
+@import "@fontsource/ibm-plex-mono/latin-600.css";
 
 @theme {
   --color-fondo: #f2f4f5;
@@ -901,6 +949,9 @@ Expected: FAIL — la paleta no está definida.
   --color-tinta-2: #5a636b;
   --color-ancla: #1e3a47;
   --color-senal: #eb3a00;
+  --color-senal-fuerte: #d33400;
+  --color-senal-oscuro: #b32a00;
+  --color-ancla-oscuro: #162c36;
   --color-borde: #dce1e4;
 
   --font-display: "Archivo Variable", system-ui, sans-serif;
@@ -929,7 +980,10 @@ h1, h2, h3 {
   font-feature-settings: "tnum";
 }
 
-:where(a, button, [tabindex]):focus-visible {
+/* Incluye los controles de formulario: la Task 13 los necesita y su foco
+   debe verse igual que el del resto. `senal` da 3,70:1 sobre el fondo y
+   4,09:1 sobre superficie — por encima del 3:1 que exige un indicador. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--color-senal);
   outline-offset: 3px;
 }
@@ -1049,7 +1103,7 @@ const actual = Astro.url.pathname;
 
     <a
       href={`tel:${empresa.telefonoE164}`}
-      class="cifra ml-auto rounded-sm bg-senal px-4 py-2 text-sm font-semibold text-white"
+      class="cifra ml-auto rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-senal-oscuro"
     >{empresa.telefono}</a>
   </div>
 </header>
@@ -1063,11 +1117,30 @@ const actual = Astro.url.pathname;
 ---
 import { empresa } from '../../data/empresa';
 
+// `empresa.horario[].dias` guarda los valores canónicos de schema.org.
+// La traducción al español vive aquí, en la capa de presentación.
 const dias: Record<string, string> = {
-  Mo: 'Lun', Tu: 'Mar', We: 'Mié', Th: 'Jue', Fr: 'Vie', Sa: 'Sáb', Su: 'Dom',
+  Monday: 'Lun', Tuesday: 'Mar', Wednesday: 'Mié',
+  Thursday: 'Jue', Friday: 'Vie', Saturday: 'Sáb', Sunday: 'Dom',
 };
-const franja = (h: (typeof empresa.horario)[number]) =>
-  `${dias[h.dias[0]]}${h.dias.length > 1 ? ` a ${dias[h.dias[h.dias.length - 1]]}` : ''}: ${h.abre} a ${h.cierra}`;
+const ORDEN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+/**
+ * Rotula «Lun a Vie» SOLO si los días son consecutivos. Con días sueltos
+ * los enumera. Un rango inventado sobre días no contiguos anunciaría un
+ * horario falso — alguien se presentaría un día que está cerrado.
+ */
+const franja = (h: (typeof empresa.horario)[number]) => {
+  const idx = h.dias.map((d) => ORDEN.indexOf(d));
+  const consecutivos = idx.every((v, i) => i === 0 || v === idx[i - 1] + 1);
+  const etiqueta =
+    h.dias.length === 1
+      ? dias[h.dias[0]]
+      : consecutivos
+        ? `${dias[h.dias[0]]} a ${dias[h.dias[h.dias.length - 1]]}`
+        : h.dias.map((d) => dias[d]).join(', ');
+  return `${etiqueta}: ${h.abre} a ${h.cierra}`;
+};
 ---
 <footer class="mt-20 border-t border-borde bg-ancla text-white">
   <div class="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 lg:grid-cols-3">
@@ -1084,7 +1157,7 @@ const franja = (h: (typeof empresa.horario)[number]) =>
       <address class="mt-3 not-italic text-white/80">
         {empresa.direccion.calle}<br />
         {empresa.direccion.barrio}, {empresa.direccion.ciudad}<br />
-        {empresa.direccion.departamento}, Colombia
+        {empresa.direccion.departamento}, {empresa.direccion.paisNombre}
       </address>
       <p class="mt-3">
         <a class="cifra hover:text-senal" href={`tel:${empresa.telefonoE164}`}>{empresa.telefono}</a>
@@ -1106,8 +1179,8 @@ const franja = (h: (typeof empresa.horario)[number]) =>
     <div class="mx-auto flex max-w-6xl flex-wrap gap-4 px-5 py-5 text-xs text-white/60">
       <p>© {new Date().getFullYear()} {empresa.nombreLegal}</p>
       <a class="hover:text-senal" href="/garantias/">Políticas y garantías</a>
-      <a class="ml-auto hover:text-senal" href={empresa.redes.facebook} rel="noopener">Facebook</a>
-      <a class="hover:text-senal" href={empresa.redes.instagram} rel="noopener">Instagram</a>
+      <a class="ml-auto hover:text-senal" href={empresa.redes.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a class="hover:text-senal" href={empresa.redes.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
     </div>
   </div>
 </footer>
@@ -1144,13 +1217,17 @@ describe('pie de página (CRIT-04)', () => {
   const html = readFileSync('dist/index.html', 'utf-8');
 
   it('publica la dirección completa, no solo la ciudad', () => {
-    expect(html).toContain('Carrera 87A # 32-81');
+    expect(html).toContain('Carrera 66A # 34-48');
     expect(html).toContain('Laureles');
   });
 
-  it('publica correo y horario', () => {
-    expect(html).toContain('gerencia@mipc.com.co');
-    expect(html).toContain('08:00');
+  it('publica correo y horario en español, no solo en el schema', () => {
+    // 'Lun a Vie: 08:00 a 18:00' solo lo produce el pie: el JSON-LD
+    // mantiene los días en inglés. Aserciones como '08:00' a secas
+    // pasarían aunque el bloque del pie no existiera.
+    expect(html).toContain('Lun a Vie: 08:00 a 18:00');
+    expect(html).toContain('Sáb: 08:00 a 12:00');
+    expect(html).toContain(`mailto:${'gerencia@mipc.com.co'}`);
   });
 });
 ```
@@ -1189,8 +1266,8 @@ git commit -m "feat: header, footer con NAP completo y enlaces de WhatsApp"
 interface Props { href: string; variante?: 'senal' | 'ancla' | 'borde'; }
 const { href, variante = 'senal' } = Astro.props;
 const estilos = {
-  senal: 'bg-senal text-white hover:bg-[#c93000]',
-  ancla: 'bg-ancla text-white hover:bg-[#162c36]',
+  senal: 'bg-senal-fuerte text-white hover:bg-senal-oscuro',
+  ancla: 'bg-ancla text-white hover:bg-ancla-oscuro',
   borde: 'border border-borde bg-superficie text-tinta hover:border-senal hover:text-senal',
 };
 ---
@@ -1242,7 +1319,8 @@ const { mensaje, texto = 'Escríbenos por WhatsApp' } = Astro.props;
 ---
 <a
   href={enlaceWhatsApp(mensaje)}
-  rel="noopener"
+  target="_blank"
+  rel="noopener noreferrer"
   class="inline-flex items-center gap-2 rounded-sm bg-[#25d366] px-5 py-3 text-sm font-semibold text-[#0b3d24] transition-opacity hover:opacity-90"
 >{texto}</a>
 ```
@@ -1253,18 +1331,31 @@ El filete lateral se enciende en naranja al pasar el cursor, según el spec.
 
 ```astro
 ---
-interface Props {
-  servicio: { id: string; data: { titulo: string; resumen: string; publico: string } };
+export import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  servicio: CollectionEntry<'servicios'>;
 }
 const { servicio } = Astro.props;
-const etiqueta = { empresa: 'Empresas', persona: 'Personas', ambos: 'Empresas y personas' };
+
+/**
+ * Tipar la prop con CollectionEntry en vez de una forma estructural suelta
+ * conecta esta etiqueta con el enum del esquema. Sin eso, añadir un cuarto
+ * valor a `publico` en schemas.ts no rompería nada: saldría una etiqueta
+ * vacía en silencio. Así falla la compilación, que es lo que queremos.
+ */
+const etiqueta: Record<CollectionEntry<'servicios'>['data']['publico'], string> = {
+  empresa: 'Empresas',
+  persona: 'Personas',
+  ambos: 'Empresas y personas',
+};
 ---
 <a
   href={`/servicios/${servicio.id}/`}
   class="group flex flex-col gap-3 border border-borde border-l-4 border-l-borde bg-superficie p-6 transition-colors hover:border-l-senal"
 >
   <span class="cifra text-xs uppercase tracking-widest text-tinta-2">
-    {etiqueta[servicio.data.publico as keyof typeof etiqueta]}
+    {etiqueta[servicio.data.publico]}
   </span>
   <h3 class="text-xl font-semibold group-hover:text-senal">{servicio.data.titulo}</h3>
   <p class="text-sm text-tinta-2">{servicio.data.resumen}</p>
@@ -1327,10 +1418,10 @@ Crear los 18 con estos datos:
 | `olimpica-stereo.md` | Olímpica Stereo | Medios y radiodifusión | sí |
 | `radio-tiempo.md` | Radio Tiempo | Medios y radiodifusión | no |
 | `mix-fm.md` | Mix 89.9 FM | Medios y radiodifusión | sí |
-| `la-paisana.md` | La Paisana | Medios y radiodifusión | no |
+| `la-paisana.md` | La Paisana | Medios y radiodifusión | sí |
 | `trauma-centro.md` | Trauma Centro | Salud | sí |
 | `ips-ser-integral.md` | IPS Ser Integral | Salud | sí |
-| `quirovida.md` | QuiroVida | Salud | sí |
+| `quirovida.md` | QuiroVida | Salud | no |
 | `ie-el-pedregal.md` | I. E. El Pedregal | Educación | sí |
 | `ie-progresar.md` | I. E. Progresar | Educación | sí |
 | `etdh-pedro-justo-berrio.md` | ETDH Pedro Justo Berrío | Educación | no |
@@ -1361,14 +1452,29 @@ describe('muro de clientes', () => {
     expect(doc.querySelectorAll('[data-cliente]')).toHaveLength(18);
   });
 
-  it('los logos se exhiben a 88px para verse nítidos en pantalla 2x', () => {
-    const img = doc.querySelector('[data-cliente] img');
-    expect(img?.getAttribute('width')).toBe('88');
+  it('TODOS los logos se exhiben a 88px, no solo el primero', () => {
+    const imgs = doc.querySelectorAll('[data-cliente] img');
+    expect(imgs).toHaveLength(12);
+    expect(imgs.every((i) => i.getAttribute('width') === '88')).toBe(true);
+    expect(imgs.every((i) => i.getAttribute('height') === '52')).toBe(true);
   });
 
-  it('cada logo tiene alt con el nombre del cliente', () => {
-    const alts = doc.querySelectorAll('[data-cliente] img').map((i) => i.getAttribute('alt'));
-    expect(alts.every((a) => a && a.length > 5)).toBe(true);
+  it('cada alt nombra a su cliente, no es texto de relleno', () => {
+    // Comprobar solo la longitud dejaría pasar un alt genérico repetido.
+    const imgs = doc.querySelectorAll('[data-cliente] img');
+    for (const img of imgs) {
+      const alt = img.getAttribute('alt') ?? '';
+      const src = img.getAttribute('src') ?? '';
+      const slug = src.split('/').pop()!.replace('.png', '');
+      const primeraPalabra = slug.split('-')[0];
+      expect(alt.toLowerCase()).toContain(primeraPalabra.toLowerCase());
+      expect(alt).not.toContain('.png');
+    }
+  });
+
+  it('las primeras marcas no van diferidas: el muro está arriba de la página', () => {
+    const imgs = doc.querySelectorAll('[data-cliente] img');
+    expect(imgs.slice(0, 6).every((i) => i.getAttribute('loading') === 'eager')).toBe(true);
   });
 });
 ```
@@ -1384,6 +1490,16 @@ Expected: FAIL — no hay elementos `[data-cliente]`.
 ---
 import { getCollection } from 'astro:content';
 const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden - b.data.orden);
+
+/**
+ * Las primeras seis IMÁGENES visibles van eager, no los primeros seis
+ * clientes de la lista: los que no tienen logo se intercalan entre ellos,
+ * así que indexar por posición en `clientes` deja menos de seis imágenes
+ * eager en cuanto hay un cliente sin logo en medio.
+ */
+const idsEager = new Set(
+  clientes.filter((c) => c.data.logo).slice(0, 6).map((c) => c.id)
+);
 ---
 <section class="border-y border-borde bg-superficie py-14">
   <div class="mx-auto max-w-6xl px-5">
@@ -1402,9 +1518,9 @@ const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden -
               alt={`Logotipo de ${c.data.nombre}, cliente de MiPC Tecnología`}
               width="88"
               height="52"
-              loading="lazy"
+              loading={idsEager.has(c.id) ? 'eager' : 'lazy'}
               decoding="async"
-              class="h-auto w-[88px] opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
+              class="h-auto w-[88px] grayscale transition hover:grayscale-0"
             />
           ) : (
             <span class="text-center text-xs font-semibold leading-tight text-tinta-2">
@@ -1463,7 +1579,7 @@ beneficios:
   - Soporte remoto y en sitio en el área metropolitana
   - Escalamiento y seguimiento de incidentes hasta su cierre
   - Inventario y control de equipos
-  - Personal certificado para trabajo en alturas
+  - Trabajo en alturas con arnés y equipo de protección
 faq:
   - pregunta: ¿Atienden fuera de Medellín?
     respuesta: Sí. Cubrimos Envigado, Sabaneta, Itagüí, Bello y La Estrella, además de Medellín.
@@ -1496,7 +1612,7 @@ sigue hasta el cierre, no hasta la primera respuesta.
 titulo: Reparación de Computadores
 h1: Reparación de computadores en Medellín
 metaTitle: Reparación de Computadores en Medellín | MiPC Tecnología
-metaDescription: Reparación y mantenimiento de computadores en Medellín: pantallas, discos, formateo, virus y rescate de información. Atendemos personas y empresas.
+metaDescription: "Reparación y mantenimiento de computadores en Medellín: pantallas, discos, formateo, virus y rescate de información. Atendemos personas y empresas."
 resumen: Reparación y mantenimiento preventivo y correctivo, para personas y empresas.
 publico: ambos
 orden: 2
@@ -1525,7 +1641,7 @@ equipo crítico falle en el peor momento.
 titulo: Cámaras de Seguridad
 h1: Cámaras de seguridad y control de acceso en Medellín
 metaTitle: Cámaras de Seguridad y CCTV en Medellín | MiPC Tecnología
-metaDescription: Instalación y mantenimiento de CCTV, alarmas y control de acceso para empresas en Medellín. Personal certificado para trabajo en alturas.
+metaDescription: Instalación y mantenimiento de CCTV, alarmas y control de acceso para empresas en Medellín. Trabajo en alturas con arnés y equipo de protección.
 resumen: Instalación y mantenimiento de CCTV, alarmas y control de acceso.
 publico: empresa
 orden: 3
@@ -1533,7 +1649,7 @@ beneficios:
   - Diseño e instalación de circuito cerrado de televisión
   - Alarmas y control de acceso
   - Mantenimiento preventivo de los sistemas instalados
-  - Personal certificado para trabajo en alturas
+  - Trabajo en alturas con arnés y equipo de protección
 faq:
   - pregunta: ¿Hacen mantenimiento de cámaras que instaló otro proveedor?
     respuesta: Sí. Hacemos diagnóstico del sistema existente y proponemos el mantenimiento o las mejoras necesarias.
@@ -1542,9 +1658,9 @@ faq:
 Instalamos y mantenemos sistemas de videovigilancia, alarmas y control de acceso para
 establecimientos comerciales, instituciones educativas y sedes empresariales.
 
-El trabajo en fachadas y postes lo ejecuta personal con certificación de trabajo en
-alturas y equipo de protección. Para un cliente institucional eso no es un detalle: es
-un requisito de cumplimiento.
+El trabajo en fachadas y postes se ejecuta con arnés, casco y equipo de protección.
+Para un cliente institucional eso no es un detalle estético: es parte del cumplimiento
+que le van a auditar.
 ```
 
 `src/content/servicios/redes-de-datos.md`:
@@ -1553,8 +1669,8 @@ un requisito de cumplimiento.
 ---
 titulo: Redes de Datos
 h1: Redes de datos y cableado estructurado en Medellín
-metaTitle: Redes de Datos y Cableado Estructurado en Medellín | MiPC Tecnología
-metaDescription: Diseño, instalación y administración de redes de datos y eléctricas para empresas en Medellín. Cableado estructurado y puntos de red certificados.
+metaTitle: Redes de Datos y Cableado en Medellín | MiPC Tecnología
+metaDescription: Diseño, instalación y administración de redes de datos y eléctricas para empresas en Medellín. Cableado estructurado documentado e identificado.
 resumen: Diseño, instalación y administración de redes de datos y eléctricas.
 publico: empresa
 orden: 4
@@ -1562,7 +1678,7 @@ beneficios:
   - Cableado estructurado y puntos de red
   - Configuración y administración de equipos activos
   - Redes eléctricas reguladas
-  - Documentación y certificación de puntos
+  - Documentación e identificación de cada punto
 faq:
   - pregunta: ¿Entregan documentación de la red?
     respuesta: Sí. Cada instalación se entrega con el diagrama y la identificación de los puntos, para que cualquier técnico pueda intervenirla después.
@@ -1581,7 +1697,7 @@ puede mantener quien la hizo, y eso es exactamente el problema que resolvemos.
 ---
 titulo: Alquiler de Computadores
 h1: Alquiler de computadores para empresas en Medellín
-metaTitle: Alquiler de Computadores para Empresas en Medellín | MiPC Tecnología
+metaTitle: Alquiler de Computadores en Medellín | MiPC Tecnología
 metaDescription: Alquiler de computadores y portátiles por contrato en Medellín, con soporte técnico, mantenimiento periódico y reposición de equipos incluida.
 resumen: Equipos por contrato, con soporte, mantenimiento y reposición incluidos.
 publico: empresa
@@ -1668,7 +1784,11 @@ Expected: FAIL — las rutas no existen.
 import Base from './Base.astro';
 import Boton from '../components/ui/Boton.astro';
 import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
+import type { CollectionEntry } from 'astro:content';
 import { service, breadcrumb } from '../lib/jsonld';
+
+/** Derivado de la colección, no una forma suelta: si el esquema cambia, esto rompe. */
+type FAQ = CollectionEntry<'servicios'>['data']['faq'][number];
 
 const { entrada } = Astro.props;
 const d = entrada.data;
@@ -1685,7 +1805,7 @@ const jsonld = [
     ? [{
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: d.faq.map((f: { pregunta: string; respuesta: string }) => ({
+        mainEntity: d.faq.map((f: FAQ) => ({
           '@type': 'Question',
           name: f.pregunta,
           acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
@@ -1697,6 +1817,7 @@ const jsonld = [
 <Base title={d.metaTitle} metaDescription={d.metaDescription} {jsonld}>
   <article class="mx-auto max-w-3xl px-5 py-16">
     <nav aria-label="Ruta" class="cifra text-xs uppercase tracking-widest text-tinta-2">
+      <a href="/" class="hover:text-senal">Inicio</a> /
       <a href="/servicios/" class="hover:text-senal">Servicios</a> / {d.titulo}
     </nav>
 
@@ -1722,7 +1843,7 @@ const jsonld = [
       <section class="mt-14">
         <h2 class="text-2xl font-semibold">Preguntas frecuentes</h2>
         <dl class="mt-6 space-y-6">
-          {d.faq.map((f: { pregunta: string; respuesta: string }) => (
+          {d.faq.map((f: FAQ) => (
             <div class="border-t border-borde pt-4">
               <dt class="font-semibold">{f.pregunta}</dt>
               <dd class="mt-2 text-tinta-2">{f.respuesta}</dd>
@@ -1768,7 +1889,7 @@ import TarjetaServicio from '../../components/ui/TarjetaServicio.astro';
 const servicios = (await getCollection('servicios')).sort((a, b) => a.data.orden - b.data.orden);
 ---
 <Base
-  title="Servicios de Tecnología para Empresas en Medellín | MiPC Tecnología"
+  title="Servicios de Tecnología en Medellín | MiPC Tecnología"
   metaDescription="Soporte TI, reparación de computadores, cámaras de seguridad, redes de datos y alquiler de equipos para empresas del área metropolitana de Medellín."
 >
   <div class="mx-auto max-w-6xl px-5 py-16">
@@ -1832,7 +1953,23 @@ describe('home', () => {
   });
 
   it('el muro de clientes va antes que el blog', () => {
-    expect(raw.indexOf('Confían en nosotros')).toBeLessThan(raw.indexOf('Actualidad'));
+    const muro = raw.indexOf('Confían en nosotros');
+    // Sin esta precondición el test pasaría cuando el muro DESAPARECE:
+    // indexOf devuelve -1 y -1 es menor que cualquier posición positiva.
+    // Es decir, pasaría exactamente en la regresión que existe para detectar.
+    expect(muro).toBeGreaterThan(-1);
+
+    // Se busca el marcado del encabezado, no la palabra suelta: «Actualidad»
+    // podría aparecer en un enlace o en el menú y entonces compararíamos
+    // contra la posición equivocada.
+    // La sección se omite del HTML mientras la colección `blog` esté vacía
+    // (guarda en index.astro, antes de la Task 14). Sin entradas no hay nada
+    // frente a lo cual ordenar, así que el orden solo se comprueba cuando la
+    // sección existe; la Task 14 activa esa rama.
+    const blog = raw.indexOf('>Actualidad<');
+    if (blog > -1) {
+      expect(muro).toBeLessThan(blog);
+    }
   });
 
   it('ofrece las dos rutas de público', () => {
@@ -1906,6 +2043,7 @@ const entradas = (await getCollection('blog'))
     </div>
   </section>
 
+  {entradas.length > 0 && (
   <section class="mx-auto max-w-6xl px-5 pb-20">
     <h2 class="text-3xl font-semibold">Actualidad</h2>
     <ul class="mt-8 grid gap-6 sm:grid-cols-3">
@@ -1917,6 +2055,7 @@ const entradas = (await getCollection('blog'))
       ))}
     </ul>
   </section>
+  )}
 </Base>
 ```
 
@@ -1954,6 +2093,7 @@ git commit -m "feat: home reenfocada a B2B con cifras y muro de clientes arriba"
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { parse } from 'node-html-parser';
+import { empresa } from '../src/data/empresa';
 
 describe('páginas estáticas', () => {
   it('todas existen y tienen una sola h1', () => {
@@ -1973,7 +2113,18 @@ describe('páginas estáticas', () => {
   it('recursos enlaza a los sitios oficiales', () => {
     const html = readFileSync('dist/recursos/index.html', 'utf-8');
     expect(html).toContain('anydesk.com');
+    expect(html).toContain('deskin.io');
     expect(html).toContain('crystalmark.info');
+  });
+
+  it('garantías publica la dirección canónica, no una copia vieja', () => {
+    // Esta página fue la que destapó que había dos direcciones en circulación.
+    // Sin esta aserción, una edición futura podría volver a desincronizarla
+    // sin que nada fallara.
+    const html = readFileSync('dist/garantias/index.html', 'utf-8');
+    expect(html).toContain(empresa.direccion.calle);
+    expect(html).not.toContain('87A');
+    expect(html).not.toContain('34-26');
   });
 
   it('la 404 ofrece salida a los servicios', () => {
@@ -2016,7 +2167,7 @@ const herramientas = [
     <ul class="mt-10 space-y-4">
       {herramientas.map((h) => (
         <li class="border border-borde border-l-4 border-l-senal bg-superficie p-5">
-          <a href={h.url} rel="noopener nofollow" class="font-semibold hover:text-senal">
+          <a href={h.url} target="_blank" rel="noopener noreferrer nofollow" class="font-semibold hover:text-senal">
             {h.nombre}
           </a>
           <p class="mt-1 text-sm text-tinta-2">{h.descripcion}</p>
@@ -2070,10 +2221,10 @@ const anios = new Date().getFullYear() - empresa.fundacion;
     <section class="mt-14">
       <h2 class="text-2xl font-semibold">Cómo trabajamos</h2>
       <p class="mt-4 text-tinta-2">
-        Nuestros técnicos trabajan uniformados e identificados, y el personal que interviene
-        fachadas, postes y techos cuenta con certificación de trabajo en alturas y equipo de
-        protección. Para un cliente institucional eso no es un detalle estético: es un
-        requisito de cumplimiento que pedimos que nos exijan.
+        Nuestros técnicos trabajan uniformados e identificados, y quien interviene fachadas,
+        postes y techos lo hace con arnés, casco y equipo de protección. Para un cliente
+        institucional eso no es un detalle estético: es parte del cumplimiento que le van a
+        auditar, y preferimos que nos lo exijan.
       </p>
       <p class="mt-4 text-tinta-2">
         Cada instalación de red se entrega documentada e identificada, de modo que cualquier
@@ -2287,12 +2438,14 @@ describe('contacto', () => {
 
   it('publica la dirección completa para el posicionamiento local', () => {
     const html = doc.toString();
-    expect(html).toContain('Carrera 87A # 32-81');
+    expect(html).toContain('Carrera 66A # 34-48');
   });
 
   it('el formulario redirige a /gracias/ para poder medir la conversión', () => {
     const redirect = doc.querySelector('input[name="redirect"]')?.getAttribute('value');
-    expect(redirect).toContain('/gracias/');
+    // Web3Forms redirige desde su servidor: una ruta relativa no funcionaría.
+    // Comprobar solo que contiene '/gracias/' dejaría pasar esa regresión.
+    expect(redirect).toMatch(/^https:\/\/mipc\.com\.co\/gracias\/$/);
   });
 
   it('tiene honeypot antispam oculto', () => {
@@ -2327,7 +2480,8 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
 <form action="https://api.web3forms.com/submit" method="POST" class="grid gap-4">
   <input type="hidden" name="access_key" value={clave} />
   <input type="hidden" name="redirect" value={gracias} />
-  <input type="hidden" name="subject" value="Nueva solicitud desde mipc.com.co" />
+  <input type="hidden" name="subject" value={`Nueva solicitud desde ${new URL(empresa.url).host}`} />
+  <input type="hidden" name="ccemail" value={empresa.emailCopia} />
   <input type="hidden" name="from_name" value={empresa.nombre} />
   <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 
@@ -2348,7 +2502,7 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
     <textarea id="mensaje" name="mensaje" rows="5" required class={`mt-1 ${campo}`}></textarea>
   </div>
 
-  <button type="submit" class="rounded-sm bg-senal px-5 py-3 text-sm font-semibold text-white hover:bg-[#c93000]">
+  <button type="submit" class="rounded-sm bg-senal-fuerte px-5 py-3 text-sm font-semibold text-white hover:bg-senal-oscuro">
     Enviar solicitud
   </button>
 </form>
@@ -2365,7 +2519,11 @@ import Formulario from '../components/ui/Formulario.astro';
 import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
 import { empresa } from '../data/empresa';
 
-const dias: Record<string, string> = { Mo:'Lun', Tu:'Mar', We:'Mié', Th:'Jue', Fr:'Vie', Sa:'Sáb', Su:'Dom' };
+// Misma traducción que el pie: el dato guarda los valores de schema.org.
+const dias: Record<string, string> = {
+  Monday: 'Lun', Tuesday: 'Mar', Wednesday: 'Mié',
+  Thursday: 'Jue', Friday: 'Vie', Saturday: 'Sáb', Sunday: 'Dom',
+};
 ---
 <Base
   title="Contacto: Soporte TI en Medellín | MiPC Tecnología"
@@ -2539,8 +2697,8 @@ inversión inicial no compromete el flujo de caja.
 ```markdown
 ---
 titulo: Qué preguntarle a quien te instala las cámaras de seguridad
-metaTitle: Qué Preguntar al Instalar Cámaras de Seguridad | MiPC Tecnología
-metaDescription: Las preguntas que debes hacerle a un instalador de CCTV antes de contratar: certificación de alturas, documentación, garantía y quién puede mantener el sistema.
+metaTitle: Qué Preguntar al Instalar Cámaras CCTV | MiPC Tecnología
+metaDescription: "Las preguntas que debes hacerle a un instalador de CCTV antes de contratar: certificación de alturas, documentación, garantía y quién puede mantener el sistema."
 fecha: 2026-07-31
 resumen: Cuatro preguntas que separan a un instalador serio de uno que te deja atado.
 ---
@@ -2587,9 +2745,22 @@ describe('blog', () => {
     expect(tipos).toContain('Article');
   });
 
-  it('las fechas se muestran en español, no en inglés', () => {
-    const html = readFileSync('dist/blog/index.html', 'utf-8');
-    expect(html).not.toMatch(/January|April|August/);
+  it('las fechas se muestran en español en el índice Y en las entradas', () => {
+    // La lista debe cubrir los doce meses: una versión anterior omitía July,
+    // justo el mes de una de las tres entradas, así que una regresión de
+    // locale en esa fecha habría pasado sin detectarse.
+    const MESES_EN = /January|February|March|April|May|June|July|August|September|October|November|December/;
+    const paginas = [
+      'dist/blog/index.html',
+      'dist/blog/mantenimiento-preventivo-empresas/index.html',
+      'dist/blog/alquilar-o-comprar-computadores/index.html',
+      'dist/blog/camaras-seguridad-que-preguntar/index.html',
+    ];
+    for (const p of paginas) {
+      const html = readFileSync(p, 'utf-8');
+      expect(html, p).not.toMatch(MESES_EN);
+      expect(html, p).toMatch(/de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre) de \d{4}/);
+    }
   });
 });
 ```
@@ -2601,17 +2772,35 @@ Expected: FAIL.
 
 - [ ] **Step 4: Escribir el layout de entrada**
 
+El formateo de fecha vive en **un solo sitio**, `src/lib/fecha.ts`. Duplicarlo entre el layout y el índice es lo que obligó a arreglar el error de zona horaria dos veces a mano, sin nada que garantice que sigan sincronizados:
+
+```ts
+/**
+ * `timeZone: 'UTC'` no es opcional: la fecha se parsea como medianoche UTC y,
+ * sin fijar la zona, se convierte a la local. En Colombia (UTC-5) eso resta un
+ * día a TODAS las entradas, de forma silenciosa y permanente.
+ */
+export function formatearFecha(fecha: Date): string {
+  return fecha.toLocaleDateString('es-CO', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  });
+}
+```
+
+**`timeZone: 'UTC'` no es opcional.** `fecha` se parsea como medianoche UTC; sin fijar la zona, `toLocaleDateString` la convierte a la hora local y en Colombia (UTC-5) toda fecha retrocede un día. Todas las entradas quedarían mal fechadas, de forma silenciosa y permanente.
+
 `src/layouts/Entrada.astro`:
 
 ```astro
 ---
 import Base from './Base.astro';
 import { article, breadcrumb } from '../lib/jsonld';
+import { formatearFecha } from '../lib/fecha';
 
 const { entrada } = Astro.props;
 const d = entrada.data;
 const url = new URL(Astro.url.pathname, Astro.site).href;
-const fecha = d.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+const fecha = formatearFecha(d.fecha);
 
 const jsonld = [
   article({ titulo: d.titulo, descripcion: d.metaDescription, url, fecha: d.fecha }),
@@ -2659,6 +2848,7 @@ const { Content } = await render(entrada);
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { formatearFecha } from '../../lib/fecha';
 
 const entradas = (await getCollection('blog'))
   .sort((a, b) => b.data.fecha.getTime() - a.data.fecha.getTime());
@@ -2673,7 +2863,7 @@ const entradas = (await getCollection('blog'))
       {entradas.map((e) => (
         <article class="border-t border-borde pt-6">
           <time datetime={e.data.fecha.toISOString()} class="cifra text-xs uppercase tracking-widest text-tinta-2">
-            {e.data.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}
+            {formatearFecha(e.data.fecha)}
           </time>
           <h2 class="mt-2 text-2xl font-semibold">
             <a href={`/blog/${e.id}/`} class="hover:text-senal">{e.data.titulo}</a>
@@ -2836,6 +3026,31 @@ console.log(fallos === 0
 process.exit(fallos === 0 ? 0 : 1);
 ```
 
+- [ ] **Step 5b: Blindar el punto único de fallo**
+
+`public/_redirects` está en `.gitignore` y solo lo produce `prebuild`. Si la plataforma ejecutara `astro build` en vez de `npm run build`, el hook no dispara y **producción saldría sin ninguna redirección**, en silencio. Es el fallo que esta tarea existe para evitar, causado por la propia tarea.
+
+Dos defensas. Primero, `.nvmrc` con la versión de Node, porque `--experimental-strip-types` exige 22.6 o superior y la imagen de Cloudflare podría traer una anterior:
+
+```
+22
+```
+
+Segundo, un test que mire la SALIDA compilada, no el archivo intermedio:
+
+```ts
+  it('el build emite dist/_redirects: si prebuild no corrió, esto falla', () => {
+    // public/_redirects está gitignoreado y solo lo genera prebuild. Si la
+    // plataforma ejecuta `astro build` directamente, el hook no dispara y
+    // producción sale sin redirecciones. Este test lo convierte en un fallo
+    // ruidoso antes del despliegue, en vez de un silencio después.
+    const salida = readFileSync('dist/_redirects', 'utf-8').trim().split('
+');
+    expect(salida).toHaveLength(redirecciones.length);
+    expect(salida.every((l) => l.endsWith(' 301'))).toBe(true);
+  });
+```
+
 - [ ] **Step 6: Ejecutar los tests y generar**
 
 Run: `npx vitest run tests/redirecciones.test.ts && npm run build && cat public/_redirects`
@@ -2874,9 +3089,28 @@ import { parse } from 'node-html-parser';
 const paginas = globSync('dist/**/*.html');
 const fallos = [];
 
+// Un verificador que no verificó nada NO puede reportar éxito: con dist/
+// vacío o un build parcial, el bucle no se ejecuta, fallos queda en cero y
+// el script imprime «sin problemas» y sale con 0. Para un sistema de CI que
+// solo mira el código de salida, eso se lee como una compilación sana.
+const MINIMO_PAGINAS = 14;
+if (paginas.length < MINIMO_PAGINAS) {
+  console.error(
+    `Solo se encontraron ${paginas.length} páginas en dist/, y se esperaban al menos ` +
+    `${MINIMO_PAGINAS}. El build está incompleto o la ruta cambió: no hay nada que verificar.`
+  );
+  process.exit(1);
+}
+
 for (const ruta of paginas) {
-  const doc = parse(readFileSync(ruta, 'utf-8'));
   const en = (msg) => fallos.push(`${ruta}: ${msg}`);
+  let doc;
+  try {
+    doc = parse(readFileSync(ruta, 'utf-8'));
+  } catch (e) {
+    en(`no se pudo leer ni parsear: ${e.message}`);
+    continue;
+  }
 
   // SEO-01: una y solo una h1
   const h1 = doc.querySelectorAll('h1');
@@ -2893,10 +3127,20 @@ for (const ruta of paginas) {
 
   // SEO-03: el title no puede terminar en el dominio
   const title = doc.querySelector('title')?.text ?? '';
+  // Ausencia y error son defectos distintos: sin esta rama, una página sin
+  // <title> falla con «no termina en la marca», que despista al que lo lea.
+  if (!title) en('falta la etiqueta <title>');
   if (title.includes('mipc.com.co')) en('el title contiene el dominio en vez de la marca');
   if (!title.endsWith('| MiPC Tecnología')) en(`el title no termina en la marca: "${title}"`);
+  // Las páginas que pasan `title` como prop no atraviesan el esquema Zod,
+  // así que el límite de longitud solo existe aquí para ellas.
+  if (title.length > 65) en(`title de ${title.length} caracteres, Google lo truncará: "${title}"`);
 
   // SEO-07: alt en toda imagen
+  // Nota para quien añada una imagen decorativa: el estándar pide alt="" en
+  // ese caso, y esta regla lo rechazaría. La salida NO es relajar la regla,
+  // sino añadir una excepción explícita (p. ej. un atributo data-decorativa)
+  // para que la ausencia de alt siga siendo un fallo en todo lo demás.
   for (const img of doc.querySelectorAll('img')) {
     const alt = img.getAttribute('alt');
     if (!alt || alt.trim().length < 5) en(`imagen sin alt útil: ${img.getAttribute('src')}`);
@@ -3001,7 +3245,7 @@ import foto from '../assets/fotos/equipo-fachada-alturas.jpg';
 <Figura
   src={foto}
   alt="Dos técnicos de MiPC Tecnología con arnés de seguridad instalan cableado en la fachada de una edificación industrial"
-  pie="Personal certificado para trabajo en alturas"
+  pie="Trabajo en alturas con arnés y equipo de protección"
 />
 ```
 

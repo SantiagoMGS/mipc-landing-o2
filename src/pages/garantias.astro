@@ -1,0 +1,15 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const entrada = await getEntry('paginas', 'garantias');
+if (!entrada) throw new Error('Falta src/content/paginas/garantias.md');
+const { Content } = await render(entrada);
+const d = entrada.data;
+---
+<Base title={d.metaTitle} metaDescription={d.metaDescription}>
+  <div class="mx-auto max-w-3xl px-5 py-16">
+    <h1 class="text-4xl font-semibold">{d.h1}</h1>
+    <div class="prose prose-neutral mt-8 max-w-none"><Content /></div>
+  </div>
+</Base>

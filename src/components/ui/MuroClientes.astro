@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden - b.data.orden);
+
+/**
+ * Las primeras seis IMÁGENES visibles van eager, no los primeros seis
+ * clientes de la lista: Radio Tiempo y otros sin logo se intercalan entre
+ * ellos, así que indexar por posición en `clientes` deja menos de seis
+ * imágenes eager cuando hay un cliente sin logo en medio.
+ */
+const idsEager = new Set(
+  clientes.filter((c) => c.data.logo).slice(0, 6).map((c) => c.id)
+);
+---
+<section class="border-y border-borde bg-superficie py-14">
+  <div class="mx-auto max-w-6xl px-5">
+    <h2 class="text-2xl font-semibold">Confían en nosotros</h2>
+    <p class="mt-2 max-w-prose text-sm text-tinta-2">
+      Emisoras, IPS, instituciones educativas y firmas de ingeniería del área metropolitana
+      de Medellín.
+    </p>
+
+    <ul class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] items-center gap-x-8 gap-y-7">
+      {clientes.map((c) => (
+        <li data-cliente class="flex items-center justify-center" title={c.data.sector}>
+          {c.data.logo ? (
+            <img
+              src={c.data.logo}
+              alt={`Logotipo de ${c.data.nombre}, cliente de MiPC Tecnología`}
+              width="88"
+              height="52"
+              loading={idsEager.has(c.id) ? 'eager' : 'lazy'}
+              decoding="async"
+              class="h-auto w-[88px] grayscale transition hover:grayscale-0"
+            />
+          ) : (
+            <span class="text-center text-xs font-semibold leading-tight text-tinta-2">
+              {c.data.nombre}
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+
+const herramientas = [
+  {
+    nombre: 'AnyDesk',
+    descripcion: 'Para que podamos conectarnos a tu equipo y darte soporte remoto.',
+    url: 'https://anydesk.com/es/downloads',
+  },
+  {
+    nombre: 'DeskIn',
+    descripcion: 'Alternativa de soporte remoto cuando AnyDesk no está disponible.',
+    url: 'https://www.deskin.io/download',
+  },
+  {
+    nombre: 'CrystalDiskInfo',
+    descripcion: 'Muestra el estado de salud del disco duro de tu equipo.',
+    url: 'https://crystalmark.info/en/software/crystaldiskinfo/',
+  },
+];
+---
+<Base
+  title="Recursos y Herramientas de Soporte | MiPC Tecnología"
+  metaDescription="Herramientas de soporte remoto y diagnóstico que usamos con nuestros clientes en Medellín, con enlaces a la descarga oficial de cada fabricante."
+>
+  <div class="mx-auto max-w-3xl px-5 py-16">
+    <h1 class="text-4xl font-semibold">Recursos</h1>
+    <p class="mt-4 text-lg text-tinta-2">
+      Herramientas que usamos durante el soporte. Cada enlace lleva a la descarga oficial
+      del fabricante, para que siempre obtengas la versión vigente y verificada.
+    </p>
+
+    <ul class="mt-10 space-y-4">
+      {herramientas.map((h) => (
+        <li class="border border-borde border-l-4 border-l-senal bg-superficie p-5">
+          <a href={h.url} rel="noopener nofollow" class="font-semibold hover:text-senal">
+            {h.nombre}
+          </a>
+          <p class="mt-1 text-sm text-tinta-2">{h.descripcion}</p>
+        </li>
+      ))}
+    </ul>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold">Consultar el identificador del equipo</h2>
+      <p class="mt-3 text-tinta-2">
+        Si te pedimos el identificador único de tu computador, abre el símbolo del sistema
+        y copia este comando:
+      </p>
+      <pre class="cifra mt-4 overflow-x-auto border border-borde bg-superficie p-4 text-sm"><code>wmic csproduct get UUID</code></pre>
+    </section>
+  </div>
+</Base>

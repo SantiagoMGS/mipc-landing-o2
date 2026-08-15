@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import TarjetaServicio from '../../components/ui/TarjetaServicio.astro';
+
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.orden - b.data.orden);
+---
+<Base
+  title="Servicios de Tecnología para Empresas en Medellín | MiPC Tecnología"
+  metaDescription="Soporte TI, reparación de computadores, cámaras de seguridad, redes de datos y alquiler de equipos para empresas del área metropolitana de Medellín."
+>
+  <div class="mx-auto max-w-6xl px-5 py-16">
+    <h1 class="text-4xl font-semibold">Servicios</h1>
+    <p class="mt-4 max-w-prose text-lg text-tinta-2">
+      Cinco líneas de servicio para mantener la operación tecnológica de tu empresa
+      funcionando, desde el equipo del usuario final hasta la infraestructura de red.
+    </p>
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {servicios.map((s) => <TarjetaServicio servicio={s} />)}
+    </div>
+  </div>
+</Base>

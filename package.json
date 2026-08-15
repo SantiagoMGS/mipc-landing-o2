@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@tailwindcss/typography": "^0.5.20",
     "linkinator": "^8.0.3",
     "node-html-parser": "^9.0.1",
     "typescript": "^6.0.3",

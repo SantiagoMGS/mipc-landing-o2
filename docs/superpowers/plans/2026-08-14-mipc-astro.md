@@ -2745,9 +2745,22 @@ describe('blog', () => {
     expect(tipos).toContain('Article');
   });
 
-  it('las fechas se muestran en español, no en inglés', () => {
-    const html = readFileSync('dist/blog/index.html', 'utf-8');
-    expect(html).not.toMatch(/January|April|August/);
+  it('las fechas se muestran en español en el índice Y en las entradas', () => {
+    // La lista debe cubrir los doce meses: una versión anterior omitía July,
+    // justo el mes de una de las tres entradas, así que una regresión de
+    // locale en esa fecha habría pasado sin detectarse.
+    const MESES_EN = /January|February|March|April|May|June|July|August|September|October|November|December/;
+    const paginas = [
+      'dist/blog/index.html',
+      'dist/blog/mantenimiento-preventivo-empresas/index.html',
+      'dist/blog/alquilar-o-comprar-computadores/index.html',
+      'dist/blog/camaras-seguridad-que-preguntar/index.html',
+    ];
+    for (const p of paginas) {
+      const html = readFileSync(p, 'utf-8');
+      expect(html, p).not.toMatch(MESES_EN);
+      expect(html, p).toMatch(/de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre) de \d{4}/);
+    }
   });
 });
 ```
@@ -2759,6 +2772,21 @@ Expected: FAIL.
 
 - [ ] **Step 4: Escribir el layout de entrada**
 
+El formateo de fecha vive en **un solo sitio**, `src/lib/fecha.ts`. Duplicarlo entre el layout y el índice es lo que obligó a arreglar el error de zona horaria dos veces a mano, sin nada que garantice que sigan sincronizados:
+
+```ts
+/**
+ * `timeZone: 'UTC'` no es opcional: la fecha se parsea como medianoche UTC y,
+ * sin fijar la zona, se convierte a la local. En Colombia (UTC-5) eso resta un
+ * día a TODAS las entradas, de forma silenciosa y permanente.
+ */
+export function formatearFecha(fecha: Date): string {
+  return fecha.toLocaleDateString('es-CO', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  });
+}
+```
+
 **`timeZone: 'UTC'` no es opcional.** `fecha` se parsea como medianoche UTC; sin fijar la zona, `toLocaleDateString` la convierte a la hora local y en Colombia (UTC-5) toda fecha retrocede un día. Todas las entradas quedarían mal fechadas, de forma silenciosa y permanente.
 
 `src/layouts/Entrada.astro`:
@@ -2767,11 +2795,12 @@ Expected: FAIL.
 ---
 import Base from './Base.astro';
 import { article, breadcrumb } from '../lib/jsonld';
+import { formatearFecha } from '../lib/fecha';
 
 const { entrada } = Astro.props;
 const d = entrada.data;
 const url = new URL(Astro.url.pathname, Astro.site).href;
-const fecha = d.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const fecha = formatearFecha(d.fecha);
 
 const jsonld = [
   article({ titulo: d.titulo, descripcion: d.metaDescription, url, fecha: d.fecha }),
@@ -2819,6 +2848,7 @@ const { Content } = await render(entrada);
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { formatearFecha } from '../../lib/fecha';
 
 const entradas = (await getCollection('blog'))
   .sort((a, b) => b.data.fecha.getTime() - a.data.fecha.getTime());
@@ -2833,7 +2863,7 @@ const entradas = (await getCollection('blog'))
       {entradas.map((e) => (
         <article class="border-t border-borde pt-6">
           <time datetime={e.data.fecha.toISOString()} class="cifra text-xs uppercase tracking-widest text-tinta-2">
-            {e.data.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}
+            {formatearFecha(e.data.fecha)}
           </time>
           <h2 class="mt-2 text-2xl font-semibold">
             <a href={`/blog/${e.id}/`} class="hover:text-senal">{e.data.titulo}</a>

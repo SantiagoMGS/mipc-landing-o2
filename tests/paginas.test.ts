@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { parse } from 'node-html-parser';
+import { empresa } from '../src/data/empresa';
 
 describe('páginas estáticas', () => {
   it('todas existen y tienen una sola h1', () => {
@@ -20,11 +21,22 @@ describe('páginas estáticas', () => {
   it('recursos enlaza a los sitios oficiales', () => {
     const html = readFileSync('dist/recursos/index.html', 'utf-8');
     expect(html).toContain('anydesk.com');
+    expect(html).toContain('deskin.io');
     expect(html).toContain('crystalmark.info');
   });
 
   it('la 404 ofrece salida a los servicios', () => {
     const html = readFileSync('dist/404.html', 'utf-8');
     expect(html).toContain('/servicios/');
+  });
+
+  it('garantías publica la dirección canónica, no una copia vieja', () => {
+    // Esta página fue la que destapó que había dos direcciones en circulación.
+    // Sin esta aserción, una edición futura podría volver a desincronizarla
+    // sin que nada fallara.
+    const html = readFileSync('dist/garantias/index.html', 'utf-8');
+    expect(html).toContain(empresa.direccion.calle);
+    expect(html).not.toContain('87A');
+    expect(html).not.toContain('34-26');
   });
 });

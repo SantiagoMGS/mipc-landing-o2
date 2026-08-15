@@ -1,7 +1,6 @@
 ---
 import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { empresa } from '../data/empresa';
 
 const entrada = await getEntry('paginas', 'garantias');
 if (!entrada) throw new Error('Falta src/content/paginas/garantias.md');
@@ -12,18 +11,5 @@ const d = entrada.data;
   <div class="mx-auto max-w-3xl px-5 py-16">
     <h1 class="text-4xl font-semibold">{d.h1}</h1>
     <div class="prose prose-neutral mt-8 max-w-none"><Content /></div>
-
-    <section class="mt-12 border-t border-borde pt-8 text-sm">
-      <h2 class="text-lg font-semibold">Dirección de atención</h2>
-      <address class="mt-3 not-italic text-tinta-2">
-        {empresa.direccion.calle}<br />
-        {empresa.direccion.barrio}, {empresa.direccion.ciudad}<br />
-        {empresa.direccion.departamento}, {empresa.direccion.paisNombre}
-      </address>
-      <p class="mt-3">
-        <a class="hover:text-senal" href={`tel:${empresa.telefonoE164}`}>{empresa.telefono}</a>
-      </p>
-      <p><a class="hover:text-senal" href={`mailto:${empresa.email}`}>{empresa.email}</a></p>
-    </section>
   </div>
 </Base>

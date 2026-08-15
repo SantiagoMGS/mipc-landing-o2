@@ -222,7 +222,7 @@ git commit -m "feat: andamiaje Astro 7 con Tailwind, Vitest y scripts de verific
 
 **Interfaces:**
 - Consumes: nada
-- Produces: `empresa` — objeto congelado en profundidad con los campos `nombre`, `nombreLegal`, `descripcionCorta`, `fundacion`, `telefono`, `telefonoE164`, `whatsapp`, `email`, `direccion{calle,barrio,ciudad,departamento,pais}`, `horario[]`, `zonaServicio[]`, `redes{facebook,instagram}`, `url`. Consumido por Tasks 3, 4, 7, 13.
+- Produces: `empresa` — objeto congelado en profundidad con los campos `nombre`, `nombreLegal`, `descripcionCorta`, `fundacion`, `telefono`, `telefonoE164`, `whatsapp`, `email`, `direccion{calle,barrio,ciudad,departamento,pais,paisNombre}`, `horario[]`, `zonaServicio[]`, `redes{facebook,instagram}`, `url`. Consumido por Tasks 3, 4, 7, 13.
 
 > **Sin `codigoPostal`.** Una versión anterior de esta línea lo listaba. Ningún consumidor lo usa —la Task 3 construye `PostalAddress` sin `postalCode`, y las Tasks 7 y 13 solo leen calle, barrio, ciudad y departamento— y schema.org no lo exige. Como no se conoce el código postal real de la dirección, inventarlo metería un dato falso en el `LocalBusiness`, que para posicionamiento local es peor que omitir el campo.
 
@@ -299,6 +299,7 @@ export const empresa = Object.freeze({
     ciudad: 'Medellín',
     departamento: 'Antioquia',
     pais: 'CO',
+    paisNombre: 'Colombia',
   }),
 
   // Confirmar con el cliente y hacer coincidir con Google Business Profile.
@@ -943,6 +944,7 @@ Dos detalles del import que deciden si el diseño funciona:
   --color-ancla: #1e3a47;
   --color-senal: #eb3a00;
   --color-senal-fuerte: #d33400;
+  --color-senal-oscuro: #b32a00;
   --color-borde: #dce1e4;
 
   --font-display: "Archivo Variable", system-ui, sans-serif;
@@ -1094,7 +1096,7 @@ const actual = Astro.url.pathname;
 
     <a
       href={`tel:${empresa.telefonoE164}`}
-      class="cifra ml-auto rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-[#b32a00]"
+      class="cifra ml-auto rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-senal-oscuro"
     >{empresa.telefono}</a>
   </div>
 </header>
@@ -1114,8 +1116,24 @@ const dias: Record<string, string> = {
   Monday: 'Lun', Tuesday: 'Mar', Wednesday: 'Mié',
   Thursday: 'Jue', Friday: 'Vie', Saturday: 'Sáb', Sunday: 'Dom',
 };
-const franja = (h: (typeof empresa.horario)[number]) =>
-  `${dias[h.dias[0]]}${h.dias.length > 1 ? ` a ${dias[h.dias[h.dias.length - 1]]}` : ''}: ${h.abre} a ${h.cierra}`;
+const ORDEN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+/**
+ * Rotula «Lun a Vie» SOLO si los días son consecutivos. Con días sueltos
+ * los enumera. Un rango inventado sobre días no contiguos anunciaría un
+ * horario falso — alguien se presentaría un día que está cerrado.
+ */
+const franja = (h: (typeof empresa.horario)[number]) => {
+  const idx = h.dias.map((d) => ORDEN.indexOf(d));
+  const consecutivos = idx.every((v, i) => i === 0 || v === idx[i - 1] + 1);
+  const etiqueta =
+    h.dias.length === 1
+      ? dias[h.dias[0]]
+      : consecutivos
+        ? `${dias[h.dias[0]]} a ${dias[h.dias[h.dias.length - 1]]}`
+        : h.dias.map((d) => dias[d]).join(', ');
+  return `${etiqueta}: ${h.abre} a ${h.cierra}`;
+};
 ---
 <footer class="mt-20 border-t border-borde bg-ancla text-white">
   <div class="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 lg:grid-cols-3">
@@ -1132,7 +1150,7 @@ const franja = (h: (typeof empresa.horario)[number]) =>
       <address class="mt-3 not-italic text-white/80">
         {empresa.direccion.calle}<br />
         {empresa.direccion.barrio}, {empresa.direccion.ciudad}<br />
-        {empresa.direccion.departamento}, Colombia
+        {empresa.direccion.departamento}, {empresa.direccion.paisNombre}
       </address>
       <p class="mt-3">
         <a class="cifra hover:text-senal" href={`tel:${empresa.telefonoE164}`}>{empresa.telefono}</a>
@@ -1154,8 +1172,8 @@ const franja = (h: (typeof empresa.horario)[number]) =>
     <div class="mx-auto flex max-w-6xl flex-wrap gap-4 px-5 py-5 text-xs text-white/60">
       <p>© {new Date().getFullYear()} {empresa.nombreLegal}</p>
       <a class="hover:text-senal" href="/garantias/">Políticas y garantías</a>
-      <a class="ml-auto hover:text-senal" href={empresa.redes.facebook} rel="noopener">Facebook</a>
-      <a class="hover:text-senal" href={empresa.redes.instagram} rel="noopener">Instagram</a>
+      <a class="ml-auto hover:text-senal" href={empresa.redes.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a class="hover:text-senal" href={empresa.redes.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
     </div>
   </div>
 </footer>
@@ -1196,9 +1214,13 @@ describe('pie de página (CRIT-04)', () => {
     expect(html).toContain('Laureles');
   });
 
-  it('publica correo y horario', () => {
-    expect(html).toContain('gerencia@mipc.com.co');
-    expect(html).toContain('08:00');
+  it('publica correo y horario en español, no solo en el schema', () => {
+    // 'Lun a Vie: 08:00 a 18:00' solo lo produce el pie: el JSON-LD
+    // mantiene los días en inglés. Aserciones como '08:00' a secas
+    // pasarían aunque el bloque del pie no existiera.
+    expect(html).toContain('Lun a Vie: 08:00 a 18:00');
+    expect(html).toContain('Sáb: 08:00 a 12:00');
+    expect(html).toContain(`mailto:${'gerencia@mipc.com.co'}`);
   });
 });
 ```
@@ -1237,7 +1259,7 @@ git commit -m "feat: header, footer con NAP completo y enlaces de WhatsApp"
 interface Props { href: string; variante?: 'senal' | 'ancla' | 'borde'; }
 const { href, variante = 'senal' } = Astro.props;
 const estilos = {
-  senal: 'bg-senal-fuerte text-white hover:bg-[#b32a00]',
+  senal: 'bg-senal-fuerte text-white hover:bg-senal-oscuro',
   ancla: 'bg-ancla text-white hover:bg-[#162c36]',
   borde: 'border border-borde bg-superficie text-tinta hover:border-senal hover:text-senal',
 };
@@ -2396,7 +2418,7 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
     <textarea id="mensaje" name="mensaje" rows="5" required class={`mt-1 ${campo}`}></textarea>
   </div>
 
-  <button type="submit" class="rounded-sm bg-senal-fuerte px-5 py-3 text-sm font-semibold text-white hover:bg-[#b32a00]">
+  <button type="submit" class="rounded-sm bg-senal-fuerte px-5 py-3 text-sm font-semibold text-white hover:bg-senal-oscuro">
     Enviar solicitud
   </button>
 </form>

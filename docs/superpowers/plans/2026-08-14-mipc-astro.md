@@ -19,7 +19,8 @@ Estos requisitos aplican a **todas** las tareas. Copiados literalmente del spec.
 - **`metaDescription` obligatoria** en toda página. (Corrige SEO-02.)
 - **`alt` obligatorio y descriptivo** en toda imagen. Nunca el nombre del archivo. (Corrige SEO-07.)
 - **Formato de title:** `<Servicio o página> en Medellín | MiPC Tecnología`. Nunca terminar en `mipc.com.co`. (Corrige SEO-03.)
-- **Paleta exacta:** fondo `#F2F4F5`, superficie `#FFFFFF`, tinta `#0F1620`, ancla `#1E3A47`, señal `#EB3A00`.
+- **Paleta exacta:** fondo `#F2F4F5`, superficie `#FFFFFF`, tinta `#0F1620`, ancla `#1E3A47`, señal `#EB3A00`. Se admiten neutrales de apoyo (`tinta-2`, `borde`) derivados de esa base; lo que es exacto son los cinco valores de marca.
+- **Superficies rellenas que llevan texto usan `senal-fuerte` (`#D33400`), no `senal`.** El naranja de marca mide 4,09:1 contra blanco y 4,44:1 contra la tinta: falla AA para texto normal en ambas direcciones. `#D33400` da 4,93:1 contra blanco. `senal` se reserva para acentos, filetes, estados y focos, donde el umbral es 3:1 y sí cumple.
 - **Tipografía:** solo Archivo Variable e IBM Plex Mono, autoalojadas. Prohibido enlazar Google Fonts.
 - **Naranja `#EB3A00` solo como color de señal:** botones, estado activo, dato destacado. Nunca como fondo de secciones enteras.
 - **Contraste WCAG AA como mínimo** en todo texto. (Corrige DIS-02.)
@@ -923,11 +924,16 @@ Expected: FAIL — la paleta no está definida.
 
 `src/styles/global.css`:
 
+Dos detalles del import que deciden si el diseño funciona:
+
+- **`standard.css`, no el import a secas.** El punto de entrada por defecto de `@fontsource-variable/archivo` instancia solo el eje `wght` y **elimina el eje `wdth`**, con lo que `font-variation-settings: "wdth" 118` en los titulares no hace absolutamente nada. `standard.css` conserva ambos ejes.
+- **Subconjuntos latinos explícitos.** El import genérico de IBM Plex Mono arrastra cirílico, vietnamita y griego. El navegador no los descarga gracias a `unicode-range`, pero se emiten al build y contradicen el spec. Los latinos compensan de sobra los bytes que suma `standard.css`.
+
 ```css
 @import "tailwindcss";
-@import "@fontsource-variable/archivo";
-@import "@fontsource/ibm-plex-mono/400.css";
-@import "@fontsource/ibm-plex-mono/600.css";
+@import "@fontsource-variable/archivo/standard.css";
+@import "@fontsource/ibm-plex-mono/latin-400.css";
+@import "@fontsource/ibm-plex-mono/latin-600.css";
 
 @theme {
   --color-fondo: #f2f4f5;
@@ -936,6 +942,7 @@ Expected: FAIL — la paleta no está definida.
   --color-tinta-2: #5a636b;
   --color-ancla: #1e3a47;
   --color-senal: #eb3a00;
+  --color-senal-fuerte: #d33400;
   --color-borde: #dce1e4;
 
   --font-display: "Archivo Variable", system-ui, sans-serif;
@@ -964,7 +971,10 @@ h1, h2, h3 {
   font-feature-settings: "tnum";
 }
 
-:where(a, button, [tabindex]):focus-visible {
+/* Incluye los controles de formulario: la Task 13 los necesita y su foco
+   debe verse igual que el del resto. `senal` da 3,70:1 sobre el fondo y
+   4,09:1 sobre superficie — por encima del 3:1 que exige un indicador. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--color-senal);
   outline-offset: 3px;
 }
@@ -1084,7 +1094,7 @@ const actual = Astro.url.pathname;
 
     <a
       href={`tel:${empresa.telefonoE164}`}
-      class="cifra ml-auto rounded-sm bg-senal px-4 py-2 text-sm font-semibold text-white"
+      class="cifra ml-auto rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-[#b32a00]"
     >{empresa.telefono}</a>
   </div>
 </header>
@@ -1227,7 +1237,7 @@ git commit -m "feat: header, footer con NAP completo y enlaces de WhatsApp"
 interface Props { href: string; variante?: 'senal' | 'ancla' | 'borde'; }
 const { href, variante = 'senal' } = Astro.props;
 const estilos = {
-  senal: 'bg-senal text-white hover:bg-[#c93000]',
+  senal: 'bg-senal-fuerte text-white hover:bg-[#b32a00]',
   ancla: 'bg-ancla text-white hover:bg-[#162c36]',
   borde: 'border border-borde bg-superficie text-tinta hover:border-senal hover:text-senal',
 };
@@ -2386,7 +2396,7 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
     <textarea id="mensaje" name="mensaje" rows="5" required class={`mt-1 ${campo}`}></textarea>
   </div>
 
-  <button type="submit" class="rounded-sm bg-senal px-5 py-3 text-sm font-semibold text-white hover:bg-[#c93000]">
+  <button type="submit" class="rounded-sm bg-senal-fuerte px-5 py-3 text-sm font-semibold text-white hover:bg-[#b32a00]">
     Enviar solicitud
   </button>
 </form>

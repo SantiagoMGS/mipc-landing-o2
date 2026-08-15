@@ -7,11 +7,13 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node --experimental-strip-types scripts/generar-redirecciones.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "test": "vitest run",
     "check:html": "node scripts/check-html.mjs",
     "check:links": "linkinator dist --recurse --silent --skip 'wa.me|api.web3forms.com'",
+    "check:redirecciones": "node --experimental-strip-types scripts/check-redirecciones.mjs",
     "verify": "astro check && npm run build && npm test && npm run check:html && npm run check:links"
   },
   "dependencies": {

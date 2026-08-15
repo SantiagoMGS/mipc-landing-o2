@@ -105,7 +105,9 @@ export default defineConfig({
   site: 'https://mipc.com.co',
   output: 'static',
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  // /gracias/ es útil al visitante pero no tiene valor en búsqueda: se
+  // excluye del sitemap y además emite noindex desde el componente SEO.
+  integrations: [sitemap({ filter: (url) => !url.includes('/gracias/') })],
   vite: { plugins: [tailwindcss()] },
 });
 ```
@@ -584,9 +586,11 @@ export interface Props {
   metaDescription: string;
   jsonld?: object[];
   imagenOg?: string;
+  /** Para páginas útiles al visitante pero sin valor en búsqueda: /gracias/. */
+  noindex?: boolean;
 }
 
-const { title, metaDescription, jsonld = [], imagenOg } = Astro.props;
+const { title, metaDescription, jsonld = [], imagenOg, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const og = new URL(imagenOg ?? '/og-default.jpg', Astro.site).href;
 const bloques = [localBusiness(), ...jsonld];
@@ -595,6 +599,7 @@ const bloques = [localBusiness(), ...jsonld];
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{title}</title>
 <meta name="description" content={metaDescription} />
+{noindex && <meta name="robots" content="noindex,follow" />}
 <link rel="canonical" href={canonical} />
 
 <meta property="og:type" content="website" />
@@ -626,12 +631,12 @@ import type { Props as PropsSEO } from '../components/SEO.astro';
 import '../styles/global.css';
 
 type Props = PropsSEO;
-const { title, metaDescription, jsonld, imagenOg } = Astro.props;
+const { title, metaDescription, jsonld, imagenOg, noindex } = Astro.props;
 ---
 <!doctype html>
 <html lang="es-CO">
   <head>
-    <SEO {title} {metaDescription} {jsonld} {imagenOg} />
+    <SEO {title} {metaDescription} {jsonld} {imagenOg} {noindex} />
   </head>
   <body class="bg-fondo text-tinta antialiased">
     <slot />
@@ -2438,7 +2443,9 @@ describe('contacto', () => {
 
   it('el formulario redirige a /gracias/ para poder medir la conversión', () => {
     const redirect = doc.querySelector('input[name="redirect"]')?.getAttribute('value');
-    expect(redirect).toContain('/gracias/');
+    // Web3Forms redirige desde su servidor: una ruta relativa no funcionaría.
+    // Comprobar solo que contiene '/gracias/' dejaría pasar esa regresión.
+    expect(redirect).toMatch(/^https:\/\/mipc\.com\.co\/gracias\/$/);
   });
 
   it('tiene honeypot antispam oculto', () => {
@@ -2473,7 +2480,7 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
 <form action="https://api.web3forms.com/submit" method="POST" class="grid gap-4">
   <input type="hidden" name="access_key" value={clave} />
   <input type="hidden" name="redirect" value={gracias} />
-  <input type="hidden" name="subject" value="Nueva solicitud desde mipc.com.co" />
+  <input type="hidden" name="subject" value={`Nueva solicitud desde ${new URL(empresa.url).host}`} />
   <input type="hidden" name="ccemail" value={empresa.emailCopia} />
   <input type="hidden" name="from_name" value={empresa.nombre} />
   <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />

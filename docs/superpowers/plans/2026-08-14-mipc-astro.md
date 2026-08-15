@@ -2759,6 +2759,8 @@ Expected: FAIL.
 
 - [ ] **Step 4: Escribir el layout de entrada**
 
+**`timeZone: 'UTC'` no es opcional.** `fecha` se parsea como medianoche UTC; sin fijar la zona, `toLocaleDateString` la convierte a la hora local y en Colombia (UTC-5) toda fecha retrocede un día. Todas las entradas quedarían mal fechadas, de forma silenciosa y permanente.
+
 `src/layouts/Entrada.astro`:
 
 ```astro
@@ -2769,7 +2771,7 @@ import { article, breadcrumb } from '../lib/jsonld';
 const { entrada } = Astro.props;
 const d = entrada.data;
 const url = new URL(Astro.url.pathname, Astro.site).href;
-const fecha = d.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+const fecha = d.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 const jsonld = [
   article({ titulo: d.titulo, descripcion: d.metaDescription, url, fecha: d.fecha }),
@@ -2831,7 +2833,7 @@ const entradas = (await getCollection('blog'))
       {entradas.map((e) => (
         <article class="border-t border-borde pt-6">
           <time datetime={e.data.fecha.toISOString()} class="cifra text-xs uppercase tracking-widest text-tinta-2">
-            {e.data.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}
+            {e.data.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}
           </time>
           <h2 class="mt-2 text-2xl font-semibold">
             <a href={`/blog/${e.id}/`} class="hover:text-senal">{e.data.titulo}</a>

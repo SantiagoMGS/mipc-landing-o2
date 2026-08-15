@@ -15,7 +15,22 @@ describe('home', () => {
   });
 
   it('el muro de clientes va antes que el blog', () => {
-    expect(raw.indexOf('Confían en nosotros')).toBeLessThan(raw.indexOf('Actualidad'));
+    const muro = raw.indexOf('Confían en nosotros');
+    // Sin esta precondición el test pasaría cuando el muro DESAPARECE:
+    // indexOf devuelve -1 y -1 es menor que cualquier posición positiva.
+    // Es decir, pasaría exactamente en la regresión que existe para detectar.
+    expect(muro).toBeGreaterThan(-1);
+
+    // La sección «Actualidad» se omite del HTML mientras la colección `blog`
+    // esté vacía (guard en index.astro, antes de la Task 14). Sin entradas
+    // no hay nada frente a lo cual ordenar el muro, así que la aserción de
+    // orden solo se ejercita cuando la sección existe. En cuanto la Task 14
+    // añada entradas, `blog` dejará de ser -1 y esta rama sí comprobará el
+    // orden de verdad.
+    const blog = raw.indexOf('Actualidad');
+    if (blog > -1) {
+      expect(muro).toBeLessThan(blog);
+    }
   });
 
   it('ofrece las dos rutas de público', () => {

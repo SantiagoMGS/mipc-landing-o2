@@ -648,7 +648,7 @@ import Base from '../layouts/Base.astro';
 ---
 <Base
   title="Soporte TI Empresarial en Medellín | MiPC Tecnología"
-  metaDescription="Soporte TI, redes de datos, CCTV y alquiler de equipos para empresas en Medellín. Más de 15 años atendiendo emisoras, IPS e instituciones educativas."
+  metaDescription="Soporte TI, redes de datos, CCTV y alquiler de equipos para empresas en Medellín. Atendemos emisoras, IPS e instituciones educativas desde 2009."
 >
   <h1>MiPC Tecnología</h1>
 </Base>
@@ -1947,7 +1947,14 @@ describe('home', () => {
   });
 
   it('el muro de clientes va antes que el blog', () => {
-    expect(raw.indexOf('Confían en nosotros')).toBeLessThan(raw.indexOf('Actualidad'));
+    const muro = raw.indexOf('Confían en nosotros');
+    const blog = raw.indexOf('Actualidad');
+    // Sin estas dos precondiciones el test pasa cuando el muro DESAPARECE:
+    // indexOf devuelve -1 y -1 es menor que cualquier posición. Es decir,
+    // pasaría exactamente en la regresión que existe para detectar.
+    expect(muro).toBeGreaterThan(-1);
+    expect(blog).toBeGreaterThan(-1);
+    expect(muro).toBeLessThan(blog);
   });
 
   it('ofrece las dos rutas de público', () => {
@@ -2021,6 +2028,7 @@ const entradas = (await getCollection('blog'))
     </div>
   </section>
 
+  {entradas.length > 0 && (
   <section class="mx-auto max-w-6xl px-5 pb-20">
     <h2 class="text-3xl font-semibold">Actualidad</h2>
     <ul class="mt-8 grid gap-6 sm:grid-cols-3">
@@ -2032,6 +2040,7 @@ const entradas = (await getCollection('blog'))
       ))}
     </ul>
   </section>
+  )}
 </Base>
 ```
 

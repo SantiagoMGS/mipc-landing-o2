@@ -2088,6 +2088,7 @@ git commit -m "feat: home reenfocada a B2B con cifras y muro de clientes arriba"
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { parse } from 'node-html-parser';
+import { empresa } from '../src/data/empresa';
 
 describe('páginas estáticas', () => {
   it('todas existen y tienen una sola h1', () => {
@@ -2107,7 +2108,18 @@ describe('páginas estáticas', () => {
   it('recursos enlaza a los sitios oficiales', () => {
     const html = readFileSync('dist/recursos/index.html', 'utf-8');
     expect(html).toContain('anydesk.com');
+    expect(html).toContain('deskin.io');
     expect(html).toContain('crystalmark.info');
+  });
+
+  it('garantías publica la dirección canónica, no una copia vieja', () => {
+    // Esta página fue la que destapó que había dos direcciones en circulación.
+    // Sin esta aserción, una edición futura podría volver a desincronizarla
+    // sin que nada fallara.
+    const html = readFileSync('dist/garantias/index.html', 'utf-8');
+    expect(html).toContain(empresa.direccion.calle);
+    expect(html).not.toContain('87A');
+    expect(html).not.toContain('34-26');
   });
 
   it('la 404 ofrece salida a los servicios', () => {
@@ -2150,7 +2162,7 @@ const herramientas = [
     <ul class="mt-10 space-y-4">
       {herramientas.map((h) => (
         <li class="border border-borde border-l-4 border-l-senal bg-superficie p-5">
-          <a href={h.url} rel="noopener nofollow" class="font-semibold hover:text-senal">
+          <a href={h.url} target="_blank" rel="noopener noreferrer nofollow" class="font-semibold hover:text-senal">
             {h.nombre}
           </a>
           <p class="mt-1 text-sm text-tinta-2">{h.descripcion}</p>

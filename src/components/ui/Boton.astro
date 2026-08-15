@@ -3,7 +3,7 @@ interface Props { href: string; variante?: 'senal' | 'ancla' | 'borde'; }
 const { href, variante = 'senal' } = Astro.props;
 const estilos = {
   senal: 'bg-senal-fuerte text-white hover:bg-senal-oscuro',
-  ancla: 'bg-ancla text-white hover:bg-[#162c36]',
+  ancla: 'bg-ancla text-white hover:bg-ancla-oscuro',
   borde: 'border border-borde bg-superficie text-tinta hover:border-senal hover:text-senal',
 };
 ---

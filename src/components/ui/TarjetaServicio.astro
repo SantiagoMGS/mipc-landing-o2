@@ -1,16 +1,29 @@
 ---
+import type { CollectionEntry } from 'astro:content';
+
 export interface Props {
-  servicio: { id: string; data: { titulo: string; resumen: string; publico: string } };
+  servicio: CollectionEntry<'servicios'>;
 }
 const { servicio } = Astro.props;
-const etiqueta = { empresa: 'Empresas', persona: 'Personas', ambos: 'Empresas y personas' };
+
+/**
+ * Tipar la prop con CollectionEntry en vez de una forma estructural suelta
+ * conecta esta etiqueta con el enum del esquema. Sin eso, añadir un cuarto
+ * valor a `publico` en schemas.ts no rompería nada: saldría una etiqueta
+ * vacía en silencio. Así falla la compilación, que es lo que queremos.
+ */
+const etiqueta: Record<CollectionEntry<'servicios'>['data']['publico'], string> = {
+  empresa: 'Empresas',
+  persona: 'Personas',
+  ambos: 'Empresas y personas',
+};
 ---
 <a
   href={`/servicios/${servicio.id}/`}
   class="group flex flex-col gap-3 border border-borde border-l-4 border-l-borde bg-superficie p-6 transition-colors hover:border-l-senal"
 >
   <span class="cifra text-xs uppercase tracking-widest text-tinta-2">
-    {etiqueta[servicio.data.publico as keyof typeof etiqueta]}
+    {etiqueta[servicio.data.publico]}
   </span>
   <h3 class="text-xl font-semibold group-hover:text-senal">{servicio.data.titulo}</h3>
   <p class="text-sm text-tinta-2">{servicio.data.resumen}</p>

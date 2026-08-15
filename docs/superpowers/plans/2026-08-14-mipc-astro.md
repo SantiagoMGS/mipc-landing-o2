@@ -3049,6 +3049,7 @@ Segundo, un test que mire la SALIDA compilada, no el archivo intermedio:
     expect(salida).toHaveLength(redirecciones.length);
     expect(salida.every((l) => l.endsWith(' 301'))).toBe(true);
   });
+```
 
 - [ ] **Step 6: Ejecutar los tests y generar**
 

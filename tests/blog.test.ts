@@ -17,8 +17,21 @@ describe('blog', () => {
     expect(tipos).toContain('Article');
   });
 
-  it('las fechas se muestran en español, no en inglés', () => {
-    const html = readFileSync('dist/blog/index.html', 'utf-8');
-    expect(html).not.toMatch(/January|April|August/);
+  it('las fechas se muestran en español en el índice Y en las entradas', () => {
+    // La lista debe cubrir los doce meses: una versión anterior omitía July,
+    // justo el mes de una de las tres entradas, así que una regresión de
+    // locale en esa fecha habría pasado sin detectarse.
+    const MESES_EN = /January|February|March|April|May|June|July|August|September|October|November|December/;
+    const paginas = [
+      'dist/blog/index.html',
+      'dist/blog/mantenimiento-preventivo-empresas/index.html',
+      'dist/blog/alquilar-o-comprar-computadores/index.html',
+      'dist/blog/camaras-seguridad-que-preguntar/index.html',
+    ];
+    for (const p of paginas) {
+      const html = readFileSync(p, 'utf-8');
+      expect(html, p).not.toMatch(MESES_EN);
+      expect(html, p).toMatch(/de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre) de \d{4}/);
+    }
   });
 });

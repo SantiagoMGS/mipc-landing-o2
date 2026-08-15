@@ -1,11 +1,12 @@
 ---
 import Base from './Base.astro';
 import { article, breadcrumb } from '../lib/jsonld';
+import { formatearFecha } from '../lib/fecha';
 
 const { entrada } = Astro.props;
 const d = entrada.data;
 const url = new URL(Astro.url.pathname, Astro.site).href;
-const fecha = d.fecha.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const fecha = formatearFecha(d.fecha);
 
 const jsonld = [
   article({ titulo: d.titulo, descripcion: d.metaDescription, url, fecha: d.fecha }),

@@ -1601,7 +1601,7 @@ un requisito de cumplimiento.
 ---
 titulo: Redes de Datos
 h1: Redes de datos y cableado estructurado en Medellín
-metaTitle: Redes de Datos y Cableado Estructurado en Medellín | MiPC Tecnología
+metaTitle: Redes de Datos y Cableado en Medellín | MiPC Tecnología
 metaDescription: Diseño, instalación y administración de redes de datos y eléctricas para empresas en Medellín. Cableado estructurado y puntos de red certificados.
 resumen: Diseño, instalación y administración de redes de datos y eléctricas.
 publico: empresa
@@ -1629,7 +1629,7 @@ puede mantener quien la hizo, y eso es exactamente el problema que resolvemos.
 ---
 titulo: Alquiler de Computadores
 h1: Alquiler de computadores para empresas en Medellín
-metaTitle: Alquiler de Computadores para Empresas en Medellín | MiPC Tecnología
+metaTitle: Alquiler de Computadores en Medellín | MiPC Tecnología
 metaDescription: Alquiler de computadores y portátiles por contrato en Medellín, con soporte técnico, mantenimiento periódico y reposición de equipos incluida.
 resumen: Equipos por contrato, con soporte, mantenimiento y reposición incluidos.
 publico: empresa
@@ -2591,7 +2591,7 @@ inversión inicial no compromete el flujo de caja.
 ```markdown
 ---
 titulo: Qué preguntarle a quien te instala las cámaras de seguridad
-metaTitle: Qué Preguntar al Instalar Cámaras de Seguridad | MiPC Tecnología
+metaTitle: Qué Preguntar al Instalar Cámaras CCTV | MiPC Tecnología
 metaDescription: Las preguntas que debes hacerle a un instalador de CCTV antes de contratar: certificación de alturas, documentación, garantía y quién puede mantener el sistema.
 fecha: 2026-07-31
 resumen: Cuatro preguntas que separan a un instalador serio de uno que te deja atado.

@@ -10,11 +10,15 @@
 
 MiPC Tecnología es una empresa de servicios TI de Medellín, fundada en 2009, con sede en Laureles (**Carrera 66A # 34-48, Interior 101**).
 
-> **Corregido durante la ejecución (ruling T12-1).** Este documento decía «Carrera 87A #32-81, Interior 305», tomada de fuentes externas. La página de garantías del sitio vivo publicaba una tercera, «Cr 66A #34-26». Consultado el cliente, ninguna de las dos era correcta. Se deja constancia porque la consistencia del NAP es el factor central del posicionamiento local y quien re-derive desde este spec debe partir de la dirección real. Vende reparación de computadores, cámaras de seguridad, redes de datos, alquiler de equipos y mesas de ayuda, con una base de clientes mayoritariamente corporativa: emisoras, IPS, instituciones educativas y firmas de ingeniería.
+> **Corregido durante la ejecución (ruling T12-1).** Este documento decía «Carrera 87A #32-81, Interior 305», tomada de fuentes externas. La página de garantías del sitio vivo publicaba una tercera, «Cr 66A #34-26». Consultado el cliente, ninguna de las dos era correcta. Se deja constancia porque la consistencia del NAP es el factor central del posicionamiento local y quien re-derive desde este spec debe partir de la dirección real.
+
+Vende reparación de computadores, cámaras de seguridad, redes de datos, alquiler de equipos y mesas de ayuda, con una base de clientes mayoritariamente corporativa: emisoras, IPS, instituciones educativas y firmas de ingeniería.
 
 El sitio actual corre WordPress 6.1.12 con Elementor Pro sobre el tema Twenty Twenty-One, alojado en Hostinger con PHP 8.0.30. No se ha tocado desde abril de 2023 y **no hay nadie en la empresa que pueda administrarlo**.
 
-La auditoría encontró seis fallos críticos, entre ellos que el botón principal del servicio estrella lleva a la página equivocada, que el contenido se desborda de la pantalla en móvil y que no existe ninguna herramienta de medición instalada.
+La auditoría encontró seis fallos críticos, entre ellos que el botón principal del servicio estrella lleva a la página equivocada, que el teléfono de la cabecera queda tapado en móvil y el hero no se renderiza, y que no existe ninguna herramienta de medición instalada.
+
+> **Corregido.** Una versión anterior de este párrafo afirmaba que el contenido «se desborda de la pantalla en móvil». Medido después con emulación de dispositivo real, el contenido ocupa 390 px en un viewport de 390 px: no hay desbordamiento. El error estaba en el método de captura, no en el sitio.
 
 ### El diagnóstico de fondo
 

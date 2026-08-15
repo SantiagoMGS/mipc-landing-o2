@@ -1606,7 +1606,7 @@ sigue hasta el cierre, no hasta la primera respuesta.
 titulo: Reparación de Computadores
 h1: Reparación de computadores en Medellín
 metaTitle: Reparación de Computadores en Medellín | MiPC Tecnología
-metaDescription: Reparación y mantenimiento de computadores en Medellín: pantallas, discos, formateo, virus y rescate de información. Atendemos personas y empresas.
+metaDescription: "Reparación y mantenimiento de computadores en Medellín: pantallas, discos, formateo, virus y rescate de información. Atendemos personas y empresas."
 resumen: Reparación y mantenimiento preventivo y correctivo, para personas y empresas.
 publico: ambos
 orden: 2
@@ -1878,7 +1878,7 @@ import TarjetaServicio from '../../components/ui/TarjetaServicio.astro';
 const servicios = (await getCollection('servicios')).sort((a, b) => a.data.orden - b.data.orden);
 ---
 <Base
-  title="Servicios de Tecnología para Empresas en Medellín | MiPC Tecnología"
+  title="Servicios de Tecnología en Medellín | MiPC Tecnología"
   metaDescription="Soporte TI, reparación de computadores, cámaras de seguridad, redes de datos y alquiler de equipos para empresas del área metropolitana de Medellín."
 >
   <div class="mx-auto max-w-6xl px-5 py-16">
@@ -2654,7 +2654,7 @@ inversión inicial no compromete el flujo de caja.
 ---
 titulo: Qué preguntarle a quien te instala las cámaras de seguridad
 metaTitle: Qué Preguntar al Instalar Cámaras CCTV | MiPC Tecnología
-metaDescription: Las preguntas que debes hacerle a un instalador de CCTV antes de contratar: certificación de alturas, documentación, garantía y quién puede mantener el sistema.
+metaDescription: "Las preguntas que debes hacerle a un instalador de CCTV antes de contratar: certificación de alturas, documentación, garantía y quién puede mantener el sistema."
 fecha: 2026-07-31
 resumen: Cuatro preguntas que separan a un instalador serio de uno que te deja atado.
 ---
@@ -3009,6 +3009,9 @@ for (const ruta of paginas) {
   const title = doc.querySelector('title')?.text ?? '';
   if (title.includes('mipc.com.co')) en('el title contiene el dominio en vez de la marca');
   if (!title.endsWith('| MiPC Tecnología')) en(`el title no termina en la marca: "${title}"`);
+  // Las páginas que pasan `title` como prop no atraviesan el esquema Zod,
+  // así que el límite de longitud solo existe aquí para ellas.
+  if (title.length > 65) en(`title de ${title.length} caracteres, Google lo truncará: "${title}"`);
 
   // SEO-07: alt en toda imagen
   for (const img of doc.querySelectorAll('img')) {

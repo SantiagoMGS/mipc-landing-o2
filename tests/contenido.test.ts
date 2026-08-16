@@ -176,3 +176,64 @@ describe('español de Colombia', () => {
     expect(hallazgos, `\n${hallazgos.join('\n')}\n`).toHaveLength(0);
   });
 });
+
+/**
+ * Escalares de YAML sin comillas que contienen `: ` o ` #`.
+ *
+ * Dos fallos distintos, y el segundo es el que justifica este test.
+ *
+ * Un `: ` dentro de un escalar suelto —«la recogida es gratis: no está
+ * condicionada»— rompe el análisis y el build falla. Es ruidoso, pero el error
+ * de js-yaml solo da línea y columna DEL BLOQUE de frontmatter, sin nombrar el
+ * archivo ni el campo, así que cuesta encontrarlo. El 2026-08-16 costó tres
+ * intentos.
+ *
+ * Un ` #` precedido de espacio abre un comentario y **no falla**: se publica el
+ * valor truncado. Ese mismo día, la dirección «Carrera 66A # 34-48, Interior
+ * 101» de una respuesta de FAQ se habría publicado como «Carrera 66A», sin
+ * error y sin que nada lo notara. En una ficha local eso es media dirección
+ * contradiciendo a la de Google Business Profile, que es de las peores señales
+ * que se pueden emitir.
+ *
+ * La corrección en los dos casos es la misma: comillas dobles.
+ */
+describe('frontmatter de todo el contenido', () => {
+  const dirs = ['servicios', 'blog', 'proyectos', 'clientes', 'paginas'];
+
+  const archivos = dirs.flatMap((d) =>
+    readdirSync(`src/content/${d}`)
+      .filter((f) => f.endsWith('.md'))
+      .map((f) => `src/content/${d}/${f}`)
+  );
+
+  it('encuentra archivos que revisar', () => {
+    expect(archivos.length).toBeGreaterThan(10);
+  });
+
+  it('no deja escalares sin comillas con «: » o « #» dentro', () => {
+    const fallos: string[] = [];
+
+    for (const ruta of archivos) {
+      // `\r\n` → `\n` antes de partir. En Windows el árbol de trabajo está en
+      // CRLF, y sin esto cada línea termina en `\r`: `indexOf('---')` no
+      // encuentra el cierre del frontmatter, `fin` queda en -1 y el bucle se
+      // salta TODOS los archivos. La primera versión de este test pasaba sin
+      // mirar nada, que es la peor forma de fallar que tiene un test.
+      const lineas = readFileSync(ruta, 'utf-8').replace(/\r\n/g, '\n').split('\n');
+      const fin = lineas.indexOf('---', 1);
+      expect(fin, `${ruta}: no se encontró el cierre del frontmatter`).toBeGreaterThan(0);
+
+      lineas.slice(0, fin).forEach((linea, i) => {
+        // `clave: valor` y también `- elemento` de una secuencia.
+        const m = /^\s*-?\s*\w+:\s+(.*)$/.exec(linea) ?? /^\s*-\s+(?!\w+:)(.*)$/.exec(linea);
+        const valor = m?.[1];
+        if (!valor || /^["'|>]/.test(valor)) return;
+
+        if (valor.includes(': ')) fallos.push(`${ruta}:${i + 1} «: » sin comillas — rompe el build: ${valor.slice(0, 60)}`);
+        if (/\s#/.test(valor)) fallos.push(`${ruta}:${i + 1} « #» sin comillas — se publica TRUNCADO: ${valor.slice(0, 60)}`);
+      });
+    }
+
+    expect(fallos, `\n${fallos.join('\n')}\n`).toEqual([]);
+  });
+});

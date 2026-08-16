@@ -18,7 +18,7 @@ beneficios:
   - Recogemos y devolvemos tu equipo gratis, máximo un día hábil
   - Diagnóstico por $25.000, que se abonan a la reparación si la autorizas
   - Garantía de 30 días sobre la mano de obra
-  - Cualquier marca, incluido Apple
+  - "Cualquier marca: HP, Lenovo, Dell, Asus, Acer, Apple y ensamblados"
   - Cambio de pantallas y discos duros
   - Eliminación de virus y reinstalación de sistema operativo
   - Rescate de información
@@ -38,7 +38,9 @@ faq:
     # no menciona ni el campo ni el archivo de contenido, solo línea y columna.
     respuesta: "Pagas solo el diagnóstico y te devolvemos el equipo con un informe de qué tiene. La recogida y la entrega siguen siendo gratis: no están condicionadas a que autorices la reparación."
   - pregunta: ¿Reparan Mac?
-    respuesta: Sí. Atendemos cualquier marca, incluidos los equipos Apple.
+    respuesta: Sí. Atendemos cualquier marca, incluidos los equipos Apple — MacBook Air, MacBook Pro e iMac.
+  - pregunta: ¿Reparan portátiles HP, Lenovo, Dell, Asus o Acer?
+    respuesta: Sí, y cualquier otra marca. Trabajamos con HP, Lenovo, Dell, Asus, Acer, Toshiba, Samsung, MSI, Huawei, Apple y equipos ensamblados. No hay lista cerrada de fabricantes ni derivamos a servicios autorizados.
   - pregunta: ¿Puedo recuperar la información de un disco dañado?
     respuesta: En la mayoría de los casos sí. El diagnóstico determina si la falla es lógica o física y qué porcentaje de la información es recuperable.
   - pregunta: ¿Qué garantía tiene la reparación?
@@ -144,12 +146,29 @@ es lógica —el disco está bien pero el sistema de archivos no— o física, y
 porcentaje de la información es recuperable. Te lo decimos antes de cobrar
 nada por el rescate, no después.
 
-## Cualquier marca, incluido Apple
+## Qué marcas reparamos
 
-Atendemos cualquier marca de computador de escritorio, portátil y todo en uno,
-incluidos los equipos Apple. No trabajamos con una lista cerrada de fabricantes
-ni derivamos a nadie a un servicio autorizado por el logotipo que traiga el
-equipo.
+**Todas.** Trabajamos con cualquier marca de computador de escritorio, portátil
+y todo en uno, y no derivamos a nadie a un servicio autorizado por el logotipo
+que traiga el equipo.
+
+En la práctica, las que más entran al taller son estas:
+
+- **HP** — portátiles, todo en uno y equipos de escritorio
+- **Lenovo** — incluidas las líneas ThinkPad e IdeaPad
+- **Dell** — Inspiron, Vostro, Latitude
+- **Asus** y **Acer** — portátiles de consumo y equipos para juegos
+- **Apple** — MacBook Air, MacBook Pro e iMac
+- **Toshiba**, **Samsung**, **MSI** y **Huawei**
+- **Equipos ensamblados**, que en un escritorio son la mitad de lo que llega
+
+Que la lista no sea cerrada importa más de lo que parece. Un portátil de marca
+poco común, uno descontinuado o uno ensamblado por pieza suele ser justo el que
+nadie quiere recibir, y es donde el cliente termina oyendo «eso ya no tiene
+arreglo» cuando lo que pasa es que conseguir el repuesto da trabajo. Acá el
+diagnóstico se hace igual y, si el repuesto existe, se consigue; si de verdad no
+existe, te lo decimos con el informe en la mano y no después de tenerte el
+equipo tres semanas.
 
 ## Cuánto tarda
 

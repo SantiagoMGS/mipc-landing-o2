@@ -116,6 +116,9 @@ pestañas, encuentra «consulta sin compromiso» en las tres, y termina llamando
 para preguntar lo mismo que podría haber leído. La ambigüedad no protege el
 margen: solo hace perder una tarde a las dos partes.
 
+**Si no vale la pena repararlo, te lo decimos.** Preferimos perder una
+reparación antes que cobrarte por un equipo que no la merece.
+
 En orden, el proceso completo es este:
 
 1. Nos escribes por WhatsApp y cuentas qué le pasa al equipo.

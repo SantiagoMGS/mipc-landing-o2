@@ -5,6 +5,7 @@ import Cifra from '../components/ui/Cifra.astro';
 import Boton from '../components/ui/Boton.astro';
 import Figura from '../components/ui/Figura.astro';
 import { empresa } from '../data/empresa';
+import { breadcrumb } from '../lib/jsonld';
 import fotoCableadoExterior from '../assets/fotos/tecnico-cableado-exterior.jpg';
 
 const clientes = await getCollection('clientes');
@@ -16,10 +17,18 @@ const servicios = await getCollection('servicios');
 const anios = new Date().getFullYear() - empresa.fundacion;
 const empresasAtendidas = clientes.length;
 const lineasDeServicio = servicios.length;
+
+const jsonld = [
+  breadcrumb([
+    { nombre: 'Inicio', url: new URL('/', Astro.site).href },
+    { nombre: 'Nosotros', url: new URL('/nosotros/', Astro.site).href },
+  ]),
+];
 ---
 <Base
   title="Nosotros: Empresa de Soporte TI en Medellín | MiPC Tecnología"
   metaDescription="MiPC Tecnología es una empresa colombiana fundada en 2009 en Medellín, especializada en soporte TI, redes, CCTV y alquiler de equipos para organizaciones."
+  {jsonld}
 >
   <div class="mx-auto max-w-3xl px-5 py-16">
     <h1 class="text-4xl font-semibold">Una empresa de Medellín, desde {empresa.fundacion}</h1>

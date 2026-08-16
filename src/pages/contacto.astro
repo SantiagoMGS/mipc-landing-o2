@@ -4,10 +4,22 @@ import Formulario from '../components/ui/Formulario.astro';
 import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
 import { empresa } from '../data/empresa';
 import { franja } from '../lib/horario';
+import { breadcrumb } from '../lib/jsonld';
+
+// Las páginas de servicio y de proyecto ya emitían BreadcrumbList y estas dos
+// no, sin más motivo que el orden en que se construyeron. La función ya
+// existía; la inconsistencia era gratuita.
+const jsonld = [
+  breadcrumb([
+    { nombre: 'Inicio', url: new URL('/', Astro.site).href },
+    { nombre: 'Contacto', url: new URL('/contacto/', Astro.site).href },
+  ]),
+];
 ---
 <Base
   title="Contacto: Soporte TI en Medellín | MiPC Tecnología"
   metaDescription="Escríbenos para cotizar soporte TI, redes, cámaras de seguridad o alquiler de equipos en Medellín. Atención por WhatsApp, teléfono y correo."
+  {jsonld}
 >
   <div class="mx-auto grid max-w-6xl gap-12 px-5 py-16 lg:grid-cols-2">
     <div>

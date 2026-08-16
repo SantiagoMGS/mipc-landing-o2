@@ -60,6 +60,37 @@ export const empresa = Object.freeze({
     'Medellín', 'Envigado', 'Sabaneta', 'Itagüí', 'Bello', 'La Estrella',
   ]),
 
+  /**
+   * Coordenadas de la sede, para la propiedad `geo` del schema.
+   *
+   * Copiadas del pin de la ficha de Google Business Profile —la misma que
+   * enlaza `fichaGoogle`— y confirmadas por el cliente el 2026-08-15. Ese
+   * origen es el que importa: el sitio y la ficha tienen que decir lo mismo,
+   * igual que con el horario. Si el pin se mueve, esto se mueve.
+   *
+   * NO estimarlas a partir de la dirección si algún día hay que rehacerlas.
+   * La numeración de Medellín sitúa «Carrera 66A # 34-48» con un margen de un
+   * par de manzanas, y una coordenada que contradice al pin es peor señal que
+   * no publicar ninguna: `localBusiness()` omite `geo` si esto es null, y esa
+   * salida es preferible a inventarse el dato.
+   *
+   * Seis decimales, no los quince que da el navegador: el sexto ya vale unos
+   * 11 cm. Los demás son ruido de coma flotante presentado como precisión.
+   */
+  coordenadas: { lat: 6.240407, lng: -75.586452 } as { lat: number; lng: number } | null,
+
+  /**
+   * `priceRange` en la notación que Google espera para LocalBusiness:
+   * símbolos, no cifras.
+   *
+   * Se resiste la tentación de poner «$25.000». Eso es el precio del
+   * diagnóstico de un servicio concreto —reparación de computadores— y en
+   * esta propiedad se leería como el rango de precios de toda la empresa,
+   * que también instala redes y CCTV por contrato. Sería un dato cierto en
+   * el sitio equivocado, y de esos se sacan conclusiones falsas.
+   */
+  rangoPrecios: '$$',
+
   redes: Object.freeze({
     facebook: 'https://www.facebook.com/mipctecnologiasas',
     instagram: 'https://www.instagram.com/mipc.com.co/',

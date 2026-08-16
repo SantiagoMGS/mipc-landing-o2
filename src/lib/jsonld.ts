@@ -24,6 +24,28 @@ export function localBusiness() {
     telephone: empresa.telefonoE164,
     email: empresa.email,
     foundingDate: String(empresa.fundacion),
+    // Propiedad recomendada por Google para LocalBusiness. Se reutiliza la
+    // imagen social del sitio en vez de importar una del directorio de
+    // assets: `src/assets/` lleva el nombre con hash del build y esta
+    // función no está dentro del grafo de Astro, así que no puede resolverlo.
+    // `public/og-default.jpg` tiene URL estable, que es lo que el schema pide.
+    image: new URL('/og-default.jpg', empresa.url).href,
+    priceRange: empresa.rangoPrecios,
+    // Enlace directo al mapa. El CID ya está en `sameAs`, pero `hasMap` es la
+    // propiedad que Google lee como «esta es su ficha», no como «este es otro
+    // perfil suyo».
+    hasMap: empresa.fichaGoogle,
+    // Solo si están confirmadas contra el pin de la ficha (ver empresa.ts).
+    // Omitir `geo` no cuesta nada; publicarla mal contradice a la ficha.
+    ...(empresa.coordenadas
+      ? {
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: empresa.coordenadas.lat,
+            longitude: empresa.coordenadas.lng,
+          },
+        }
+      : {}),
     address: {
       '@type': 'PostalAddress',
       streetAddress: empresa.direccion.calle,

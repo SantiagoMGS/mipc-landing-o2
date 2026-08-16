@@ -23,7 +23,7 @@
 import { readFileSync } from 'node:fs';
 import { Resolver, promises as dnsPromises } from 'node:dns';
 
-const ZONA = 'docs/dns/zona-mipc.com.co-2026-08-15.txt';
+const ZONA = 'docs/dns/zona-mipc.com.co-2026-08-16.txt';
 const DOMINIO = 'mipc.com.co';
 
 /**
@@ -35,11 +35,28 @@ const DOMINIO = 'mipc.com.co';
 const DEL_SITIO = new Set(['@|A', 'www|CNAME']);
 
 /**
- * Registros que se pueden perder sin consecuencia. `pruebaapp` tiene toda la
- * pinta de una verificación de propiedad que alguien dejó puesta hace años.
- * Se avisa, no se falla: que la decisión de dejarlo caer sea consciente.
+ * Registros cuya ausencia se avisa pero no se trata como fallo.
+ *
+ * `pruebaapp` tiene toda la pinta de una verificación de propiedad que alguien
+ * dejó puesta hace años.
+ *
+ * El bloque `coopebello` es un correo alojado en Hostinger sobre subdominio
+ * que el cliente decidió el 2026-08-16 no migrar: se deja morir con el corte.
+ * Está aquí y no borrado del archivo de zona a propósito — si la ausencia se
+ * volviera un problema, `docs/dns/zona-mipc.com.co-2026-08-16.txt` conserva
+ * los valores exactos para recrearlo. Que se avise en cada ejecución hace que
+ * la decisión siga siendo visible en vez de convertirse en un olvido.
  */
-const PRESCINDIBLES = new Set(['pruebaapp|TXT']);
+const PRESCINDIBLES = new Set([
+  'pruebaapp|TXT',
+  'coopebello|MX',
+  'coopebello|TXT',
+  'autoconfig.coopebello|CNAME',
+  'autodiscover.coopebello|CNAME',
+  'hostingermail-a._domainkey.coopebello|CNAME',
+  'hostingermail-b._domainkey.coopebello|CNAME',
+  'hostingermail-c._domainkey.coopebello|CNAME',
+]);
 
 /** Tipos que cambian por definición al mover la zona; compararlos no informa. */
 const IGNORADOS = new Set(['NS', 'SOA']);

@@ -32,5 +32,5 @@ anclada a estructura**. No es un detalle de imagen: en Colombia el trabajo en
 alturas está reglamentado, y una empresa que contrata a alguien sin
 certificación asume la responsabilidad de lo que pase en su predio.
 
-Es la misma razón por la que un criadero, una bodega o una nave industrial son
+Es la misma razón por la que un criadero, una bodega o una planta industrial son
 trabajos distintos de instalar una cámara en una casa.

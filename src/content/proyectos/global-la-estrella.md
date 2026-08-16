@@ -11,7 +11,7 @@ servicios:
   - redes-de-datos
   - soporte-ti-empresarial
 reto: >-
-  Una nave industrial no perdona improvisaciones: las alturas son grandes, la placa es de concreto reticular y todo lo que se tienda queda a la vista y sometido a vibración, polvo y maniobras de montacargas durante años.
+  Una planta industrial no perdona improvisaciones: las alturas son grandes, la placa es de concreto reticular y todo lo que se tienda queda a la vista y sometido a vibración, polvo y maniobras de montacargas durante años.
 solucion: >-
   Canalización en tubería metálica y ducto galvanizado fijada bajo la placa reticular, con las acometidas llevadas en tubería hasta los tableros de distribución, cada tramo sujeto con abrazaderas y las cajas de paso accesibles.
 resultado: >-
@@ -19,7 +19,7 @@ resultado: >-
 orden: 4
 ---
 
-En una nave industrial la instalación queda expuesta. No hay cielo raso que
+En una planta industrial la instalación queda expuesta. No hay cielo raso que
 tape un tramo torcido, y lo que se monta convive con vibración, polvo y el
 tráfico de montacargas durante años.
 

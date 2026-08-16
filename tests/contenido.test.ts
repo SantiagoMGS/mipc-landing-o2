@@ -77,3 +77,102 @@ describe('fotosPorServicio (src/data/fotos-servicios.ts)', () => {
     }
   });
 });
+
+/**
+ * El sitio está en `es-CO` y lo lee gente de Medellín. Un término de España
+ * hace dos daños a la vez: suena importado —lo que resta credibilidad justo
+ * en las páginas que deben transmitir oficio— y no lo busca nadie aquí, así
+ * que la palabra que se posiciona es la que no está escrita.
+ *
+ * Se detectó con «nave industrial», que estaba en dos proyectos. En uno de
+ * ellos la propia página ya decía «planta industrial» en su meta description
+ * y «la planta» en el cuerpo: el texto se contradecía consigo mismo y aun así
+ * nada falló, porque ninguna comprobación miraba el vocabulario.
+ *
+ * La lista es corta a propósito. Solo entran términos que son inequívocamente
+ * de España Y plausibles en este dominio. Se dejan fuera los ambiguos —«piso»
+ * es correcto aquí para el suelo, «vale» es el verbo valer, «enchufe» se usa
+ * en Colombia— porque un test con falsos positivos se acaba desactivando.
+ */
+describe('español de Colombia', () => {
+  // OJO con los plurales: `industriales?` significa «industriale» más una «s»
+  // opcional, y por tanto NUNCA coincide con «industrial». La primera versión
+  // de esta lista tenía ese error en tres de los ocho patrones y el test pasó
+  // igual, en verde, sin detectar el término que motivó escribirlo. Los
+  // plurales de palabras terminadas en consonante van como `(es)?`.
+  const PENINSULARES: Array<[RegExp, string]> = [
+    [/\bnaves?\s+industrial(es)?\b/i, 'planta industrial / bodega'],
+    [/\bordenador(es)?\b/i, 'computador'],
+    [/\bcuadros?\s+eléctricos?\b/i, 'tablero eléctrico'],
+    [/\bfontaner(o|a|ía)\b/i, 'plomero / plomería'],
+    [/\baparca(r|miento|do)\b/i, 'parquear / parqueadero'],
+    [/\bzumos?\b/i, 'jugo'],
+    [/\bvosotros\b/i, 'ustedes'],
+    [/\bmóvil(es)?\s+(nuevos?|del\s+cliente)\b/i, 'celular'],
+  ];
+
+  // El test de arriba solo demuestra que no hay hallazgos, que es justo lo que
+  // un patrón roto también produce. Este comprueba que los patrones SÍ
+  // coinciden con lo que dicen buscar: sin él, la lista puede degradar a
+  // decorativa sin que nada lo señale.
+  const EJEMPLOS = [
+    'Una nave industrial no perdona improvisaciones',
+    'dos naves industriales en el polígono',
+    'el ordenador del cliente',
+    'varios ordenadores de la oficina',
+    'el cuadro eléctrico de la planta',
+    'trabajo de fontanería',
+    'el aparcamiento del centro',
+    'un zumo de naranja',
+    'vosotros decidís',
+    'el móvil del cliente',
+  ];
+
+  const archivos = (function listar(dir: string): string[] {
+    return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory()
+        ? listar(`${dir}/${e.name}`)
+        : e.name.endsWith('.md')
+          ? [`${dir}/${e.name}`]
+          : []
+    );
+  })('src/content');
+
+  it('encontró contenido que revisar (si esto falla, la ruta cambió)', () => {
+    expect(archivos.length).toBeGreaterThan(15);
+  });
+
+  it('cada patrón coincide de verdad con el término que dice buscar', () => {
+    for (const ejemplo of EJEMPLOS) {
+      const coincide = PENINSULARES.some(([patron]) => patron.test(ejemplo));
+      expect(coincide, `ningún patrón detecta: "${ejemplo}"`).toBe(true);
+    }
+  });
+
+  it('no marca como españolismo el vocabulario correcto en Colombia', () => {
+    // Un test con falsos positivos se acaba desactivando, así que estos casos
+    // fijan lo que NO debe saltar: «piso» es el suelo, «vale» es el verbo
+    // valer y «navegador» empieza por «nave».
+    for (const bueno of [
+      'sentado en el piso de la bodega',
+      'el reconocimiento inmediato vale más',
+      'bloquear la medición desde el navegador',
+      'la planta industrial de Global',
+    ]) {
+      const falsoPositivo = PENINSULARES.find(([patron]) => patron.test(bueno));
+      expect(falsoPositivo?.[1], `falso positivo en: "${bueno}"`).toBeUndefined();
+    }
+  });
+
+  it('no usa términos de España en el contenido publicado', () => {
+    const hallazgos: string[] = [];
+    for (const ruta of archivos) {
+      const texto = readFileSync(ruta, 'utf-8');
+      for (const [patron, alternativa] of PENINSULARES) {
+        const m = texto.match(patron);
+        if (m) hallazgos.push(`${ruta}: "${m[0]}" → usar "${alternativa}"`);
+      }
+    }
+    expect(hallazgos, `\n${hallazgos.join('\n')}\n`).toHaveLength(0);
+  });
+});

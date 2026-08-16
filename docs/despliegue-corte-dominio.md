@@ -11,15 +11,27 @@ esta lista en orden.
 **El proyecto de Cloudflare Pages debe configurarse con el comando de build
 `npm run build`, nunca `astro build` directamente.**
 
-La razón no es una preferencia de estilo: el hook `prebuild` de npm
-(`scripts/generar-redirecciones.mjs`) es quien escribe `public/_redirects` a
-partir de `src/data/redirecciones.ts` en cada build. Ese archivo está en
-`.gitignore` — no existe en el repositorio, solo se genera. Si Cloudflare Pages
-invoca `astro build` en lugar de `npm run build`, el hook `prebuild` nunca se
-ejecuta, `public/_redirects` no se genera, y el sitio se publica con **cero
-redirecciones**. Eso descarta en silencio las 14 URLs de WordPress que hoy
-tienen posicionamiento en buscadores: quien llegue por un enlace o resultado
-viejo recibirá un 404 en vez de un 301 a la página nueva.
+La razón no es una preferencia de estilo. `npm run build` son dos cosas:
+
+```
+"build": "astro build && node scripts/check-html.mjs"
+```
+
+`scripts/check-html.mjs` es el control de calidad que recorre las 18 páginas
+construidas y falla el build si alguna pierde su `h1`, su meta descripción, su
+canónica, su `lang`, o si un `alt` es un nombre de archivo. Son exactamente los
+defectos que tenía el sitio de WordPress. Si Cloudflare invoca `astro build` a
+secas, el sitio se publica igual pero **sin que nadie compruebe nada**: el
+control existe y no corre.
+
+Las redirecciones sí están a salvo de esto. Se generan desde el hook
+`astro:build:done` de `astro.config.mjs`, que vive dentro del propio
+`astro build` y por tanto ningún comando de npm puede saltárselo. Es un cambio
+deliberado respecto del diseño original, que las generaba desde un hook
+`prebuild` de npm — precisamente el que un `astro build` directo sí se salta,
+publicando el sitio con cero redirecciones y mandando a un 404 a todo el que
+llegue por un enlace o resultado viejo. El mecanismo viejo ya no existe; esta
+nota queda porque explica por qué el actual está donde está.
 
 Configuración correcta en Cloudflare Pages:
 - **Build command:** `npm run build`
@@ -81,7 +93,7 @@ En un móvil real, contra la URL de `pages.dev`:
   preset y descartó el comando personalizado —, `dist/_redirects` de todas
   formas se genera ahora vía el hook `astro:build:done` de
   `astro.config.mjs`, pero correr esto contra `pages.dev` es lo que confirma
-  que las 14 reglas realmente están sirviendo, en vez de asumirlo.
+  que las 16 reglas realmente están sirviendo, en vez de asumirlo.
 - [ ] Con `curl -I`, comparar la misma URL con y sin barra final contra
       `pages.dev`, para confirmar qué forma responde 200:
 
@@ -90,10 +102,10 @@ En un móvil real, contra la URL de `pages.dev`:
   curl -I https://<proyecto>.pages.dev/servicios/
   ```
 
-  El proyecto está configurado con `trailingSlash: 'always'` y las 14
+  El proyecto está configurado con `trailingSlash: 'always'` y las 16
   fuentes del mapa de redirecciones terminan todas en `/`. Si la plataforma
   normaliza al revés (sin barra final), tanto las URLs canónicas del sitio
-  nuevo como las 14 redirecciones heredadas de WordPress fallan silenciosamente.
+  nuevo como las 16 redirecciones heredadas de WordPress fallan silenciosamente.
 
 ## Paso 4: Lista de verificación previa al corte
 
@@ -179,7 +191,7 @@ Correr, ya con el dominio en vivo apuntando al sitio nuevo:
 node --experimental-strip-types scripts/check-redirecciones.mjs https://mipc.com.co
 ```
 
-Se espera: las 14 redirecciones definidas en `src/data/redirecciones.ts`
+Se espera: las 16 redirecciones definidas en `src/data/redirecciones.ts`
 responden 301 al destino correcto. Esta invocación concreta, contra
 `https://mipc.com.co`, **no se puede ejecutar antes del corte** — hasta el
 corte ese dominio sigue sirviendo el WordPress viejo, así que correrla antes

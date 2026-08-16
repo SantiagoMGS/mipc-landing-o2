@@ -29,6 +29,14 @@ export const redirecciones: Array<{ de: string; a: string }> = [
   { de: '/home/contacto/', a: '/contacto/' },
   { de: '/home/', a: '/' },
 
+  // Alias de primer nivel de dos entradas del menú actual. NO aparecen en
+  // wp-sitemap.xml —por eso la verificación del 2026-08-14, hecha contra el
+  // sitemap, no las vio— pero responden 200 en el sitio vivo y son las que
+  // muestra el menú, así que son las formas que un enlace externo tendría
+  // más probabilidad de haber copiado. Comprobado con curl el 2026-08-15.
+  { de: '/experiencia/', a: '/clientes/' },
+  { de: '/actualidad/', a: '/blog/' },
+
   { de: '/intel-anuncia-nuevos-procesadores-de-escritorio-core-de-12a-generacion/', a: '/blog/' },
   { de: '/amazon-anuncia-la-adquisicion-de-la-empresa-de-tecnologia-cuantica-psiquantum/', a: '/blog/' },
   { de: '/google-anuncia-actualizaciones-de-sus-productos-de-realidad-virtual-y-aumentada/', a: '/blog/' },

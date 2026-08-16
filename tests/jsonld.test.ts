@@ -15,9 +15,23 @@ describe('localBusiness', () => {
     expect(ld.telephone).toBe('+573148889078');
   });
 
-  it('incluye el horario como openingHoursSpecification', () => {
+  // Las horas exactas están fijadas a propósito, no solo su presencia: este
+  // schema tiene que coincidir con la ficha de Google Business Profile, y una
+  // discrepancia entre los dos es una señal contradictoria para el
+  // posicionamiento local. Si alguien cambia el horario en empresa.ts sin
+  // cambiarlo también en la ficha, que al menos falle aquí y se acuerde.
+  it('incluye el horario confirmado como openingHoursSpecification', () => {
     expect(ld.openingHoursSpecification).toHaveLength(2);
     expect(ld.openingHoursSpecification[0].opens).toBe('08:00');
+    expect(ld.openingHoursSpecification[0].closes).toBe('17:00');
+    expect(ld.openingHoursSpecification[1].opens).toBe('09:00');
+    expect(ld.openingHoursSpecification[1].closes).toBe('13:00');
+  });
+
+  it('enlaza la ficha de Google en sameAs, no solo las redes sociales', () => {
+    // La ficha verificada es la señal de identidad más fuerte que tenemos
+    // para separar esta empresa de las otras cinco llamadas «MiPC».
+    expect(ld.sameAs).toContain('https://www.google.com/maps?cid=15154712519055002689');
   });
 
   it('lista la zona de servicio', () => {

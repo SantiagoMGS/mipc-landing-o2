@@ -28,7 +28,7 @@ export function localBusiness() {
       closes: h.cierra,
     })),
     areaServed: empresa.zonaServicio.map((z) => ({ '@type': 'City', name: z })),
-    sameAs: [empresa.redes.facebook, empresa.redes.instagram],
+    sameAs: [empresa.redes.facebook, empresa.redes.instagram, empresa.fichaGoogle],
   };
 }
 

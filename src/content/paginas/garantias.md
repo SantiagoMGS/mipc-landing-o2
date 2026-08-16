@@ -5,6 +5,23 @@ metaTitle: Políticas y Garantías del Servicio | MiPC Tecnología
 metaDescription: Condiciones de garantía de los servicios de reparación, mantenimiento, instalación y alquiler de equipos de MiPC Tecnología en Medellín.
 ---
 
+<!--
+  AVISO PARA QUIEN EDITE ESTA PÁGINA — no se publica, es un comentario HTML.
+
+  Este articulado es una adaptación de una política MEXICANA. La migración
+  eliminó los dos enlaces al dominio mipc.com.mx que lo delataban y corrigió
+  la razón social, pero NO tocó las cláusulas: hacerlo sin abogado cambiaría
+  obligaciones legales de la empresa.
+
+  Siguen dentro términos que no son colombianos ("días naturales", "ticket",
+  "identificación oficial vigente", "nota de crédito") y no aparece por
+  ninguna parte la Ley 1480 de 2011, ni el derecho de retracto, ni la
+  reversión del pago.
+
+  Las siete cláusulas a revisar están localizadas una por una en
+  docs/revision-legal-garantias.md. No dar por vetado este texto.
+-->
+
 ## 1. Generales
 
 <!--

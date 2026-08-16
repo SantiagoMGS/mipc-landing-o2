@@ -51,6 +51,21 @@ export const empresa = Object.freeze({
     facebook: 'https://www.facebook.com/mipctecnologiasas',
     instagram: 'https://www.instagram.com/mipc.com.co/',
   }),
+
+  /**
+   * Ficha de Google Business Profile, por CID. Es el identificador estable de
+   * la ficha: sobrevive a cambios de nombre y de dirección, cosa que las URLs
+   * largas de Maps con coordenadas no hacen.
+   *
+   * No es decorativo. «MiPC» colisiona con al menos cinco entidades de nombre
+   * casi idéntico —entre ellas una tienda mexicana en mipc.com.mx y una
+   * gamer en Barranquilla—, y hay evidencia de que los modelos de lenguaje ya
+   * las mezclan: a un resumen de «MiPC Tecnología Medellín» le atribuyeron
+   * quejas de envíos de la tienda mexicana. Una ficha verificada enlazada
+   * desde `sameAs` es la señal más fuerte disponible para separarlas, y a
+   * diferencia del NIT —que sigue pendiente— ya la tenemos.
+   */
+  fichaGoogle: 'https://www.google.com/maps?cid=15154712519055002689',
 });
 
 export type Empresa = typeof empresa;

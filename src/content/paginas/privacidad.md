@@ -111,16 +111,22 @@ entero, leerlo todo y enviar el formulario sin aceptar ninguna cookie.
 
 Sí usamos cookies de medición de **Google Analytics**, y en su caso de
 **Google Ads**, para entender qué páginas resultan útiles y cuáles no. Sobre
-ellas, tres cosas concretas:
+ellas, cuatro cosas concretas:
 
-1. **No se activan hasta que las aceptas.** El sitio arranca con todas las
-   categorías de medición y publicidad denegadas. Si cierras el aviso sin
-   aceptar, siguen denegadas.
+1. **Están activas desde que entras, y puedes desactivarlas con un clic.** El
+   aviso que aparece abajo te informa de que las usamos; el botón «Rechazar»
+   las desactiva en el momento y esa decisión se recuerda en las siguientes
+   visitas. No usamos consentimiento previo porque la Ley 1581 de 2012 y el
+   Decreto 1377 de 2013, que son los que nos aplican, no lo exigen para
+   analítica; te lo decimos así de claro en lugar de esconderlo.
 2. **Rechazarlas no limita nada.** No hay contenido, función ni formulario que
    dependa de aceptarlas.
 3. **Puedes cambiar de opinión.** Borrando los datos del sitio en tu navegador
    —o el almacenamiento local de este dominio— el aviso vuelve a aparecer y
    puedes decidir de nuevo.
+4. **También puedes bloquearlas sin contar con nosotros**, desde la
+   configuración de cookies de tu navegador o con un complemento de bloqueo.
+   Funciona igual y no depende de que respetemos tu decisión.
 
 Google puede tratar esos datos como responsable independiente conforme a sus
 propias políticas. Si prefieres bloquear la medición desde el navegador,

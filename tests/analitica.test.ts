@@ -92,4 +92,66 @@ describe('analítica', () => {
     const politica = readFileSync('dist/privacidad/index.html', 'utf-8');
     expect(politica).toContain('Rechazarlas no limita nada');
   });
+  /*
+   * El modelo de consentimiento del sitio, fijado contra el CÓDIGO FUENTE de
+   * los componentes y no contra dist/.
+   *
+   * El motivo es la regla de oro de medicion.ts: sin `PUBLIC_GA4_ID` el sitio
+   * no emite una sola línea de Google, y esa clave vive en las Build variables
+   * de Cloudflare, no en el entorno local ni en CI. Un test que buscara el
+   * `consent default` en dist/index.html pasaría en verde por vacío en cuanto
+   * alguien lo ejecutara sin clave — que es siempre, aquí. La política de
+   * consentimiento vive en el componente, así que ahí se comprueba.
+   *
+   * Es la clase de cosa que se cambia por accidente y no se nota nunca: nadie
+   * mira el `consent default` al revisar un cambio de estilos, y una medición
+   * que arranca concedida donde debía arrancar denegada —o al revés— no
+   * produce ningún síntoma visible en la página.
+   *
+   * El 2026-08-16 se pasó de permiso previo a aviso, por decisión de Santiago
+   * y con revisión legal pendiente. Si algún día se vuelve atrás, que sea
+   * porque alguien cambió estos tests a propósito.
+   */
+  const analitica = readFileSync('src/components/Analitica.astro', 'utf-8');
+  const banner = readFileSync('src/components/ui/BannerCookies.astro', 'utf-8');
+
+  it('mide por defecto y respeta el rechazo guardado, sin `update` intermedio', () => {
+    // La decisión se LEE antes de fijar el valor por defecto. Si se hiciera
+    // con un `consent update` posterior habría una ventana, por breve que
+    // fuera, en la que se mide a alguien que ya había rechazado.
+    expect(analitica).toContain("localStorage.getItem('mipc-consentimiento') === 'rechazado'");
+    expect(analitica).toMatch(/ad_storage: rechazado \? 'denied' : 'granted'/);
+    expect(analitica).toMatch(/analytics_storage: rechazado \? 'denied' : 'granted'/);
+
+    // Las dos que nunca dependen de la decisión: no son de seguimiento.
+    expect(analitica).toMatch(/functionality_storage: 'granted'/);
+    expect(analitica).toMatch(/security_storage: 'granted'/);
+
+    // Y que no quede un `update` concediendo, que es lo que había antes.
+    expect(analitica).not.toContain("'consent', 'update'");
+  });
+
+  it('el botón de rechazar deniega las cuatro categorías de seguimiento', () => {
+    expect(banner).toContain("if (valor === 'rechazado'");
+    const bloque = banner.slice(banner.indexOf("if (valor === 'rechazado'"));
+    for (const categoria of ['ad_storage', 'ad_user_data', 'ad_personalization', 'analytics_storage']) {
+      expect(bloque, `${categoria} no se deniega al rechazar`).toContain(`${categoria}: 'denied'`);
+    }
+  });
+
+  it('el aviso deja de aparecer a quien lo ignora', () => {
+    // Con el modelo de aviso la medición ya está activa, así que insistir no
+    // consigue ningún dato: solo molesta. Antes volvía en cada visita a quien
+    // no pulsaba ningún botón, que es la mayoría.
+    expect(banner).toContain('mipc-aviso-vistas');
+    expect(banner).toContain('vistas < MAX_VISTAS');
+  });
+
+  it('la política de privacidad no promete permiso previo', () => {
+    // La contradicción más cara posible: que el sitio mida por defecto y la
+    // política diga que no mide hasta que aceptes.
+    const politica = readFileSync('dist/privacidad/index.html', 'utf-8');
+    expect(politica).not.toContain('No se activan hasta que las aceptas');
+    expect(politica).toContain('puedes desactivarlas con un clic');
+  });
 });

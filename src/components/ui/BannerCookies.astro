@@ -25,8 +25,8 @@ import { hayMedicion } from '../../lib/medicion';
           <h2 id="banner-cookies-titulo" class="font-semibold text-white">Cookies de medición</h2>
           <p class="mt-1">
             Usamos cookies de Google Analytics para saber qué páginas sirven y cuáles no.
-            No las activamos hasta que lo autorices. Puedes rechazarlas y el sitio funciona
-            igual. Detalle en <a href="/privacidad/" class="underline underline-offset-2 hover:no-underline">política de privacidad</a>.
+            Puedes rechazarlas con un clic y el sitio funciona igual: no hay contenido ni
+            formulario que dependa de aceptarlas. Detalle en <a href="/privacidad/" class="underline underline-offset-2 hover:no-underline">política de privacidad</a>.
           </p>
         </div>
         <div class="flex shrink-0 gap-3">
@@ -39,7 +39,7 @@ import { hayMedicion } from '../../lib/medicion';
             type="button"
             id="cookies-aceptar"
             class="rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-senal-oscuro"
-          >Aceptar</button>
+          >Entendido</button>
         </div>
       </div>
     </div>
@@ -47,29 +47,45 @@ import { hayMedicion } from '../../lib/medicion';
     <script is:inline>
       (function () {
         var CLAVE = 'mipc-consentimiento';
+        var VISTAS = 'mipc-aviso-vistas';
+        // Cuántas páginas puede ver alguien que ignora el aviso antes de que
+        // deje de aparecer. Con el modelo de aviso —la medición ya está
+        // activa— insistir no consigue ningún dato que no se tenga: solo
+        // molesta. Antes del 2026-08-16 el banner volvía en CADA visita a
+        // quien no pulsaba ningún botón, que era la mayoría.
+        var MAX_VISTAS = 3;
+
         var banner = document.getElementById('banner-cookies');
         if (!banner) return;
 
-        function leer() {
-          try { return localStorage.getItem(CLAVE); } catch (e) { return null; }
+        function leer(k) {
+          try { return localStorage.getItem(k); } catch (e) { return null; }
         }
-        function guardar(valor) {
-          try { localStorage.setItem(CLAVE, valor); } catch (e) { /* modo privado */ }
+        function guardar(k, v) {
+          try { localStorage.setItem(k, v); } catch (e) { /* modo privado */ }
         }
 
-        // Sin decisión previa, se pregunta. Con decisión —cualquiera de las
-        // dos—, el banner no vuelve a aparecer.
-        if (!leer()) banner.hidden = false;
+        // Con decisión tomada —cualquiera de las dos— el aviso no vuelve.
+        if (!leer(CLAVE)) {
+          var vistas = parseInt(leer(VISTAS) || '0', 10) || 0;
+          if (vistas < MAX_VISTAS) {
+            banner.hidden = false;
+            guardar(VISTAS, String(vistas + 1));
+          }
+        }
 
         function decidir(valor) {
-          guardar(valor);
+          guardar(CLAVE, valor);
           banner.hidden = true;
-          if (valor === 'aceptado' && typeof gtag === 'function') {
+          // Solo el rechazo mueve el consentimiento: aceptar ya es el estado
+          // por defecto desde Analitica.astro, y volver a concederlo sería una
+          // llamada sin efecto.
+          if (valor === 'rechazado' && typeof gtag === 'function') {
             gtag('consent', 'update', {
-              ad_storage: 'granted',
-              ad_user_data: 'granted',
-              ad_personalization: 'granted',
-              analytics_storage: 'granted',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+              analytics_storage: 'denied',
             });
           }
         }

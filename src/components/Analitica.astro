@@ -22,34 +22,55 @@ import { ga4Id, adsId, hayMedicion } from '../lib/medicion';
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
 
-      // Todo denegado de entrada. `functionality_storage` y
-      // `security_storage` sí van concedidos: no son de seguimiento, sostienen
-      // el funcionamiento y la protección del sitio.
+      /*
+       * Modelo de aviso, no de permiso previo. Decidido por Santiago el
+       * 2026-08-16; queda pendiente que lo revise quien vio /garantias/.
+       *
+       * Hasta esa fecha el sitio arrancaba con las cuatro categorías en
+       * `denied` y solo medía a quien pulsara «Aceptar». El argumento para
+       * cambiarlo no es de comodidad, es que la versión anterior no compraba
+       * nada con lo que costaba:
+       *
+       * - Colombia se rige por la Ley 1581 de 2012 y el Decreto 1377 de 2013,
+       *   que NO exigen consentimiento previo para analítica como sí hacen el
+       *   RGPD y la ePrivacy europea. Se estaba aplicando un estándar que no
+       *   obliga, a un público que es de Medellín.
+       * - Quien ignoraba el aviso —la mayoría— se quedaba denegado para
+       *   siempre Y volvía a ver el banner en cada visita: la molestia sí, el
+       *   dato no.
+       * - El consuelo de las «conversiones modeladas» de Google no aplica
+       *   aquí: el modelado exige un mínimo de clics diarios que una cuenta
+       *   nueva y pequeña no alcanza. Por debajo de ese umbral no se modela
+       *   nada, simplemente no se registra. Con presupuesto chico eso es la
+       *   diferencia entre que Ads aprenda y que no.
+       *
+       * Lo que NO cambia: rechazar sigue siendo un clic, sigue sin limitar
+       * nada del sitio, y el rechazo se respeta antes de la primera medición.
+       */
+
+      // Se lee la decisión ANTES de fijar el valor por defecto, y no después
+      // con un `update`. Así solo existe una llamada de consentimiento y no
+      // hay ventana —por breve que sea— en la que se mida a alguien que ya
+      // había rechazado en una visita anterior.
+      var rechazado = false;
+      try {
+        rechazado = localStorage.getItem('mipc-consentimiento') === 'rechazado';
+      } catch (e) {
+        // localStorage bloqueado (modo privado, políticas del navegador). No
+        // hay decisión previa que recuperar; se sigue con el aviso.
+      }
+
+      // `functionality_storage` y `security_storage` van siempre concedidos:
+      // no son de seguimiento, sostienen el funcionamiento y la protección.
       gtag('consent', 'default', {
-        ad_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-        analytics_storage: 'denied',
+        ad_storage: rechazado ? 'denied' : 'granted',
+        ad_user_data: rechazado ? 'denied' : 'granted',
+        ad_personalization: rechazado ? 'denied' : 'granted',
+        analytics_storage: rechazado ? 'denied' : 'granted',
         functionality_storage: 'granted',
         security_storage: 'granted',
         wait_for_update: 500,
       });
-
-      // Si ya hubo una decisión en una visita anterior, se restaura antes de
-      // medir nada, para no volver a preguntar ni medir sin permiso.
-      try {
-        if (localStorage.getItem('mipc-consentimiento') === 'aceptado') {
-          gtag('consent', 'update', {
-            ad_storage: 'granted',
-            ad_user_data: 'granted',
-            ad_personalization: 'granted',
-            analytics_storage: 'granted',
-          });
-        }
-      } catch (e) {
-        // localStorage bloqueado (modo privado, políticas del navegador).
-        // Se sigue con todo denegado, que es el lado correcto en el que fallar.
-      }
     </script>
 
     <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id ?? adsId}`}></script>

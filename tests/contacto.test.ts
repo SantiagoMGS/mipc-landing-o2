@@ -22,6 +22,20 @@ describe('contacto', () => {
   });
 
   /**
+   * `ccemail` es una función de pago de Web3Forms, y en el plan gratuito no se
+   * ignora sin más: **rechaza el envío completo** con «You are trying to use a
+   * Pro feature». El 2026-08-16 el formulario estuvo devolviendo ese error en
+   * el despliegue real, es decir, sin recibir una sola solicitud.
+   *
+   * El test mira el campo y no el plan porque es lo único comprobable desde
+   * aquí: si alguien contrata Pro y quiere recuperarlo, que tenga que borrar
+   * esta prueba a conciencia y no que se le cuele de vuelta sin pensarlo.
+   */
+  it('NO envía ccemail: es de pago y en el plan gratuito rompe el formulario', () => {
+    expect(doc.querySelector('input[name="ccemail"]')).toBeFalsy();
+  });
+
+  /**
    * Sin el gclid junto al contacto, una venta que se cierra por teléfono tres
    * semanas después no puede volver a Google Ads como conversión offline, y
    * Ads sigue optimizando hacia «formularios enviados» sin saber cuáles

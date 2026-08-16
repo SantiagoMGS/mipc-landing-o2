@@ -25,7 +25,16 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
   <input type="hidden" name="access_key" value={clave ?? ''} />
   <input type="hidden" name="redirect" value={gracias} />
   <input type="hidden" name="subject" value={`Nueva solicitud desde ${new URL(empresa.url).host}`} />
-  <input type="hidden" name="ccemail" value={empresa.emailCopia} />
+  <!-- NO VOLVER A AÑADIR `ccemail`. Es una función de pago de Web3Forms y en
+       el plan gratuito no se ignora: RECHAZA EL ENVÍO ENTERO con «You are
+       trying to use a Pro feature». Comprobado contra el despliegue real el
+       2026-08-16 — el formulario estuvo devolviendo ese error a todo el que lo
+       usara.
+
+       La copia a una segunda dirección se resuelve fuera del sitio, con una
+       regla de reenvío en la bandeja de gerencia@ (el MX del dominio es de
+       Google). Es gratis y además sobrevive a cualquier cambio de proveedor
+       de formularios. Ver `emailCopia` en src/data/empresa.ts. -->
   <input type="hidden" name="from_name" value={empresa.nombre} />
   <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 

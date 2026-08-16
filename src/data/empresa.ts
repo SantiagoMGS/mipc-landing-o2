@@ -30,6 +30,21 @@ export const empresa = Object.freeze({
   telefonoE164: '+573148889078',
   whatsapp: '573148889078',
   email: 'gerencia@mipc.com.co',
+  /**
+   * Segunda dirección que debe recibir copia de cada solicitud.
+   *
+   * NO la usa ninguna plantilla, y es deliberado. Se pasaba a Web3Forms en el
+   * campo `ccemail` hasta el 2026-08-16, cuando el despliegue real devolvió
+   * «You are trying to use a Pro feature, Please Upgrade to use ccemail» y
+   * rechazó el envío completo: no es que la copia no llegara, es que no
+   * llegaba nada. Ver el comentario de Formulario.astro.
+   *
+   * La copia se hace ahora con una regla de reenvío en la bandeja de `email`
+   * (el MX del dominio es de Google). Este campo queda como registro de a
+   * dónde tiene que apuntar esa regla: si algún día se cambia de proveedor de
+   * formularios, aquí está el requisito, no en la configuración de un buzón
+   * que nadie de este repositorio puede leer.
+   */
   emailCopia: 'santiago.martinez@mipc.com.co',
 
   direccion: Object.freeze({

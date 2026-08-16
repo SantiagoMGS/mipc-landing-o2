@@ -57,6 +57,8 @@ faq:
     respuesta: Sí. Atendemos cualquier marca, incluidos los equipos Apple — MacBook Air, MacBook Pro e iMac.
   - pregunta: ¿Reparan portátiles HP, Lenovo, Dell, Asus o Acer?
     respuesta: Sí, y cualquier otra marca. Trabajamos con HP, Lenovo, Dell, Asus, Acer, Toshiba, Samsung, MSI, Huawei, Apple y equipos ensamblados. No hay lista cerrada de fabricantes ni derivamos a servicios autorizados.
+  - pregunta: Mi computador no enciende, ¿me lo pueden cotizar por teléfono?
+    respuesta: "No, y conviene desconfiar de quien lo haga: un «no enciende» lo produce por igual la fuente de poder, el cargador, la placa o un componente interno, y son reparaciones de costo muy distinto. Por eso va primero el diagnóstico. En portátil sí puedes probar algo antes: desconecta el cargador, saca la batería si es extraíble, mantén pulsado el botón de encendido veinte segundos y vuelve a conectar solo el cargador. Revive más equipos de los que parece."
   - pregunta: Se me derramó líquido en el portátil, ¿qué hago?
     respuesta: "Apágalo de inmediato, desconecta el cargador y no lo enciendas para probar si funciona: encenderlo con líquido dentro es lo que convierte un susto en una placa perdida. No lo pongas al sol ni le eches secador. Escríbenos y lo recogemos — cuanto antes se limpie el residuo, más se salva, y el azúcar de una gaseosa o un café sigue corroyendo días después aunque el equipo parezca haber quedado bien."
   - pregunta: ¿Cambian pantallas, teclados y baterías de portátil?
@@ -74,11 +76,11 @@ faq:
     respuesta: "En Laureles, Carrera 66A # 34-48, Interior 101, a pocas cuadras del Estadio. Puedes traer el equipo si te queda de paso, pero no hace falta: la recogida no tiene costo."
 ---
 
-Reparamos computadores de escritorio, portátiles y todo en uno: pantallas
-rotas, teclados y baterías, equipos que se sobrecalientan o se apagan solos,
-discos que fallan, equipos lentos, infecciones por virus, sistemas operativos
-que no arrancan, derrames de líquido y rescate de información. **Cualquier
-marca, incluidos los equipos Apple.**
+Reparamos computadores de escritorio, portátiles y todo en uno: equipos que no
+encienden, pantallas rotas, teclados y baterías, equipos que se sobrecalientan
+o se apagan solos, discos que fallan, equipos lentos, infecciones por virus,
+sistemas operativos que no arrancan, derrames de líquido y rescate de
+información. **Cualquier marca, incluidos los equipos Apple.**
 
 ## Recogemos tu equipo gratis
 
@@ -123,6 +125,25 @@ En orden, el proceso completo es este:
 5. Te lo devolvemos en tu dirección, con la mano de obra garantizada 30 días.
 
 ## Qué arreglamos, falla por falla
+
+### El computador no enciende
+
+Nada: ni luz, ni ventilador, ni un pitido. O enciende pero la pantalla se queda
+negra, que parece lo mismo y no lo es — si oyes el ventilador y ves alguna luz,
+el equipo sí está arrancando y el problema está más cerca de la pantalla que de
+la corriente.
+
+En portátil hay algo que puedes probar antes de escribirnos: desconecta el
+cargador, saca la batería si es extraíble, mantén pulsado el botón de encendido
+unos veinte segundos y vuelve a conectar solo el cargador. Eso descarga la
+electricidad residual y revive a una cantidad de equipos nada despreciable. Si
+funciona, no necesitas taller ni nos debes nada.
+
+Si no revive, el diagnóstico separa las causas habituales: la alimentación —la
+fuente de poder en escritorio, el cargador en portátil—, la placa, o un
+componente interno que impide el arranque. Son reparaciones de costo muy
+distinto entre sí, y por eso un «no enciende» no se cotiza por teléfono: quien
+te dé una cifra sin haber abierto el equipo se la está inventando.
 
 ### El computador está lento
 

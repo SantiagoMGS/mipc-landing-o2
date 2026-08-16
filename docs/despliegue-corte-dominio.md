@@ -97,8 +97,19 @@ En un móvil real, contra la URL de `pages.dev`:
 
 ## Paso 4: Lista de verificación previa al corte
 
-- [ ] Horario de atención confirmado con el cliente y **coincidente con Google Business Profile**. `src/data/empresa.ts` lo deja marcado como pendiente de confirmar.
-- [ ] Google Business Profile creado con la dirección de Laureles (Carrera 66A # 34-48, Interior 101).
+- [x] Horario de atención confirmado con el cliente el 2026-08-15: **Lun a Vie 08:00–17:00, Sáb 09:00–13:00**. Ya está en `src/data/empresa.ts`, de donde salen el pie, `/contacto/` y el `openingHoursSpecification` del schema.
+- [ ] **Ficha de Google Business Profile: no crear, corregir.** La ficha ya existe y la administra el cliente (CID `15154712519055002689`). Entrar y comprobar, campo por campo, que coincide con `src/data/empresa.ts` — cualquier diferencia entre la ficha y el schema del sitio es una señal contradictoria para el posicionamiento local, y la ficha pesa más que el sitio en el paquete local de resultados:
+
+  | Campo en la ficha | Valor que publica el sitio |
+  |---|---|
+  | Nombre | MiPC Tecnología |
+  | Dirección | Carrera 66A # 34-48, Interior 101 — Laureles, Medellín |
+  | Teléfono | 314 888 90 78 |
+  | Horario | Lun a Vie 08:00–17:00 · Sáb 09:00–13:00 |
+  | Sitio web | `https://mipc.com.co` (apuntar a la raíz, no a una URL de WordPress) |
+  | Categoría principal | Servicio de reparación de computadoras / Soporte técnico informático |
+
+  Ojo con el sitio web de la ficha: si apunta a una URL antigua de WordPress que después del corte responde 404, la ficha manda tráfico a una página muerta.
 - [ ] Search Console verificado por registro DNS TXT en `mipc.com.co`, con línea base de impresiones/clics acumulada antes del corte (para poder comparar después).
 - [ ] GA4 instalado y registrando la visita a `/gracias/` como conversión.
 - [ ] `npm run verify` en verde (ver estado en el informe de la Tarea 17).
@@ -107,7 +118,49 @@ En un móvil real, contra la URL de `pages.dev`:
 
 ## Paso 5: Ejecutar el corte
 
-- [ ] Apuntar el DNS de `mipc.com.co` a Cloudflare Pages.
+> ### ⚠️ El dominio no solo sirve el sitio: también sirve el correo
+>
+> `mipc.com.co` lleva mucho más que un registro `A`. La zona actual está
+> guardada en `docs/dns/zona-mipc.com.co-2026-08-15.txt` y contiene, además
+> del sitio:
+>
+> | Registro | Qué se rompe si se pierde |
+> |---|---|
+> | `MX` → `aspmx.l.google.com` y las tres alternativas | El correo de la empresa, incluido `gerencia@mipc.com.co`, que es donde llegan las cotizaciones del formulario |
+> | `TXT` SPF con Hostinger, Google y Mailgun | Los correos salientes empiezan a caer en spam |
+> | `krs._domainkey` (clave RSA) y `hostingermail-a/b/c._domainkey` | Firma DKIM inválida → spam |
+> | `coopebello` con su propio `MX` a Hostinger | Un servicio de correo independiente sobre subdominio |
+> | `admin` → `190.29.110.179` | Un panel alojado en otra IP |
+> | `ftp`, `os`, `www` | Acceso y subdominios en uso |
+>
+> **Mover los nameservers a Cloudflare sin trasladar todo esto tumba el
+> correo de la empresa el mismo día del corte.** Cloudflare importa los
+> registros automáticamente al añadir el dominio, pero **la importación no
+> es verificación**: importa lo que consigue leer, y lo que no lea se
+> pierde en silencio.
+>
+> El orden correcto es: añadir el dominio en Cloudflare, **comparar la zona
+> importada contra el archivo de referencia registro por registro**, y solo
+> entonces cambiar los nameservers en el registrador. Mientras los
+> nameservers sigan en Hostinger, nada de esto se ve afectado y hay tiempo
+> ilimitado para revisar.
+
+- [ ] Añadir `mipc.com.co` en Cloudflare y dejar que importe la zona, **sin
+      cambiar todavía los nameservers en el registrador**.
+- [ ] Comparar la zona importada contra `docs/dns/zona-mipc.com.co-2026-08-15.txt`
+      registro por registro. Confirmar explícitamente que están los cuatro
+      `MX` de Google, el `TXT` de SPF, el `TXT` de `krs._domainkey`, los tres
+      CNAME `hostingermail-*._domainkey`, el bloque de `coopebello`, y los
+      registros de `admin`, `ftp`, `os` y `www`.
+- [ ] Añadir en Cloudflare el registro que apunta el sitio a Cloudflare Pages
+      (`www` y el ápice), sin tocar ninguno de los anteriores.
+- [ ] **Solo cuando lo anterior esté verificado:** cambiar los nameservers en
+      el registrador a los de Cloudflare.
+- [ ] Enviar un correo de prueba a `gerencia@mipc.com.co` **desde fuera de la
+      organización** y confirmar que llega, y otro desde esa cuenta hacia una
+      dirección externa confirmando que no cae en spam. El correo es lo
+      primero que hay que comprobar después del cambio, antes que el sitio:
+      un sitio caído se nota en minutos, un correo perdido no se nota nunca.
 - [ ] Retirar la regla de `noindex` de `public/_headers` (o eliminar el archivo, o eliminar solo esa línea) y volver a desplegar — un dominio de producción con `X-Robots-Tag: noindex` no aparece en buscadores aunque el resto del SEO esté perfecto.
 - [ ] Configurar en `mipctecnologia.com` (dominio que hoy responde HTTP 500)
       un 301 hacia `https://mipc.com.co/`. El spec lo exige y ninguna tarea

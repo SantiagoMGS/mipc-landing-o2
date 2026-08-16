@@ -8,6 +8,19 @@
 export const empresa = Object.freeze({
   nombre: 'MiPC Tecnología',
   nombreLegal: 'MiPC Tecnología S.A.S.',
+
+  /**
+   * NIT con dígito de verificación. Confirmado por el cliente el 2026-08-15.
+   *
+   * No es un dato administrativo más. «MiPC» colisiona con al menos cinco
+   * entidades de nombre casi idéntico —entre ellas una tienda mexicana en
+   * mipc.com.mx que el cliente confirma que NO es suya—, y hay evidencia de
+   * que los modelos de lenguaje ya las mezclan. El NIT es el identificador
+   * único e inequívoco de una empresa en Colombia: es la señal más fuerte
+   * que existe para separarlas, más que la ficha de Google y más que
+   * cualquier perfil social.
+   */
+  nit: '901401211-7',
   descripcionCorta:
     'Soporte TI empresarial, redes, CCTV y alquiler de equipos en Medellín.',
   fundacion: 2009,

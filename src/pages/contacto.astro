@@ -37,7 +37,10 @@ import { franja } from '../lib/horario';
              llamadas «MiPC» con las que los buscadores la confunden. -->
         <div>
           <dt class="font-semibold">Razón social</dt>
-          <dd class="text-tinta-2">{empresa.nombreLegal}</dd>
+          <dd class="text-tinta-2">
+            {empresa.nombreLegal}<br />
+            <span class="cifra">NIT {empresa.nit}</span>
+          </dd>
         </div>
         <div>
           <dt class="font-semibold">Teléfono</dt>

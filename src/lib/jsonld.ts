@@ -9,6 +9,16 @@ export function localBusiness() {
     '@id': ID_NEGOCIO,
     name: empresa.nombre,
     legalName: empresa.nombreLegal,
+    // El NIT como identificador fiscal. Es el desambiguador más fuerte que
+    // existe frente a las otras empresas llamadas «MiPC»: la ficha de Google
+    // y los perfiles sociales se parecen entre negocios homónimos, un NIT no
+    // se repite.
+    taxID: empresa.nit,
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: 'NIT',
+      value: empresa.nit,
+    },
     description: empresa.descripcionCorta,
     url: empresa.url,
     telephone: empresa.telefonoE164,

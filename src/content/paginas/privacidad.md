@@ -13,8 +13,8 @@ metaDescription: Cómo trata MiPC Tecnología los datos personales que recibe po
   Google si y solo si se configura la medición— y se apoya en la Ley 1581 de
   2012 y el Decreto 1074 de 2015.
 
-  Falta un dato obligatorio: el NIT de la empresa. Debe ir en el apartado 1.
-  Mientras no esté, la identificación del responsable está incompleta.
+  El NIT lo confirmó el cliente el 2026-08-15 y ya está en el apartado 1; sale
+  de src/data/empresa.ts, no está escrito a mano aquí.
 
   Antes del corte de dominio conviene que lo revise un abogado, junto con
   /garantias/ (ver docs/revision-legal-garantias.md).
@@ -22,9 +22,9 @@ metaDescription: Cómo trata MiPC Tecnología los datos personales que recibe po
 
 ## 1. Quién responde por tus datos
 
-El responsable del tratamiento es **MI PC TECNOLOGÍA S.A.S.**, con domicilio
-en la Carrera 66A # 34-48, Interior 101, barrio Laureles, Medellín, Antioquia,
-Colombia.
+El responsable del tratamiento es **MI PC TECNOLOGÍA S.A.S.**, identificada
+con **NIT 901401211-7**, con domicilio en la Carrera 66A # 34-48, Interior
+101, barrio Laureles, Medellín, Antioquia, Colombia.
 
 - Correo de contacto para asuntos de datos personales: **gerencia@mipc.com.co**
 - Teléfono: **314 888 90 78**

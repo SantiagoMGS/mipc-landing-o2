@@ -20,6 +20,11 @@ visible disfrazaba:
 | «mipc.com.co y/o mipctecnologia.com» | `http://www.mipc.com.mx/` |
 | «soporte@ mipc.com.co» | `mailto:contacto@mipc.com.mx` |
 
+**El cliente confirmó el 2026-08-15 que el dominio `mipc.com.mx` no es suyo.**
+Eso descarta la lectura benigna —que fuera una sede o una marca hermana— y
+deja solo la otra: el texto se copió de una empresa ajena, sin adaptarlo al
+marco legal colombiano.
+
 **Esos dos enlaces ya no existen en el sitio nuevo** — la migración los eliminó
 y corrigió la razón social a MI PC TECNOLOGÍA S.A.S. Lo que **sí sobrevivió**
 es la sustancia: el articulado sigue siendo el mexicano, con su terminología y

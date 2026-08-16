@@ -43,6 +43,10 @@ describe('analítica', () => {
     expect(politica).toContain('Ley 1581 de 2012');
     expect(politica).toContain('Superintendencia de Industria y Comercio');
     expect(politica).toContain('gerencia@mipc.com.co');
+    // El NIT identifica al responsable de forma inequívoca. Sin él, «MI PC
+    // TECNOLOGÍA S.A.S.» es un nombre que un titular no puede usar para
+    // reclamar ante nadie.
+    expect(politica).toContain('901401211-7');
 
     expect(readFileSync('dist/index.html', 'utf-8')).toContain('/privacidad/');
   });

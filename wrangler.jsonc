@@ -1,0 +1,26 @@
+{
+  // Configuración de Cloudflare Workers con assets estáticos.
+  //
+  // POR QUÉ EXISTE ESTE ARCHIVO: sin él, una URL inexistente devuelve un 404
+  // con el cuerpo VACÍO en lugar de servir dist/404.html. Comprobado el
+  // 2026-08-15 contra el despliegue real: el estado era 404 —correcto— pero
+  // la respuesta no traía ni una línea de HTML, así que quien llegaba por un
+  // enlace viejo veía una página en blanco en vez de la nuestra, que ofrece
+  // los enlaces a servicios y contacto.
+  //
+  // `not_found_handling: "404-page"` es lo que hace que se sirva dist/404.html
+  // conservando el estado 404. NO usar "single-page-application": eso
+  // devolvería 200 en cualquier URL inexistente y haría indexable un número
+  // infinito de páginas fantasma.
+  //
+  // SI ALGO SE ROMPE EN EL PRÓXIMO DESPLIEGUE: borrar este archivo devuelve
+  // exactamente el comportamiento actual, que ya funciona salvo por el 404.
+  // El `name` debe coincidir con el del proyecto en Cloudflare — se tomó del
+  // host mipc-landing-o2.santiago-martinez.workers.dev.
+  "name": "mipc-landing-o2",
+  "compatibility_date": "2026-08-15",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

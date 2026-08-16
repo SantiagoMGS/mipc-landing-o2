@@ -83,8 +83,6 @@ Configuración correcta en Cloudflare Pages:
 
   El día que se pongan, se activa Consent Mode v2 con **todo denegado de
   entrada** y aparece el banner. Nada se mide hasta que el visitante acepta.
-  Antes de activarlo hay que completar el NIT en `/privacidad/`: la
-  identificación del responsable del tratamiento está incompleta sin él.
 
 ## Paso 2: Impedir la indexación mientras el sitio vive en pages.dev
 
@@ -109,8 +107,29 @@ que aparece en la URL `https://<nombre-real>.pages.dev`). Si el nombre no
 coincide exactamente, la regla no aplica a ninguna URL real y el sitio de
 staging queda indexable por accidente.
 
-- [ ] Verificar que el subdominio en `public/_headers` coincide con el proyecto real de Cloudflare Pages.
-- [ ] Confirmar con una petición real (`curl -I https://<proyecto>.pages.dev/`) que la cabecera `X-Robots-Tag: noindex` se sirve.
+- [ ] Verificar que el subdominio en `public/_headers` coincide con el proyecto real.
+- [ ] Confirmar con una petición real que la cabecera `X-Robots-Tag: noindex` se sirve.
+
+> ### ⚠️ Esto ya falló una vez — comprobarlo de verdad, no darlo por hecho
+>
+> El 2026-08-15 se midió el despliegue real en
+> `mipc-landing-o2.santiago-martinez.workers.dev` y **no traía la cabecera**.
+> La regla de `public/_headers` apuntaba a `https://PROYECTO.pages.dev/*`, un
+> marcador de posición que no coincide con ninguna URL existente, así que no
+> aplicaba a nada. Encima, `robots.txt` sirve `Allow: /`. Resultado: el sitio
+> de pruebas quedó completamente indexable.
+>
+> No falla de forma visible. Una regla de `_headers` que no coincide con
+> ningún host simplemente no hace nada — no da error, no avisa. La única
+> manera de saberlo es pedir la cabecera:
+>
+> ```bash
+> curl -I https://<host>/ | grep -i x-robots
+> ```
+>
+> Si eso no devuelve nada, la regla no está aplicando. Ya está corregida en
+> `public/_headers` con el host real, pero **requiere volver a desplegar** y
+> comprobarlo otra vez con el comando de arriba.
 
 ## Paso 3: Revisar en pages.dev antes de cortar
 

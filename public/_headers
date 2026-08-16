@@ -1,6 +1,24 @@
-# PROYECTO es un marcador de posición: reemplázalo por el nombre real que
-# Cloudflare Pages asigne al proyecto (el que aparece en la URL
-# https://<nombre-real>.pages.dev) antes de confiar en esta regla. Retirar
-# esta regla por completo al cortar el dominio real (ver docs/despliegue-corte-dominio.md).
-https://PROYECTO.pages.dev/*
+# Impide que el sitio de pruebas se indexe mientras vive en el subdominio de
+# Cloudflare, antes del corte a mipc.com.co.
+#
+# COMPROBADO EL 2026-08-15 QUE HACÍA FALTA. Esta regla decía
+# `https://PROYECTO.pages.dev/*`, un marcador de posición que no coincidía con
+# ninguna URL real, así que no aplicaba a nada y el despliegue quedó
+# completamente indexable — con `robots.txt` diciendo `Allow: /` encima. Si
+# Google alcanza a indexarlo, el subdominio compite como contenido duplicado
+# contra mipc.com.co justo después del corte, que es el peor momento posible.
+#
+# El nombre tiene que coincidir EXACTAMENTE con el host real. Si el proyecto
+# se renombra o se despliega en otro subdominio, esta regla vuelve a no
+# aplicar a nada, en silencio y sin fallar. Confirmar siempre con:
+#   curl -I https://<host>/ | grep -i x-robots
+#
+# RETIRAR esta regla al cortar el dominio real: un dominio de producción con
+# X-Robots-Tag: noindex no aparece en buscadores aunque el resto del SEO esté
+# perfecto (ver docs/despliegue-corte-dominio.md).
+https://mipc-landing-o2.santiago-martinez.workers.dev/*
+  X-Robots-Tag: noindex
+
+# Se deja también la forma de Pages por si el proyecto se recrea allí.
+https://mipc-landing-o2.pages.dev/*
   X-Robots-Tag: noindex

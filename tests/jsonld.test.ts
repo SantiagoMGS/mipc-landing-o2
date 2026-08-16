@@ -28,6 +28,14 @@ describe('localBusiness', () => {
     expect(ld.openingHoursSpecification[1].closes).toBe('13:00');
   });
 
+  it('publica el NIT como identificador fiscal', () => {
+    // Confirmado por el cliente el 2026-08-15. Es el desambiguador definitivo
+    // frente a las otras empresas llamadas «MiPC»: un NIT no se repite.
+    expect(ld.taxID).toBe('901401211-7');
+    expect(ld.identifier.propertyID).toBe('NIT');
+    expect(ld.identifier.value).toBe('901401211-7');
+  });
+
   it('enlaza la ficha de Google en sameAs, no solo las redes sociales', () => {
     // La ficha verificada es la señal de identidad más fuerte que tenemos
     // para separar esta empresa de las otras cinco llamadas «MiPC».

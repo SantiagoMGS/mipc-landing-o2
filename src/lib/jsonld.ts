@@ -64,7 +64,19 @@ export function localBusiness() {
   };
 }
 
-export function service(opts: { nombre: string; descripcion: string; url: string }) {
+export function service(opts: {
+  nombre: string;
+  descripcion: string;
+  url: string;
+  /**
+   * Precio de entrada, si la página lo publica. Se convierte en `offers`.
+   *
+   * Es la diferencia entre que un modelo de lenguaje responda «$25.000» y que
+   * responda «consulta con el proveedor»: en prosa el precio es una frase que
+   * hay que interpretar; en `offers` es un dato con moneda.
+   */
+  oferta?: { nombre: string; precio: number; descripcion?: string };
+}) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -73,6 +85,20 @@ export function service(opts: { nombre: string; descripcion: string; url: string
     url: opts.url,
     provider: { '@type': 'LocalBusiness', '@id': ID_NEGOCIO, name: empresa.nombre },
     areaServed: empresa.zonaServicio.map((z) => ({ '@type': 'City', name: z })),
+    ...(opts.oferta
+      ? {
+          offers: {
+            '@type': 'Offer',
+            name: opts.oferta.nombre,
+            // Cadena, no número: schema.org/price pide texto y Google
+            // rechaza el separador de miles. 25000, nunca «25.000».
+            price: String(opts.oferta.precio),
+            priceCurrency: 'COP',
+            availability: 'https://schema.org/InStock',
+            ...(opts.oferta.descripcion ? { description: opts.oferta.descripcion } : {}),
+          },
+        }
+      : {}),
   };
 }
 

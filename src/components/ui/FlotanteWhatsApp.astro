@@ -11,7 +11,21 @@ import { enlaceWhatsApp } from '../../lib/whatsapp';
  * sitio: aquí el reconocimiento inmediato vale más que la coherencia
  * cromática. Mide 6,2:1 con su texto oscuro.
  */
-const mensaje = 'Hola, quiero consultar por un servicio para mi empresa';
+interface Props {
+  /**
+   * Mensaje precargado. Lo pasa `Base.astro` desde cada plantilla; el valor
+   * por omisión es para las páginas que no tienen un contexto más concreto
+   * (inicio, nosotros, proyectos).
+   *
+   * Hasta el 2026-08-16 era una constante fija con este mismo texto y NO se
+   * podía cambiar por página. En la página de reparación de computadores eso
+   * significaba que un particular con el portátil roto abría WhatsApp y se
+   * encontraba escrito «para mi empresa»: siendo el flotante el elemento más
+   * pulsado en móvil, era la fuga de conversión más cara del sitio.
+   */
+  mensaje?: string;
+}
+const { mensaje = 'Hola, quiero consultar por un servicio para mi empresa' } = Astro.props;
 ---
 <a
   href={enlaceWhatsApp(mensaje)}

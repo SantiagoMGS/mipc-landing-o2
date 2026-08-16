@@ -15,8 +15,15 @@ const d = entrada.data;
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const fotos = fotosPorServicio[entrada.id] ?? [];
 
+/**
+ * Un solo mensaje de WhatsApp por página, usado tanto por el CTA del
+ * encabezado como por el botón flotante. Antes divergían: el CTA decía el
+ * servicio y el flotante decía «para mi empresa» en todas partes.
+ */
+const mensajeWhatsApp = d.mensajeWhatsApp ?? `Hola, me interesa el servicio de ${d.titulo}`;
+
 const jsonld = [
-  service({ nombre: d.titulo, descripcion: d.metaDescription, url }),
+  service({ nombre: d.titulo, descripcion: d.metaDescription, url, oferta: d.oferta }),
   breadcrumb([
     { nombre: 'Inicio', url: new URL('/', Astro.site).href },
     { nombre: 'Servicios', url: new URL('/servicios/', Astro.site).href },
@@ -35,7 +42,7 @@ const jsonld = [
     : []),
 ];
 ---
-<Base title={d.metaTitle} metaDescription={d.metaDescription} {jsonld}>
+<Base title={d.metaTitle} metaDescription={d.metaDescription} {jsonld} {mensajeWhatsApp}>
   <article class="mx-auto max-w-3xl px-5 py-16">
     <nav aria-label="Ruta" class="cifra text-xs uppercase tracking-widest text-tinta-2">
       <a href="/" class="hover:text-senal-oscuro">Inicio</a> /
@@ -47,7 +54,7 @@ const jsonld = [
 
     <div class="mt-8 flex flex-wrap gap-3">
       <Boton href="/contacto/">Solicitar cotización</Boton>
-      <CTAWhatsApp mensaje={`Hola, me interesa el servicio de ${d.titulo}`} />
+      <CTAWhatsApp mensaje={mensajeWhatsApp} />
     </div>
 
     {d.beneficios.length > 0 && (

@@ -29,6 +29,17 @@ describe('localBusiness', () => {
     expect(ld.openingHoursSpecification[1].closes).toBe('13:00');
   });
 
+  // `description` es el campo que un modelo de lenguaje lee para resumir qué
+  // es esta empresa, y el orden de la frase decide qué se cita. Hasta el
+  // 2026-08-16 empezaba por «Soporte TI empresarial» y no contenía la palabra
+  // «reparación» en ninguna parte — siendo reparación de computadores el
+  // servicio que el cliente quiere vender por orgánico. No es una preferencia
+  // de redacción: es la posición comercial del negocio, y se fija aquí para
+  // que reordenar la frase sin querer rompa algo.
+  it('se describe empezando por la reparación de computadores', () => {
+    expect(ld.description).toMatch(/^Reparación de computadores/);
+  });
+
   it('publica el NIT como identificador fiscal', () => {
     // Confirmado por el cliente el 2026-08-15. Es el desambiguador definitivo
     // frente a las otras empresas llamadas «MiPC»: un NIT no se repite.
@@ -104,6 +115,33 @@ describe('service', () => {
     expect(ld['@type']).toBe('Service');
     expect(ld.provider.name).toBe('MiPC Tecnología');
     expect(ld.areaServed[0].name).toBe('Medellín');
+  });
+
+  it('omite offers cuando el servicio no publica precio', () => {
+    const ld = service({
+      nombre: 'Redes de Datos',
+      descripcion: 'Cableado estructurado.',
+      url: 'https://mipc.com.co/servicios/redes-de-datos/',
+    }) as any;
+    expect(ld.offers).toBeUndefined();
+  });
+
+  // El precio va como cadena y sin separador de miles porque schema.org/price
+  // pide texto y Google descarta el punto: «25.000» se lee como veinticinco
+  // pesos con cero céntimos. Que el test fije la forma exacta y no solo la
+  // presencia es deliberado — el fallo aquí no es que falte el dato, es que
+  // esté y valga mil veces menos de lo que debería.
+  it('publica el precio del diagnóstico en COP, sin separador de miles', () => {
+    const ld = service({
+      nombre: 'Reparación de Computadores',
+      descripcion: 'Reparación de computadores en Medellín.',
+      url: 'https://mipc.com.co/servicios/reparacion-de-computadores/',
+      oferta: { nombre: 'Diagnóstico', precio: 25000, descripcion: 'Abonable a la reparación' },
+    }) as any;
+    expect(ld.offers['@type']).toBe('Offer');
+    expect(ld.offers.price).toBe('25000');
+    expect(ld.offers.priceCurrency).toBe('COP');
+    expect(ld.offers.description).toBe('Abonable a la reparación');
   });
 });
 

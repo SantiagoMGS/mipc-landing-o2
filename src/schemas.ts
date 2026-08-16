@@ -39,6 +39,44 @@ export const esquemaServicio = z.object({
   imagen: imagen.optional(),
   beneficios: z.array(z.string()).default([]),
   faq: z.array(z.object({ pregunta: z.string(), respuesta: z.string() })).default([]),
+
+  /**
+   * Mensaje que se precarga en WhatsApp desde esta página, tanto en el CTA
+   * del encabezado como en el botón flotante.
+   *
+   * Opcional: sin él se usa «Hola, me interesa el servicio de {título}», que
+   * sirve para cualquier servicio. Se declara cuando ese genérico suena mal
+   * en boca de quien escribe — el caso es reparación, donde quien contacta es
+   * un particular con un equipo dañado y no alguien «interesado en un
+   * servicio».
+   *
+   * Existe porque hasta el 2026-08-16 el botón flotante llevaba un texto fijo
+   * («quiero consultar por un servicio para mi empresa») en TODAS las páginas,
+   * incluida la de reparación. El flotante es el elemento más pulsado en
+   * móvil: le ponía en la boca «para mi empresa» a un particular.
+   */
+  mensajeWhatsApp: z.string().optional(),
+
+  /**
+   * Precio de entrada del servicio, para la propiedad `offers` del `Service`
+   * en JSON-LD. Moneda siempre COP: esta empresa no cotiza en otra.
+   *
+   * NO es el `priceRange` del negocio —ver el comentario de `rangoPrecios` en
+   * empresa.ts, que explica por qué $25.000 no puede ir allí—. Aquí sí
+   * corresponde: es el precio de UN servicio concreto, declarado en la página
+   * de ese servicio.
+   *
+   * Solo se declara si el precio está publicado en el texto de la página. Un
+   * precio que vive únicamente en el schema es un precio que nadie ha
+   * revisado.
+   */
+  oferta: z
+    .object({
+      nombre: z.string(),
+      precio: z.number().int().positive(),
+      descripcion: z.string().optional(),
+    })
+    .optional(),
 });
 
 export const esquemaCliente = z.object({

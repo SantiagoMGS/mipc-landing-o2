@@ -21,8 +21,24 @@ export const empresa = Object.freeze({
    * cualquier perfil social.
    */
   nit: '901401211-7',
+
+  /**
+   * Descripción de una línea. Alimenta el pie de página Y la propiedad
+   * `description` del `LocalBusiness`, que es el campo que un modelo de
+   * lenguaje lee para resumir qué es esta empresa.
+   *
+   * Empieza por «reparación de computadores» desde el 2026-08-16. Hasta esa
+   * fecha decía solo «Soporte TI empresarial, redes, CCTV y alquiler de
+   * equipos», y la auditoría de `docs/auditoria-reparacion-medellin.md`
+   * encontró que la palabra «reparación» no aparecía en NINGÚN campo del
+   * schema —siendo el servicio que el cliente quiere vender por orgánico—.
+   * El sitio de WordPress que este reemplaza sí la llevaba en el título, y
+   * el índice de Google todavía guarda esos títulos.
+   *
+   * El orden no es casual: lo primero de esta frase es lo que se cita.
+   */
   descripcionCorta:
-    'Soporte TI empresarial, redes, CCTV y alquiler de equipos en Medellín.',
+    'Reparación de computadores, soporte TI empresarial, redes, CCTV y alquiler de equipos en Medellín.',
   fundacion: 2009,
   url: 'https://mipc.com.co',
 

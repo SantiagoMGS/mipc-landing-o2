@@ -11,8 +11,11 @@ import BannerCookies from '../components/ui/BannerCookies.astro';
 import '../styles/global.css';
 import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2?url';
 
-type Props = PropsSEO;
-const { title, metaDescription, jsonld, imagenOg, noindex } = Astro.props;
+interface Props extends PropsSEO {
+  /** Mensaje precargado del botón flotante de WhatsApp. Ver FlotanteWhatsApp.astro. */
+  mensajeWhatsApp?: string;
+}
+const { title, metaDescription, jsonld, imagenOg, noindex, mensajeWhatsApp } = Astro.props;
 ---
 <!doctype html>
 <html lang="es-CO">
@@ -20,20 +23,20 @@ const { title, metaDescription, jsonld, imagenOg, noindex } = Astro.props;
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
     <SEO {title} {metaDescription} {jsonld} {imagenOg} {noindex} />
     <Analitica />
-    <!-- En el <head> y no al final del cuerpo: tiene que haber guardado los
-         parámetros de la URL antes de que el script de Formulario.astro los
-         lea para rellenar sus campos ocultos. -->
+    {/* En el <head> y no al final del cuerpo: tiene que haber guardado los
+        parámetros de la URL antes de que el script de Formulario.astro los
+        lea para rellenar sus campos ocultos. */}
     <Atribucion />
   </head>
   <body class="flex min-h-screen flex-col bg-fondo text-tinta antialiased">
     <Header />
     <main class="flex-1"><slot /></main>
     <Footer />
-    <FlotanteWhatsApp />
+    <FlotanteWhatsApp mensaje={mensajeWhatsApp} />
     <BannerCookies />
-    <!-- Después de FlotanteWhatsApp, aunque delegue en `document` y el orden
-         no le afecte: leído de arriba abajo, el manejador queda junto a lo
-         que mide. -->
+    {/* Después de FlotanteWhatsApp, aunque delegue en `document` y el orden
+        no le afecte: leído de arriba abajo, el manejador queda junto a lo
+        que mide. */}
     <EventosMedicion />
   </body>
 </html>

@@ -33,6 +33,35 @@ describe('páginas de servicio', () => {
     }
   });
 
+  // El fallo que este test existe para impedir: el botón flotante de WhatsApp
+  // llevaba un texto fijo —«quiero consultar por un servicio para mi
+  // empresa»— en TODAS las páginas, incluida la de reparación. Un particular
+  // con el portátil roto abría WhatsApp y se encontraba escrito «para mi
+  // empresa». Siendo el flotante el elemento más pulsado en móvil, era la
+  // fuga de conversión más cara del sitio, y ningún test lo veía porque
+  // whatsapp.test.ts comprueba la función y el problema estaba en quién la
+  // llama. Por eso se mira el HTML construido y no la librería.
+  it('ninguna página de servicio ofrece un WhatsApp «para mi empresa»', () => {
+    for (const s of slugs) {
+      const html = readFileSync(`dist/servicios/${s}/index.html`, 'utf-8');
+      expect(html, `${s} conserva el mensaje genérico de empresa`)
+        .not.toContain('para%20mi%20empresa');
+    }
+  });
+
+  it('el flotante y el CTA de una misma página precargan el mismo mensaje', () => {
+    for (const s of slugs) {
+      const html = readFileSync(`dist/servicios/${s}/index.html`, 'utf-8');
+      const mensajes = new Set([...html.matchAll(/https:\/\/wa\.me\/\d+\?text=([^"]+)/g)].map((m) => m[1]));
+      expect(mensajes.size, `${s} emite ${mensajes.size} mensajes distintos`).toBe(1);
+    }
+  });
+
+  it('reparación habla al particular, no a quien contrata para su empresa', () => {
+    const html = readFileSync('dist/servicios/reparacion-de-computadores/index.html', 'utf-8');
+    expect(decodeURIComponent(html)).toContain('tengo un computador dañado');
+  });
+
   it('alquiler habla de alquiler y no de redes (CONT-01)', () => {
     const html = readFileSync('dist/servicios/alquiler-de-computadores/index.html', 'utf-8');
     expect(html).toContain('por contrato');

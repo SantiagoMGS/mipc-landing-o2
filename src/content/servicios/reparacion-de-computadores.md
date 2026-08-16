@@ -6,6 +6,14 @@ metaDescription: "Reparación de computadores en Medellín: diagnóstico por $25
 resumen: Diagnóstico por $25.000, abonables a la reparación. Cualquier marca, incluido Apple.
 publico: ambos
 orden: 2
+# Quien contacta desde esta página es, la mayoría de las veces, un particular
+# con un equipo dañado — no alguien «interesado en un servicio». El genérico
+# de la plantilla sonaba a catálogo; este suena a la razón real de escribir.
+mensajeWhatsApp: Hola, tengo un computador dañado y quiero cotizar la reparación
+oferta:
+  nombre: Diagnóstico
+  precio: 25000
+  descripcion: Abonable a la reparación si se autoriza
 beneficios:
   - Diagnóstico por $25.000, que se abonan a la reparación si la autorizas
   - Cualquier marca, incluido Apple

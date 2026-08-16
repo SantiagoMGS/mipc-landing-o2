@@ -10,8 +10,24 @@
   --color-tinta: #0f1620;
   --color-tinta-2: #5a636b;
   --color-ancla: #1e3a47;
-  --color-senal: #eb3a00;
+  /* El naranja de marca sale de los `stop-color` del logotipo vectorial, no
+     de una muestra tomada a ojo. Circulaban tres valores para el mismo color:
+     #eb3a00 en el CSS del WordPress (el que usaba este sitio hasta ahora),
+     #e54d00 en el PNG que servía —un export apagado— y #ff461a en el vector.
+     Manda el vector: es el archivo del que salen todas las demás versiones, y
+     desde que el logo de la cabecera es ese SVG, cualquier otro valor se ve
+     como dos naranjas distintos uno al lado del otro.
+
+     Sobre blanco da 3,42:1 y sobre --color-fondo 3,10:1. Cumple el mínimo de
+     3:1 que exigen los gráficos no textuales y el texto grande, que es todo
+     para lo que se usa: el subrayado de la pestaña activa, el foco visible,
+     la barra del marcador, las cifras a 36 px y el 404. Es margen ajustado a
+     propósito —el color de marca no se negocia por medio punto de contraste—,
+     y por eso NO se usa nunca en texto de párrafo. */
+  --color-senal: #ff461a;
+  /* Rellenos con texto blanco encima: 4,93:1, cumple AA para texto normal. */
   --color-senal-fuerte: #d33400;
+  /* Texto y enlaces naranjas sobre fondo claro: 6,47:1. */
   --color-senal-oscuro: #b32a00;
   --color-ancla-oscuro: #162c36;
   --color-borde: #dce1e4;

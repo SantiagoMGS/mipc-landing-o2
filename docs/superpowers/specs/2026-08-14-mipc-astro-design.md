@@ -124,7 +124,16 @@ El problema que resuelve: hoy se le pide a un gerente de IPS que confíe su infr
 | Superficie | `#FFFFFF` | Tarjetas y bloques |
 | Tinta | `#0F1620` | Azul-negro para texto |
 | Ancla | `#1E3A47` | Azul petróleo, bloques oscuros |
-| Señal | `#EB3A00` | Naranja de marca, solo acción y estado |
+| Señal | `#FF461A` | Naranja de marca, solo acción y estado |
+
+> **Corregido el 2026-08-15.** Este valor decía `#EB3A00`. Lo tomé del CSS del
+> sitio de WordPress, dando por hecho que un sitio publicado usa el color de su
+> propia marca. No era así: al recuperar el logotipo vectorial resultó que
+> circulaban tres naranjas distintos para el mismo color — `#EB3A00` en el CSS,
+> `#E54D00` en el PNG que servía WordPress (un export apagado) y `#FF461A` en
+> los `stop-color` del vector. Manda el vector, que es el archivo del que
+> derivan todos los demás. Desde que la cabecera sirve ese SVG, cualquier otro
+> valor se ve como dos naranjas distintos uno junto al otro.
 
 El cambio no es la paleta sino **cómo se usa el naranja**. Hoy inunda secciones enteras y por eso deja de significar algo. Pasa a ser color de señal: botones, estado activo, el dato que importa. El azul petróleo carga el peso corporativo.
 

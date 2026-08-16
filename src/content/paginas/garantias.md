@@ -6,7 +6,10 @@ metaDescription: Condiciones de garantía de los servicios de reparación, mante
 ---
 
 <!--
-  AVISO PARA QUIEN EDITE ESTA PÁGINA — no se publica, es un comentario HTML.
+  AVISO PARA QUIEN EDITE ESTA PÁGINA — no se publica: el plugin remark de
+  astro.config.mjs quita los comentarios HTML del Markdown en el build, y
+  scripts/check-html.mjs falla si alguno se cuela. Hasta el 2026-08-16 esta
+  línea decía que no se publicaba y sí se publicaba.
 
   Este articulado es una adaptación de una política MEXICANA. La migración
   eliminó los dos enlaces al dominio mipc.com.mx que lo delataban y corrigió

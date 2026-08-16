@@ -16,9 +16,9 @@ const actual = Astro.url.pathname;
 // empresa.ts como todo lo demás: un solo sitio donde cambiarlo.
 const jornada = empresa.horario[0];
 ---
-<!-- Barra de identificación: teléfono, jornada y ubicación antes que nada.
-     Para un negocio de servicio local son las tres cosas que un visitante
-     busca primero, y el sitio que este reemplaza las tenía enterradas. -->
+{/* Barra de identificación: teléfono, jornada y ubicación antes que nada.
+    Para un negocio de servicio local son las tres cosas que un visitante
+    busca primero, y el sitio que este reemplaza las tenía enterradas. */}
 <div class="zona-oscura bg-noche text-white/70">
   <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-5 py-2 text-xs">
     <a href={`tel:${empresa.telefonoE164}`} class="cifra font-semibold text-white hover:text-white/80">
@@ -33,12 +33,12 @@ const jornada = empresa.horario[0];
   </div>
 </div>
 
-<!-- Una sola fila en escritorio, donde hay ancho de sobra para logo, menú y
-     teléfono. Por debajo de lg el menú baja a su propia línea con
-     desplazamiento horizontal, que es donde la fila única sí se rompía.
-     El orden visual se reordena con `order` sin alterar el orden del
-     documento, así que la navegación por teclado sigue el recorrido
-     natural: logo, menú, teléfono. Sin JavaScript. -->
+{/* Una sola fila en escritorio, donde hay ancho de sobra para logo, menú y
+    teléfono. Por debajo de lg el menú baja a su propia línea con
+    desplazamiento horizontal, que es donde la fila única sí se rompía.
+    El orden visual se reordena con `order` sin alterar el orden del
+    documento, así que la navegación por teclado sigue el recorrido
+    natural: logo, menú, teléfono. Sin JavaScript. */}
 <header class="border-b border-borde bg-superficie">
   <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 px-5 py-3 lg:flex-nowrap lg:py-4">
     <a href="/" class="order-1 shrink-0" aria-label={`${empresa.nombre} — inicio`}>

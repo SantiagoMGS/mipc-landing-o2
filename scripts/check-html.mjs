@@ -76,6 +76,25 @@ for (const ruta of paginas) {
   // genérico. No lo atrapó nada porque ninguna comprobación lo miraba —
   // ausencia de una etiqueta que nadie exige no rompe ningún test.
   if (!doc.querySelector('link[rel="icon"]')) en('sin <link rel="icon">: la pestaña queda sin favicon');
+
+  // Ningún comentario HTML llega al visitante.
+  //
+  // Se comprueba sobre el texto crudo y no sobre el árbol porque el parser
+  // descarta los comentarios: mirar el DOM es justamente no verlos. Esa es la
+  // razón de que esto se colara — el 2026-08-16 se midió que producción
+  // publicaba notas internas sobre `gclid`, sobre la plantilla de conversiones
+  // de Google Ads y sobre el estado legal del articulado de garantías.
+  //
+  // No es solo peso: un rastreador de IA lee un comentario como texto de la
+  // página. En .astro la forma correcta es `{/* ... */}`; en .md los quita el
+  // plugin remark de astro.config.mjs. Las dos son invisibles en la salida, así
+  // que esta regla no obliga a renunciar a ningún comentario, solo a escribirlo
+  // donde no se publique.
+  const crudo = readFileSync(ruta, 'utf-8');
+  for (const [comentario] of crudo.matchAll(/<!--[\s\S]*?-->/g)) {
+    const resumen = comentario.replace(/\s+/g, ' ').slice(0, 90);
+    en(`comentario HTML publicado: ${resumen}…`);
+  }
 }
 
 if (fallos.length) {

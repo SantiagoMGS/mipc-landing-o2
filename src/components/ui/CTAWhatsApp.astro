@@ -3,9 +3,9 @@ import { enlaceWhatsApp } from '../../lib/whatsapp';
 interface Props { mensaje: string; texto?: string; }
 const { mensaje, texto = 'Escríbenos por WhatsApp' } = Astro.props;
 ---
-<!-- bg-[#25d366]/text-[#0b3d24] son el verde de marca de WhatsApp, no un
-     color del sistema de la Task 6 — deliberadamente exento de la paleta
-     senal/senal-oscuro. Medido en 6.2:1, cumple AA de sobra. -->
+{/* bg-[#25d366]/text-[#0b3d24] son el verde de marca de WhatsApp, no un
+    color del sistema de la Task 6 — deliberadamente exento de la paleta
+    senal/senal-oscuro. Medido en 6.2:1, cumple AA de sobra. */}
 <a
   href={enlaceWhatsApp(mensaje)}
   target="_blank"

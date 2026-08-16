@@ -25,27 +25,27 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
   <input type="hidden" name="access_key" value={clave ?? ''} />
   <input type="hidden" name="redirect" value={gracias} />
   <input type="hidden" name="subject" value={`Nueva solicitud desde ${new URL(empresa.url).host}`} />
-  <!-- NO VOLVER A AÑADIR `ccemail`. Es una función de pago de Web3Forms y en
-       el plan gratuito no se ignora: RECHAZA EL ENVÍO ENTERO con «You are
-       trying to use a Pro feature». Comprobado contra el despliegue real el
-       2026-08-16 — el formulario estuvo devolviendo ese error a todo el que lo
-       usara.
+  {/* NO VOLVER A AÑADIR `ccemail`. Es una función de pago de Web3Forms y en
+      el plan gratuito no se ignora: RECHAZA EL ENVÍO ENTERO con «You are
+      trying to use a Pro feature». Comprobado contra el despliegue real el
+      2026-08-16 — el formulario estuvo devolviendo ese error a todo el que lo
+      usara.
 
-       La copia a una segunda dirección se resuelve fuera del sitio, con una
-       regla de reenvío en la bandeja de gerencia@ (el MX del dominio es de
-       Google). Es gratis y además sobrevive a cualquier cambio de proveedor
-       de formularios. Ver `emailCopia` en src/data/empresa.ts. -->
+      La copia a una segunda dirección se resuelve fuera del sitio, con una
+      regla de reenvío en la bandeja de gerencia@ (el MX del dominio es de
+      Google). Es gratis y además sobrevive a cualquier cambio de proveedor
+      de formularios. Ver `emailCopia` en src/data/empresa.ts. */}
   <input type="hidden" name="from_name" value={empresa.nombre} />
   <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 
-  <!-- Atribución de la visita, capturada por Atribucion.astro en el <head>.
-       Nacen `disabled` a propósito: un campo deshabilitado no se envía, así
-       que el correo de un contacto orgánico no lleva dos filas vacías. El
-       script de abajo los habilita solo si hay algo que poner.
+  {/* Atribución de la visita, capturada por Atribucion.astro en el <head>.
+      Nacen `disabled` a propósito: un campo deshabilitado no se envía, así
+      que el correo de un contacto orgánico no lleva dos filas vacías. El
+      script de abajo los habilita solo si hay algo que poner.
 
-       `gclid` va en su propio campo, separado de los UTM, porque es el que
-       se pega en la plantilla de conversiones offline de Google Ads: tiene
-       que poder copiarse del correo tal cual, sin recortar nada. -->
+      `gclid` va en su propio campo, separado de los UTM, porque es el que
+      se pega en la plantilla de conversiones offline de Google Ads: tiene
+      que poder copiarse del correo tal cual, sin recortar nada. */}
   <input type="hidden" name="gclid" id="atribucion-gclid" disabled />
   <input type="hidden" name="origen" id="atribucion-origen" disabled />
 

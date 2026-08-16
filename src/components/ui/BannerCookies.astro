@@ -1,0 +1,82 @@
+---
+/**
+ * Banner de consentimiento. Solo existe si hay medición configurada: un
+ * banner de cookies en un sitio que no pone cookies es una molestia sin
+ * contrapartida, y de esos ya hay bastantes.
+ *
+ * Se renderiza siempre oculto y lo muestra el script si no hay decisión
+ * guardada. Al revés —renderizarlo visible y ocultarlo con JS— provocaría un
+ * parpadeo en cada visita de quien ya decidió.
+ */
+const hayMedicion = Boolean(import.meta.env.PUBLIC_GA4_ID || import.meta.env.PUBLIC_GOOGLE_ADS_ID);
+---
+{hayMedicion && (
+  <>
+    <div
+      id="banner-cookies"
+      hidden
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="banner-cookies-titulo"
+      class="zona-oscura fixed inset-x-0 bottom-0 z-50 border-t-4 border-senal bg-noche text-white/85 shadow-[0_-8px_24px_rgba(0,0,0,0.25)]"
+    >
+      <div class="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center">
+        <div class="flex-1 text-sm leading-relaxed">
+          <h2 id="banner-cookies-titulo" class="font-semibold text-white">Cookies de medición</h2>
+          <p class="mt-1">
+            Usamos cookies de Google Analytics para saber qué páginas sirven y cuáles no.
+            No las activamos hasta que lo autorices. Puedes rechazarlas y el sitio funciona
+            igual. Detalle en <a href="/privacidad/" class="underline underline-offset-2 hover:no-underline">política de privacidad</a>.
+          </p>
+        </div>
+        <div class="flex shrink-0 gap-3">
+          <button
+            type="button"
+            id="cookies-rechazar"
+            class="rounded-sm border border-white/40 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
+          >Rechazar</button>
+          <button
+            type="button"
+            id="cookies-aceptar"
+            class="rounded-sm bg-senal-fuerte px-4 py-2 text-sm font-semibold text-white hover:bg-senal-oscuro"
+          >Aceptar</button>
+        </div>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var CLAVE = 'mipc-consentimiento';
+        var banner = document.getElementById('banner-cookies');
+        if (!banner) return;
+
+        function leer() {
+          try { return localStorage.getItem(CLAVE); } catch (e) { return null; }
+        }
+        function guardar(valor) {
+          try { localStorage.setItem(CLAVE, valor); } catch (e) { /* modo privado */ }
+        }
+
+        // Sin decisión previa, se pregunta. Con decisión —cualquiera de las
+        // dos—, el banner no vuelve a aparecer.
+        if (!leer()) banner.hidden = false;
+
+        function decidir(valor) {
+          guardar(valor);
+          banner.hidden = true;
+          if (valor === 'aceptado' && typeof gtag === 'function') {
+            gtag('consent', 'update', {
+              ad_storage: 'granted',
+              ad_user_data: 'granted',
+              ad_personalization: 'granted',
+              analytics_storage: 'granted',
+            });
+          }
+        }
+
+        document.getElementById('cookies-aceptar').addEventListener('click', function () { decidir('aceptado'); });
+        document.getElementById('cookies-rechazar').addEventListener('click', function () { decidir('rechazado'); });
+      })();
+    </script>
+  </>
+)}

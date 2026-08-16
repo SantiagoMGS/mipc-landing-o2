@@ -1,0 +1,65 @@
+---
+/**
+ * Google Analytics 4 y Google Ads con Consent Mode v2.
+ *
+ * REGLA DE ORO: sin `PUBLIC_GA4_ID` ni `PUBLIC_GOOGLE_ADS_ID` no se emite una
+ * sola línea de Google en el HTML — ni el script, ni el dataLayer, ni el
+ * banner. Nada de etiquetas vacías «por si acaso». Eso permite desplegar el
+ * sitio antes de decidir sobre analítica sin arrastrar nada, y lo comprueba
+ * tests/analitica.test.ts contra el build real.
+ *
+ * El orden de este componente importa y no es intercambiable. El bloque de
+ * `consent default` tiene que ejecutarse ANTES de que cargue gtag.js: si se
+ * pone después, la biblioteca ya arrancó con los valores por defecto de
+ * Google y la primera medición se hace sin respetar la decisión del usuario.
+ * Por eso el primer <script> no es async y va antes que el de la biblioteca.
+ */
+const ga4Id = import.meta.env.PUBLIC_GA4_ID;
+const adsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID;
+const hayMedicion = Boolean(ga4Id || adsId);
+---
+{hayMedicion && (
+  <>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+
+      // Todo denegado de entrada. `functionality_storage` y
+      // `security_storage` sí van concedidos: no son de seguimiento, sostienen
+      // el funcionamiento y la protección del sitio.
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+        wait_for_update: 500,
+      });
+
+      // Si ya hubo una decisión en una visita anterior, se restaura antes de
+      // medir nada, para no volver a preguntar ni medir sin permiso.
+      try {
+        if (localStorage.getItem('mipc-consentimiento') === 'aceptado') {
+          gtag('consent', 'update', {
+            ad_storage: 'granted',
+            ad_user_data: 'granted',
+            ad_personalization: 'granted',
+            analytics_storage: 'granted',
+          });
+        }
+      } catch (e) {
+        // localStorage bloqueado (modo privado, políticas del navegador).
+        // Se sigue con todo denegado, que es el lado correcto en el que fallar.
+      }
+    </script>
+
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id ?? adsId}`}></script>
+
+    <script is:inline define:vars={{ ga4Id, adsId }}>
+      gtag('js', new Date());
+      if (ga4Id) gtag('config', ga4Id);
+      if (adsId) gtag('config', adsId);
+    </script>
+  </>
+)}

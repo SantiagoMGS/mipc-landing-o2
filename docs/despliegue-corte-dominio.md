@@ -72,6 +72,19 @@ Configuración correcta en Cloudflare Pages:
       URLs inexistentes darán la página de error genérica de Cloudflare en vez
       de la nuestra.
 - [ ] Añadir la variable de entorno `PUBLIC_WEB3FORMS_KEY` con la clave real de Web3Forms.
+- [ ] Analítica, **solo cuando se quiera activar**: `PUBLIC_GA4_ID` (formato
+      `G-XXXXXXX`) y `PUBLIC_GOOGLE_ADS_ID` (formato `AW-XXXXXXX`).
+
+  Mientras esas dos variables no existan, el sitio **no emite una sola línea
+  de Google**: ni el script, ni el `dataLayer`, ni el banner de cookies. Lo
+  comprueba `tests/analitica.test.ts` sobre las 32 páginas construidas, así
+  que se puede desplegar y cortar el dominio sin decidir nada de analítica y
+  sin arrastrar etiquetas vacías.
+
+  El día que se pongan, se activa Consent Mode v2 con **todo denegado de
+  entrada** y aparece el banner. Nada se mide hasta que el visitante acepta.
+  Antes de activarlo hay que completar el NIT en `/privacidad/`: la
+  identificación del responsable del tratamiento está incompleta sin él.
 
 ## Paso 2: Impedir la indexación mientras el sitio vive en pages.dev
 

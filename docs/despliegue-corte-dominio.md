@@ -274,11 +274,29 @@ En un móvil real, contra la URL de `pages.dev`:
 
 - [ ] Añadir `mipc.com.co` en Cloudflare y dejar que importe la zona, **sin
       cambiar todavía los nameservers en el registrador**.
-- [ ] Comparar la zona importada contra `docs/dns/zona-mipc.com.co-2026-08-15.txt`
-      registro por registro. Confirmar explícitamente que están los cuatro
-      `MX` de Google, el `TXT` de SPF, el `TXT` de `krs._domainkey`, los tres
-      CNAME `hostingermail-*._domainkey`, el bloque de `coopebello`, y los
-      registros de `admin`, `ftp`, `os` y `www`.
+- [ ] Comparar la zona importada contra `docs/dns/zona-mipc.com.co-2026-08-15.txt`.
+      **No a ojo:** hay 21 conjuntos de registros y el que falte no avisa.
+
+  ```bash
+  npm run check:dns -- <ns-asignado>.ns.cloudflare.com
+  ```
+
+  El script acepta un servidor de nombres y le pregunta **directamente**. Esa
+  es la parte que importa: los nameservers que Cloudflare asigna ya responden
+  autoritativamente por la zona en cuanto se añade el dominio, aunque el
+  registrador siga apuntando a Hostinger. Es decir, **se puede verificar la
+  zona importada antes de mover nada y sin ventana de riesgo**. Si falta algo,
+  se corrige en Cloudflare con el correo todavía funcionando en Hostinger.
+
+  Sale con 0 solo si están los cuatro `MX` de Google, el `TXT` de SPF, el
+  `TXT` de `krs._domainkey`, los seis CNAME `hostingermail-*._domainkey`
+  (dominio y `coopebello`), los de `autoconfig`/`autodiscover`, el bloque de
+  `coopebello` y los registros de `admin`, `ftp` y `os`. Los del sitio —`@` y
+  `www`— los informa aparte, porque esos sí tienen que cambiar.
+
+  Ojo: **no basta con que salga en verde una vez**. Correrlo otra vez después
+  de cambiar los nameservers es lo que confirma que lo que sirve Cloudflare
+  al mundo es lo mismo que se verificó.
 - [ ] Añadir en Cloudflare el registro que apunta el sitio al proyecto (Pages o Workers)
       (`www` y el ápice), sin tocar ninguno de los anteriores.
 - [ ] **Solo cuando lo anterior esté verificado:** cambiar los nameservers en

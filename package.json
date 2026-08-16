@@ -13,6 +13,7 @@
     "check:html": "node scripts/check-html.mjs",
     "check:links": "linkinator dist --recurse --silent --skip \"wa.me|api.web3forms.com|^https://mipc\\.com\\.co/\"",
     "check:redirecciones": "node --experimental-strip-types scripts/check-redirecciones.mjs",
+    "check:dns": "node scripts/check-dns.mjs",
     "verify": "astro check && npm run build && npm test && npm run check:html && npm run check:links"
   },
   "dependencies": {

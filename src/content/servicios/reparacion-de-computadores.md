@@ -34,7 +34,8 @@ beneficios:
   - Si decides no repararlo, pagas $25.000 y te llevas el informe
   - Garantía de 30 días sobre la mano de obra
   - "Cualquier marca: HP, Lenovo, Dell, Asus, Acer, Apple y ensamblados"
-  - Cambio de pantallas y discos duros
+  - Cambio de pantallas, teclados, baterías y discos duros
+  - Sobrecalentamiento, apagones repentinos y derrames de líquido
   - Eliminación de virus y reinstalación de sistema operativo
   - Rescate de información
   - Mantenimiento preventivo por contrato para empresas
@@ -56,6 +57,10 @@ faq:
     respuesta: Sí. Atendemos cualquier marca, incluidos los equipos Apple — MacBook Air, MacBook Pro e iMac.
   - pregunta: ¿Reparan portátiles HP, Lenovo, Dell, Asus o Acer?
     respuesta: Sí, y cualquier otra marca. Trabajamos con HP, Lenovo, Dell, Asus, Acer, Toshiba, Samsung, MSI, Huawei, Apple y equipos ensamblados. No hay lista cerrada de fabricantes ni derivamos a servicios autorizados.
+  - pregunta: Se me derramó líquido en el portátil, ¿qué hago?
+    respuesta: "Apágalo de inmediato, desconecta el cargador y no lo enciendas para probar si funciona: encenderlo con líquido dentro es lo que convierte un susto en una placa perdida. No lo pongas al sol ni le eches secador. Escríbenos y lo recogemos — cuanto antes se limpie el residuo, más se salva, y el azúcar de una gaseosa o un café sigue corroyendo días después aunque el equipo parezca haber quedado bien."
+  - pregunta: ¿Cambian pantallas, teclados y baterías de portátil?
+    respuesta: Sí, los tres. En baterías conviene el diagnóstico antes de comprar el repuesto, porque el síntoma de «no carga» lo producen por igual la batería, el cargador y el circuito de carga de la placa, y cambiar la pieza equivocada se paga dos veces.
   - pregunta: ¿Puedo recuperar la información de un disco dañado?
     respuesta: En la mayoría de los casos sí. El diagnóstico determina si la falla es lógica o física y qué porcentaje de la información es recuperable.
   - pregunta: ¿Qué garantía tiene la reparación?
@@ -70,9 +75,10 @@ faq:
 ---
 
 Reparamos computadores de escritorio, portátiles y todo en uno: pantallas
-rotas, discos que fallan, equipos lentos, infecciones por virus, sistemas
-operativos que no arrancan y rescate de información. **Cualquier marca,
-incluidos los equipos Apple.**
+rotas, teclados y baterías, equipos que se sobrecalientan o se apagan solos,
+discos que fallan, equipos lentos, infecciones por virus, sistemas operativos
+que no arrancan, derrames de líquido y rescate de información. **Cualquier
+marca, incluidos los equipos Apple.**
 
 ## Recogemos tu equipo gratis
 
@@ -134,6 +140,46 @@ cedió o un cable interno suelto dan síntomas parecidos —imagen partida,
 manchas que crecen, pantalla negra con el equipo encendido— y no cuestan lo
 mismo de arreglar. Por eso el diagnóstico va antes que la cotización: no se
 pide un repuesto hasta saber que el repuesto es el problema.
+
+### Se sobrecalienta o se apaga solo
+
+El ventilador suena como un avión, la base quema y el equipo se apaga a mitad
+de algo. Casi siempre es polvo compactado en el disipador y pasta térmica seca:
+un portátil que lleva tres o cuatro años sin abrirse acumula lo suficiente para
+que el aire deje de pasar. Se limpia, se cambia la pasta y se comprueba que el
+ventilador gire a las revoluciones que debe. Y si el apagado no era
+temperatura, el diagnóstico lo dice — en escritorio también lo provoca una
+fuente de poder que ya no entrega lo que el equipo pide.
+
+### La batería no carga o el portátil solo funciona conectado
+
+«Conectado, no cargando». O un equipo que se apaga en cuanto sacas el cable. O
+una batería inflada que empuja el touchpad desde abajo. Son tres cosas
+distintas —la batería, el cargador o el circuito de carga de la placa— y
+cambiar la batería sin saber cuál de las tres es sale caro dos veces. **Si la
+batería está hinchada, deja de usar el equipo**: eso es un riesgo real, no un
+defecto estético.
+
+### El teclado no responde
+
+Teclas que no marcan, teclas que se repiten solas, o el teclado entero muerto
+mientras uno externo por USB sí funciona — esa última prueba, que puedes hacer
+en casa antes de escribirnos, ya separa el teclado del resto del equipo. En un
+portátil el problema puede estar en el teclado o en el cable plano que lo une a
+la placa. Cambiamos teclados de portátil completos.
+
+### Se derramó líquido
+
+Es la única falla de esta lista donde lo que hagas en los primeros minutos
+cambia el resultado. **Apaga el equipo de inmediato, desconecta el cargador,
+saca la batería si es extraíble y no lo enciendas para ver si todavía
+funciona.** Encenderlo con líquido dentro es lo que convierte un susto en una
+placa perdida. Tampoco lo pongas al sol ni le eches secador.
+
+Escríbenos y lo recogemos: cuanto antes se abra, se limpie y se neutralice el
+residuo, más se salva. El azúcar de una gaseosa o de un café hace bastante más
+daño que el agua, y sigue corroyendo durante días aunque el equipo parezca
+haber quedado bien.
 
 ### El sistema operativo no arranca
 

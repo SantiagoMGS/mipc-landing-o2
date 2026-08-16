@@ -2,21 +2,36 @@
 titulo: Reparación de Computadores
 h1: Reparación de computadores en Medellín
 metaTitle: Reparación de Computadores en Medellín | MiPC Tecnología
-metaDescription: "Reparación de computadores en Medellín: recogemos tu equipo gratis, diagnóstico por $25.000 abonables a la reparación y garantía de 30 días. Cualquier marca."
-resumen: Recogemos tu equipo gratis y te lo devolvemos reparado. Diagnóstico por $25.000, abonables a la reparación. Cualquier marca, incluido Apple.
+metaDescription: "Reparación de computadores en Medellín: recogemos tu equipo gratis y el diagnóstico no te cuesta nada si autorizas la reparación. Garantía de 30 días."
+resumen: Recogemos tu equipo gratis y te lo devolvemos reparado. El diagnóstico no te cuesta nada si autorizas la reparación. Cualquier marca, incluido Apple.
 publico: ambos
 orden: 2
 # Quien contacta desde esta página es, la mayoría de las veces, un particular
 # con un equipo dañado — no alguien «interesado en un servicio». El genérico
 # de la plantilla sonaba a catálogo; este suena a la razón real de escribir.
 mensajeWhatsApp: Hola, tengo un computador dañado y quiero cotizar la reparación
+# El precio SIGUE siendo 25000 y no se toca: es lo que cuesta el diagnóstico
+# para quien no autoriza la reparación, que es el único caso en que se cobra.
+# Lo que cambió el 2026-08-16 fue cómo se cuenta, no cuánto vale — ver el
+# comentario de `beneficios` justo debajo.
 oferta:
   nombre: Diagnóstico
   precio: 25000
-  descripcion: Abonable a la reparación si se autoriza
+  descripcion: Sin costo si se autoriza la reparación; $25.000 si no se autoriza
+# El orden de estas dos líneas es la decisión, y conviene que quede escrita.
+# Antes la primera decía «Diagnóstico por $25.000, abonables a la reparación»:
+# cierto, pero en un titular «$25.000» se lee peor que el «gratis» que anuncia
+# la competencia, aunque para quien repara el resultado sea idéntico. Ahora se
+# cuenta empezando por el caso mayoritario —quien autoriza no paga diagnóstico—
+# y la línea siguiente dice el precio del otro caso, sin letra pequeña.
+#
+# NO es una rebaja encubierta ni un «gratis» con asterisco: el número sigue
+# visible en la página, en las FAQ y en el schema. Es el mismo trato contado
+# desde el lado que le toca a la mayoría.
 beneficios:
   - Recogemos y devolvemos tu equipo gratis, máximo un día hábil
-  - Diagnóstico por $25.000, que se abonan a la reparación si la autorizas
+  - Diagnóstico sin costo si autorizas la reparación
+  - Si decides no repararlo, pagas $25.000 y te llevas el informe
   - Garantía de 30 días sobre la mano de obra
   - "Cualquier marca: HP, Lenovo, Dell, Asus, Acer, Apple y ensamblados"
   - Cambio de pantallas y discos duros
@@ -29,14 +44,14 @@ faq:
   - pregunta: ¿Reparan en mi casa o se llevan el equipo?
     respuesta: "Nos lo llevamos al taller. Un cambio de pantalla, una soldadura o el rescate de un disco necesitan banco de trabajo y herramienta que no caben en un maletín, y hacerlos sobre la mesa del comedor es peor trabajo. Por eso la recogida es gratis: para que llevarlo al taller no te cueste nada."
   - pregunta: ¿Cuánto cuesta reparar un computador en Medellín?
-    respuesta: El diagnóstico cuesta $25.000 y esos $25.000 se abonan a la reparación si decides autorizarla. La reparación en sí depende de qué encuentre el diagnóstico, y se cotiza antes de hacer nada. No hay trabajo sin cotización aprobada.
+    respuesta: "Si autorizas la reparación, el diagnóstico no te cuesta nada: los $25.000 que vale se abonan al total. Si decides no repararlo, pagas solo esos $25.000 y te llevas el equipo con el informe. La reparación en sí depende de qué encuentre el diagnóstico y se cotiza antes de hacer nada: no hay trabajo sin cotización aprobada."
   - pregunta: ¿Cuánto se demora el diagnóstico?
     respuesta: Un día hábil desde que el equipo llega al taller. El tiempo de la reparación depende de si hay que conseguir repuesto, y eso te lo decimos con la cotización, no después.
   - pregunta: ¿Y si al final no quiero repararlo?
     # Entrecomillada por el «gratis: no». Un `: ` dentro de un escalar suelto
     # rompe el análisis de YAML, y el build falla con un error de js-yaml que
     # no menciona ni el campo ni el archivo de contenido, solo línea y columna.
-    respuesta: "Pagas solo el diagnóstico y te devolvemos el equipo con un informe de qué tiene. La recogida y la entrega siguen siendo gratis: no están condicionadas a que autorices la reparación."
+    respuesta: "Pagas los $25.000 del diagnóstico y te devolvemos el equipo con un informe de qué tiene. La recogida y la entrega siguen siendo gratis: no están condicionadas a que autorices la reparación."
   - pregunta: ¿Reparan Mac?
     respuesta: Sí. Atendemos cualquier marca, incluidos los equipos Apple — MacBook Air, MacBook Pro e iMac.
   - pregunta: ¿Reparan portátiles HP, Lenovo, Dell, Asus o Acer?
@@ -80,16 +95,18 @@ ni el desplazamiento ni el tiempo.
 
 ## Cuánto cuesta y cómo funciona
 
-El proceso tiene un precio de entrada y no tiene sorpresas. **El diagnóstico
-cuesta $25.000 y toma un día hábil.** Con el diagnóstico en la mano se cotiza
-la reparación; si la autorizas, esos $25.000 se abonan al total. Si decides no
-repararlo, pagas solo el diagnóstico y te llevas el equipo con un informe de
-qué tiene. Nunca se ejecuta un trabajo sin cotización aprobada.
+**Si reparas, el diagnóstico no te cuesta nada.** Vale $25.000 y toma un día
+hábil, pero esos $25.000 se abonan al total en cuanto autorizas la reparación.
+Solo se cobran en un caso: si después de saber qué tiene el equipo decides no
+arreglarlo. Entonces pagas esos $25.000 y te llevas el computador con el
+informe. Nunca se ejecuta un trabajo sin cotización aprobada.
 
-Decimos el precio porque la alternativa es peor para todos. Quien tiene el
-portátil dañado abre tres pestañas, encuentra «consulta sin compromiso» en las
-tres, y termina llamando para preguntar lo mismo que podría haber leído. La
-ambigüedad no protege el margen: solo hace perder una tarde a las dos partes.
+Decimos la cifra en vez de escribir «diagnóstico gratis» y nada más, porque el
+gratis a secas casi nunca lo es: o va dentro del precio de la reparación, o
+reaparece al final como «revisión». Quien tiene el portátil dañado abre tres
+pestañas, encuentra «consulta sin compromiso» en las tres, y termina llamando
+para preguntar lo mismo que podría haber leído. La ambigüedad no protege el
+margen: solo hace perder una tarde a las dos partes.
 
 En orden, el proceso completo es este:
 

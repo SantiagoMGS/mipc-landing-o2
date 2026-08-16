@@ -90,6 +90,24 @@ export const empresa = Object.freeze({
     departamento: 'Antioquia',
     pais: 'CO',
     paisNombre: 'Colombia',
+    /**
+     * Código postal. Tomado de la ficha de Google Business Profile el
+     * 2026-08-16, al vincularla con GA4: allí la dirección figura como
+     * «Carrera 66A ##34-48 int 101, Medellín, Antioquia 050030, CO».
+     *
+     * NO se deduce del barrio ni se busca en un callejero. Igual que las
+     * coordenadas, el origen es la ficha, porque lo que importa no es que el
+     * dato sea correcto en abstracto sino que el sitio y la ficha digan lo
+     * mismo: el emparejamiento entre los dos es señal de posicionamiento
+     * local, y una discrepancia resta.
+     *
+     * Va SOLO al JSON-LD, no al pie ni a /contacto/. En Colombia nadie escribe
+     * el código postal en una dirección de calle, y ponerlo a la vista se
+     * leería como relleno; a un buscador, en cambio, le sirve para casar la
+     * dirección con la ficha. Lo que ve una persona y lo que lee una máquina
+     * no tienen por qué ser lo mismo mientras ninguno de los dos mienta.
+     */
+    codigoPostal: '050030',
   }),
 
   // Confirmado por el cliente el 2026-08-15. Debe coincidir EXACTAMENTE con la

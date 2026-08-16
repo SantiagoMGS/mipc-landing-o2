@@ -155,3 +155,30 @@ describe('breadcrumb', () => {
     expect(ld.itemListElement[1].position).toBe(2);
   });
 });
+
+describe('coincidencia con la ficha de Google Business Profile', () => {
+  const ld = localBusiness() as any;
+
+  /*
+   * El emparejamiento entre lo que dice el sitio y lo que dice la ficha es
+   * señal de posicionamiento local, y una discrepancia resta. El CID no basta:
+   * hay que decir lo mismo.
+   *
+   * El código postal se descubrió el 2026-08-16 al vincular la ficha con GA4,
+   * donde la dirección figura con «050030» y el schema del sitio no lo
+   * llevaba. Si algún día se cambia la dirección en un sitio y no en el otro,
+   * que al menos falle acá y no en silencio durante meses.
+   */
+  it('publica la dirección completa, código postal incluido', () => {
+    expect(ld.address.streetAddress).toBe('Carrera 66A # 34-48, Interior 101');
+    expect(ld.address.postalCode).toBe('050030');
+    expect(ld.address.addressLocality).toBe('Medellín');
+    expect(ld.address.addressRegion).toBe('Antioquia');
+    expect(ld.address.addressCountry).toBe('CO');
+  });
+
+  it('apunta a la ficha por CID, que es el identificador estable', () => {
+    expect(ld.hasMap).toContain('cid=15154712519055002689');
+    expect(ld.sameAs).toContain(empresa.fichaGoogle);
+  });
+});

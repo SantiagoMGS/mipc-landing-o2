@@ -51,6 +51,10 @@ export function localBusiness() {
       streetAddress: empresa.direccion.calle,
       addressLocality: empresa.direccion.ciudad,
       addressRegion: empresa.direccion.departamento,
+      // Solo aquí, no en el pie ni en /contacto/. Ver el comentario en
+      // empresa.ts: sirve para que el schema case con la ficha de Google, y en
+      // una dirección colombiana a la vista sería relleno.
+      postalCode: empresa.direccion.codigoPostal,
       addressCountry: empresa.direccion.pais,
     },
     openingHoursSpecification: empresa.horario.map((h) => ({

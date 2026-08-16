@@ -70,6 +70,12 @@ for (const ruta of paginas) {
   // darle un trato especial.
   const canon = doc.querySelector('link[rel="canonical"]')?.getAttribute('href') ?? '';
   if (!canon.startsWith('https://mipc.com.co/')) en(`canonical ausente o relativa: "${canon}"`);
+
+  // Favicon. El sitio se construyó entero sin uno: el navegador pedía
+  // /favicon.ico, recibía la página 404 y la pestaña quedaba con el icono
+  // genérico. No lo atrapó nada porque ninguna comprobación lo miraba —
+  // ausencia de una etiqueta que nadie exige no rompe ningún test.
+  if (!doc.querySelector('link[rel="icon"]')) en('sin <link rel="icon">: la pestaña queda sin favicon');
 }
 
 if (fallos.length) {

@@ -23,6 +23,17 @@ const bloques = [localBusiness(), ...jsonld];
 {noindex && <meta name="robots" content="noindex,follow" />}
 <link rel="canonical" href={canonical} />
 
+<!-- El sitio no tenía favicon: el navegador pedía /favicon.ico, recibía la
+     página 404 y la pestaña quedaba con el icono genérico. El SVG es el
+     bloque «PC» con la hoja, no el logotipo completo, porque el wordmark
+     entero es ilegible a 32 px. El PNG de 32 queda de respaldo para los
+     navegadores que no aceptan favicon vectorial. -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#ff461a" />
+
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={empresa.nombre} />
 <meta property="og:locale" content="es_CO" />

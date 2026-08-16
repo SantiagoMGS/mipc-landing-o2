@@ -8,14 +8,17 @@ import { empresa } from '../data/empresa';
 import { breadcrumb } from '../lib/jsonld';
 import fotoCableadoExterior from '../assets/fotos/tecnico-cableado-exterior.jpg';
 
-const clientes = await getCollection('clientes');
 const servicios = await getCollection('servicios');
 
-// Cifras derivadas de los datos, no escritas a mano: siguen siendo correctas
-// el año que viene, o si se añade un cliente o una línea de servicio, sin
-// que nadie tenga que acordarse de tocar esta página.
+// Los años y las líneas de servicio se derivan de los datos, no se escriben a
+// mano: siguen siendo correctas el año que viene, o si se añade una línea de
+// servicio, sin que nadie tenga que acordarse de tocar esta página.
+//
+// «Empresas atendidas» sale de empresa.ts y no del recuento de la colección,
+// que solo cuenta los clientes con ficha publicada. Ver el porqué junto al
+// dato. Tiene que coincidir con la cifra de la home: por eso hay una sola
+// fuente y no dos páginas contando por su cuenta.
 const anios = new Date().getFullYear() - empresa.fundacion;
-const empresasAtendidas = clientes.length;
 const lineasDeServicio = servicios.length;
 
 const jsonld = [
@@ -41,7 +44,7 @@ const jsonld = [
 
     <div class="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-3">
       <Cifra valor={`${anios}+`} etiqueta="años de experiencia" />
-      <Cifra valor={`${empresasAtendidas}`} etiqueta="empresas atendidas" />
+      <Cifra valor={`${empresa.empresasAtendidas}+`} etiqueta="empresas atendidas" />
       <Cifra valor={`${lineasDeServicio}`} etiqueta="líneas de servicio" />
     </div>
 

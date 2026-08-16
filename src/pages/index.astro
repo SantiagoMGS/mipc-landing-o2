@@ -15,12 +15,19 @@ const entradas = (await getCollection('blog'))
   .sort((a, b) => b.data.fecha.getTime() - a.data.fecha.getTime())
   .slice(0, 3);
 
-// Las tres cifras se derivan de los datos, nunca se escriben: el año que
-// viene siguen siendo correctas sin que nadie tenga que acordarse.
+// Los años y los municipios se derivan de los datos, nunca se escriben: el
+// año que viene siguen siendo correctas sin que nadie tenga que acordarse.
+//
+// «Empresas atendidas» es la excepción y sale de empresa.ts. Antes usaba
+// `clientes.length`, que son los 18 clientes con ficha —los que tienen
+// logotipo y permiso para nombrarlos—, no las empresas atendidas desde 2009,
+// que superan las setenta. Era una cifra exacta que respondía a otra pregunta
+// y subestimaba el negocio en un factor de casi cuatro. El razonamiento
+// completo está junto al dato.
 const anios = new Date().getFullYear() - empresa.fundacion;
 const cifras = [
   { valor: `${anios}+`, etiqueta: 'años de experiencia' },
-  { valor: String(clientes.length), etiqueta: 'empresas atendidas' },
+  { valor: `${empresa.empresasAtendidas}+`, etiqueta: 'empresas atendidas' },
   { valor: String(empresa.zonaServicio.length), etiqueta: 'municipios cubiertos' },
 ];
 ---

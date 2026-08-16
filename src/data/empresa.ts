@@ -26,6 +26,26 @@ export const empresa = Object.freeze({
   fundacion: 2009,
   url: 'https://mipc.com.co',
 
+  /**
+   * Empresas atendidas desde 2009. Confirmado por el cliente el 2026-08-16.
+   *
+   * ES LA ÚNICA CIFRA DEL SITIO QUE NO SE DERIVA DE LOS DATOS, y conviene
+   * entender por qué antes de «arreglarlo». Las páginas mostraban
+   * `clientes.length`, que son **18**: los clientes con ficha en
+   * `src/content/clientes/`, es decir, aquellos de los que hay logotipo y
+   * permiso para nombrarlos. No es la misma pregunta que «a cuántas empresas
+   * han atendido», cuya respuesta es más de setenta.
+   *
+   * Derivarla del recuento no la hacía más fiable: la hacía exacta y falsa,
+   * subestimando el negocio en un factor de casi cuatro. Un dato correcto que
+   * responde a otra pregunta sigue siendo un dato equivocado.
+   *
+   * Se escribe conservadora a propósito —el «+» hace el trabajo— para que
+   * siga siendo cierta sin tener que tocarla cada año. Si algún día hay que
+   * subirla, que sea porque el cliente da una cifra nueva, no por estimar.
+   */
+  empresasAtendidas: 70,
+
   telefono: '314 888 90 78',
   telefonoE164: '+573148889078',
   whatsapp: '573148889078',

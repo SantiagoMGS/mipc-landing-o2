@@ -5,16 +5,18 @@ import { parse } from 'node-html-parser';
 describe('muro de clientes', () => {
   const doc = parse(readFileSync('dist/index.html', 'utf-8'));
 
-  it('muestra los 18 clientes', () => {
-    expect(doc.querySelectorAll('[data-cliente]')).toHaveLength(18);
+  it('muestra los 20 clientes', () => {
+    expect(doc.querySelectorAll('[data-cliente]')).toHaveLength(20);
   });
 
   it('TODOS los logos se exhiben a 88px, no solo el primero', () => {
     const imgs = doc.querySelectorAll('[data-cliente] img');
-    // 14 de los 18 clientes tienen logo. Los cuatro sin logo (ETDH Pedro
-    // Justo Berrío, LRM, Quirovida, Vanex) se componen con su nombre en
-    // texto, no con un hueco.
-    expect(imgs).toHaveLength(14);
+    // Los 20 clientes tienen logo desde el 2026-08-16, cuando llegaron los
+    // seis que faltaban. La rama de texto de MuroClientes.astro ya no la
+    // ejercita ningún cliente, pero NO se quita: el día que entre uno sin
+    // logotipo, la alternativa tiene que seguir siendo su nombre compuesto y
+    // no un hueco en la cuadrícula.
+    expect(imgs).toHaveLength(20);
     expect(imgs.every((i) => i.getAttribute('width') === '88')).toBe(true);
     expect(imgs.every((i) => i.getAttribute('height') === '52')).toBe(true);
   });

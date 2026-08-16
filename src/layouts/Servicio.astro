@@ -1,11 +1,14 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Base from './Base.astro';
 import Boton from '../components/ui/Boton.astro';
 import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
 import Figura from '../components/ui/Figura.astro';
 import { service, breadcrumb } from '../lib/jsonld';
 import { fotosPorServicio } from '../data/fotos-servicios';
+import { fotosPorProyecto } from '../data/fotos-proyectos';
 
 /** Derivado de la colección, no una forma suelta: si el esquema cambia, esto rompe. */
 type FAQ = CollectionEntry<'servicios'>['data']['faq'][number];
@@ -21,6 +24,23 @@ const fotos = fotosPorServicio[entrada.id] ?? [];
  * servicio y el flotante decía «para mi empresa» en todas partes.
  */
 const mensajeWhatsApp = d.mensajeWhatsApp ?? `Hola, me interesa el servicio de ${d.titulo}`;
+
+/**
+ * Proyectos que declararon este servicio en su frontmatter.
+ *
+ * El enlace existía en un solo sentido: los proyectos enlazan al servicio y el
+ * servicio no devolvía nada. Nueve proyectos apuntaban a `/servicios/
+ * redes-de-datos/` y esa página no tenía una sola ruta hacia la obra que la
+ * respalda. Para quien lee, era una promesa sin prueba; para un buscador, un
+ * grupo temático a medio construir.
+ *
+ * La relación ya estaba en los datos —`proyecto.servicios`, que
+ * tests/proyectos.test.ts valida contra los slugs reales—, solo que no se
+ * pintaba. Esto no inventa nada: recorre lo que ya estaba declarado.
+ */
+const relacionados = (await getCollection('proyectos'))
+  .filter((p) => p.data.servicios.includes(entrada.id))
+  .sort((a, b) => a.data.orden - b.data.orden);
 
 const jsonld = [
   service({ nombre: d.titulo, descripcion: d.metaDescription, url, oferta: d.oferta }),
@@ -72,6 +92,47 @@ const jsonld = [
     )}
 
     <div class="prose prose-neutral mt-12 max-w-none"><slot /></div>
+
+    {relacionados.length > 0 && (
+      <section class="mt-14">
+        <h2 class="text-2xl font-semibold">Obra ejecutada con este servicio</h2>
+        <ul class="mt-6 grid gap-6 sm:grid-cols-2">
+          {relacionados.map((p) => {
+            const foto = fotosPorProyecto[p.id]?.[0];
+            return (
+              <li>
+                <a
+                  href={`/proyectos/${p.id}/`}
+                  class="canto group flex h-full flex-col overflow-hidden bg-acero transition-colors hover:bg-[#1c303a]"
+                >
+                  {foto && (
+                    <div class="aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={foto.src}
+                        alt={foto.alt}
+                        widths={[400, 800]}
+                        sizes="(max-width: 640px) 100vw, 340px"
+                        loading="lazy"
+                        decoding="async"
+                        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                    </div>
+                  )}
+                  <div class="flex flex-1 flex-col gap-2 p-5">
+                    <span class="cifra text-[0.6875rem] uppercase tracking-[0.16em] text-white/50">
+                      {p.data.sector} · {p.data.anio}
+                    </span>
+                    <h3 class="text-lg font-semibold text-white">{p.data.cliente}</h3>
+                    <p class="text-sm leading-relaxed text-white/70">{p.data.titulo}</p>
+                    <p class="cifra mt-auto pt-2 text-xs text-white/50">{p.data.lugar}</p>
+                  </div>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
 
     {d.faq.length > 0 && (
       <section class="mt-14">

@@ -1,0 +1,44 @@
+---
+/**
+ * La conversión de /gracias/: el único momento del sitio en el que consta,
+ * sin interpretación posible, que un visitante se convirtió en contacto.
+ *
+ * Web3Forms redirige aquí desde su servidor solo cuando el envío se procesó
+ * bien (el campo oculto `redirect` de Formulario.astro), así que llegar a
+ * esta página es la señal. Va en un componente propio, montado solo en
+ * gracias.astro, en vez de detectar `location.pathname` desde el script
+ * global: la ruta y la conversión quedarían acopladas en dos archivos que
+ * nadie recuerda mirar a la vez el día que la página se renombre.
+ *
+ * Emite dos cosas distintas y no intercambiables:
+ *
+ * - `generate_lead` a GA4, que es el nombre recomendado por Google para esto
+ *   y el que hace que los informes de adquisición lo entiendan sin
+ *   configuración adicional.
+ * - `conversion` con `send_to` a Google Ads, que es lo que permite que una
+ *   campaña sepa qué anuncio trajo el contacto. Requiere las DOS variables
+ *   (`PUBLIC_GOOGLE_ADS_ID` y `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL`): con una
+ *   sola, `envioConversion` es undefined y no se emite nada, porque una
+ *   conversión con el identificador a medias se pierde sin dar error.
+ *
+ * `noindex` en esta página no estorba: la etiqueta gobierna la indexación,
+ * no la ejecución de scripts.
+ */
+import { hayMedicion, envioConversion } from '../lib/medicion';
+---
+{hayMedicion && (
+  <script is:inline define:vars={{ envioConversion }}>
+    (function () {
+      // Analitica.astro define gtag en el <head>; este script va en el
+      // cuerpo, así que ya existe. La comprobación cubre el caso de que un
+      // bloqueador haya impedido cargar la biblioteca.
+      if (typeof gtag !== 'function') return;
+
+      gtag('event', 'generate_lead', { metodo: 'formulario' });
+
+      if (envioConversion) {
+        gtag('event', 'conversion', { send_to: envioConversion });
+      }
+    })();
+  </script>
+)}

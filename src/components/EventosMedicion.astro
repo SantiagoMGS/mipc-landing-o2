@@ -1,0 +1,66 @@
+---
+/**
+ * Eventos de conversión de los dos canales que salen del sitio: WhatsApp y
+ * teléfono.
+ *
+ * POR QUÉ AQUÍ Y NO EN CADA PLANTILLA. Los enlaces de WhatsApp los generan
+ * hoy tres sitios distintos —FlotanteWhatsApp, CTAWhatsApp y la tarjeta «Soy
+ * persona» de Segmentacion, que arma su propio <a>— y los de teléfono, dos
+ * dentro de Header. Repetir el evento en cada uno significa que el siguiente
+ * enlace que alguien añada nace sin medir, y nada lo avisa: el enlace
+ * funciona, el contacto llega, y solo el informe de Ads queda corto.
+ *
+ * Un único manejador delegado en `document` cubre los seis de hoy y los que
+ * vengan, sin tocar ninguna plantilla y sin ensuciar el marcado con
+ * `onclick`. El criterio es el `href`, que es justo lo que define al canal.
+ *
+ * POR QUÉ NO LLEVAN `send_to` DE ADS. La conversión de Ads con `send_to`
+ * solo se usa en /gracias/ (ver ConversionFormulario.astro), donde hay una
+ * señal inequívoca de contacto conseguido. Un clic en WhatsApp no lo es —se
+ * abre la aplicación y puede no escribirse nada—, así que estos van a GA4
+ * como eventos y se importan a Ads desde ahí, marcándolos como eventos clave.
+ * Eso permite además decidir en la interfaz de GA4 cuáles cuentan sin volver
+ * a tocar el código, y evita tener que configurar una etiqueta de conversión
+ * por canal.
+ *
+ * No comprueba el consentimiento a mano a propósito: de eso se encarga
+ * Consent Mode v2, configurado en Analitica.astro con todo denegado de
+ * entrada. Duplicar aquí esa lógica crearía dos sitios donde equivocarse.
+ */
+import { hayMedicion } from '../lib/medicion';
+---
+{hayMedicion && (
+  <script is:inline>
+    (function () {
+      var CANALES = [
+        { prefijo: 'https://wa.me/', evento: 'clic_whatsapp', metodo: 'whatsapp' },
+        { prefijo: 'tel:', evento: 'clic_telefono', metodo: 'telefono' },
+      ];
+
+      // En captura no: en burbujeo. Un manejador en captura mediría clics que
+      // otro script podría cancelar después.
+      document.addEventListener('click', function (ev) {
+        var destino = ev.target;
+        // El botón flotante y los CTA llevan un <svg> dentro, así que el
+        // objetivo del clic suele ser un descendiente, no el <a>.
+        var enlace = destino && destino.closest ? destino.closest('a[href]') : null;
+        if (!enlace) return;
+
+        var href = enlace.getAttribute('href') || '';
+        var canal = null;
+        for (var i = 0; i < CANALES.length; i++) {
+          if (href.indexOf(CANALES[i].prefijo) === 0) { canal = CANALES[i]; break; }
+        }
+        if (!canal) return;
+        if (typeof gtag !== 'function') return;
+
+        gtag('event', canal.evento, {
+          metodo: canal.metodo,
+          // Desde qué página se contactó. Es la pregunta que de verdad se
+          // hace uno después: qué servicio empuja los contactos.
+          origen: String(location.pathname).slice(0, 100),
+        });
+      });
+    })();
+  </script>
+)}

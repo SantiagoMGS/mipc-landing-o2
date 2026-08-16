@@ -1,0 +1,70 @@
+---
+/**
+ * Guarda de dónde vino la visita, para que viaje con el formulario.
+ *
+ * EL PROBLEMA QUE RESUELVE. MiPC vende a empresas con ciclo de venta: el
+ * contacto entra hoy y se cierra por teléfono dos o tres semanas después.
+ * Sin el `gclid` guardado junto al contacto, esa venta no puede volver a
+ * Google Ads como conversión offline, y Ads sigue optimizando hacia
+ * «formularios enviados» sin saber cuáles acabaron en dinero. Es la
+ * diferencia entre pagar por contactos y pagar por clientes.
+ *
+ * POR QUÉ EN TODAS LAS PÁGINAS Y NO EN EL FORMULARIO. El anuncio puede
+ * aterrizar en /servicios/redes-de-datos/ y el visitante llegar a /contacto/
+ * tres clics después, ya sin parámetros en la URL. Capturarlo solo donde
+ * está el formulario perdería justo las visitas que más importan.
+ *
+ * POR QUÉ `sessionStorage` Y NO UNA COOKIE. Dura lo que la pestaña, no se
+ * envía en ninguna petición, no se comparte entre subdominios y no
+ * sobrevive al cierre del navegador. Es el almacenamiento más corto que
+ * resuelve el problema.
+ *
+ * POR QUÉ NO ESPERA AL CONSENTIMIENTO. Esto no es medición de terceros: son
+ * los parámetros que el propio visitante trae en la URL con la que llega, se
+ * guardan solo en su navegador y salen de él únicamente si él mismo envía el
+ * formulario —momento en el que está entregando voluntariamente nombre,
+ * correo y teléfono—. Está declarado en /privacidad/, apartado 2. El banner
+ * de cookies gobierna las etiquetas de Google, que es otra cosa y sigue
+ * denegada de entrada.
+ */
+---
+<script is:inline>
+  (function () {
+    var CLAVE = 'mipc-atribucion';
+    // `wbraid` y `gbraid` son las variantes que Google Ads envía cuando el
+    // `gclid` no está disponible (tráfico de iOS y de aplicaciones). Sin
+    // ellas se pierde una parte del tráfico móvil, que aquí es la mayoría.
+    var CAMPOS = [
+      'gclid', 'wbraid', 'gbraid',
+      'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
+    ];
+
+    try {
+      var parametros = new URLSearchParams(location.search);
+      var datos = {};
+      var hay = false;
+
+      for (var i = 0; i < CAMPOS.length; i++) {
+        var valor = parametros.get(CAMPOS[i]);
+        if (valor) {
+          // Un tope generoso pero real: un `gclid` ronda los 100 caracteres.
+          // Evita que una URL manipulada llene el almacenamiento o desborde
+          // el correo de Web3Forms.
+          datos[CAMPOS[i]] = valor.slice(0, 200);
+          hay = true;
+        }
+      }
+
+      // Solo se escribe si la visita TRAE parámetros. Si no, navegar a una
+      // segunda página —que ya no los lleva en la URL— borraría la
+      // atribución de la entrada, que es exactamente el dato que se quiere.
+      if (!hay) return;
+
+      datos.pagina_entrada = location.pathname;
+      sessionStorage.setItem(CLAVE, JSON.stringify(datos));
+    } catch (e) {
+      // sessionStorage bloqueado (modo privado, políticas del navegador).
+      // Se pierde la atribución de esa visita; el formulario sigue funcionando.
+    }
+  })();
+</script>

@@ -5,6 +5,8 @@ import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import FlotanteWhatsApp from '../components/ui/FlotanteWhatsApp.astro';
 import Analitica from '../components/Analitica.astro';
+import Atribucion from '../components/Atribucion.astro';
+import EventosMedicion from '../components/EventosMedicion.astro';
 import BannerCookies from '../components/ui/BannerCookies.astro';
 import '../styles/global.css';
 import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2?url';
@@ -18,6 +20,10 @@ const { title, metaDescription, jsonld, imagenOg, noindex } = Astro.props;
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
     <SEO {title} {metaDescription} {jsonld} {imagenOg} {noindex} />
     <Analitica />
+    <!-- En el <head> y no al final del cuerpo: tiene que haber guardado los
+         parámetros de la URL antes de que el script de Formulario.astro los
+         lea para rellenar sus campos ocultos. -->
+    <Atribucion />
   </head>
   <body class="flex min-h-screen flex-col bg-fondo text-tinta antialiased">
     <Header />
@@ -25,5 +31,9 @@ const { title, metaDescription, jsonld, imagenOg, noindex } = Astro.props;
     <Footer />
     <FlotanteWhatsApp />
     <BannerCookies />
+    <!-- Después de FlotanteWhatsApp, aunque delegue en `document` y el orden
+         no le afecte: leído de arriba abajo, el manejador queda junto a lo
+         que mide. -->
+    <EventosMedicion />
   </body>
 </html>

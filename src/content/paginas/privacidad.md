@@ -45,6 +45,18 @@ en el formulario de contacto:
 | Teléfono | Contactarte cuando el asunto se resuelve más rápido hablando |
 | Mensaje | Entender qué necesitas y poder cotizarlo |
 
+Junto a esos datos, el formulario envía también **de dónde vino tu visita**:
+los parámetros que trae la dirección con la que llegaste al sitio cuando
+vienes de un anuncio o de una campaña (`gclid`, `utm_source` y similares) y la
+página por la que entraste. No dicen nada sobre ti —no identifican a una
+persona, identifican a un anuncio—, y nos sirven para saber qué publicidad
+merece la pena y cuál no.
+
+Se guardan solo en tu navegador, durante esa sesión, y **salen de él
+únicamente si tú envías el formulario**. Si cierras la pestaña sin enviarlo,
+desaparecen y nosotros nunca los vemos. No son cookies y no dependen del aviso
+de cookies del apartado 6, que gobierna otra cosa.
+
 **No pedimos ni necesitamos datos sensibles** —salud, origen étnico,
 convicciones, datos biométricos— ni datos de menores de edad. Si nos los
 envías por el formulario, los eliminaremos.

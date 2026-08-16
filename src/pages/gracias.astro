@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Boton from '../components/ui/Boton.astro';
+import ConversionFormulario from '../components/ConversionFormulario.astro';
 ---
 <Base
   title="Solicitud recibida | MiPC Tecnología"
@@ -15,4 +16,9 @@ import Boton from '../components/ui/Boton.astro';
     </p>
     <div class="mt-8"><Boton href="/servicios/">Ver los servicios</Boton></div>
   </div>
+
+  <!-- Llegar aquí es la única señal inequívoca de contacto conseguido que
+       tiene el sitio: Web3Forms solo redirige a /gracias/ cuando el envío se
+       procesó bien. -->
+  <ConversionFormulario />
 </Base>

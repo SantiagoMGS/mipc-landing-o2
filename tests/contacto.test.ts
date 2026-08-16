@@ -21,6 +21,28 @@ describe('contacto', () => {
     expect(doc.querySelector('input[name="botcheck"]')).toBeTruthy();
   });
 
+  /**
+   * Sin el gclid junto al contacto, una venta que se cierra por teléfono tres
+   * semanas después no puede volver a Google Ads como conversión offline, y
+   * Ads sigue optimizando hacia «formularios enviados» sin saber cuáles
+   * acabaron en dinero. Va en su propio campo, separado de los UTM, porque es
+   * el que se copia tal cual a la plantilla de conversiones offline.
+   */
+  it('el formulario lleva campos para el gclid y el origen de la visita', () => {
+    expect(doc.querySelector('input[name="gclid"]')).toBeTruthy();
+    expect(doc.querySelector('input[name="origen"]')).toBeTruthy();
+  });
+
+  it('nacen deshabilitados, para que un contacto orgánico no envíe campos vacíos', () => {
+    // Un campo deshabilitado no se envía. El script los habilita solo si hay
+    // atribución guardada; si no, el correo de Web3Forms llega limpio en vez
+    // de con dos filas en blanco que nadie sabe interpretar.
+    for (const nombre of ['gclid', 'origen']) {
+      const campo = doc.querySelector(`input[name="${nombre}"]`);
+      expect(campo?.hasAttribute('disabled'), `${nombre} debería nacer disabled`).toBe(true);
+    }
+  });
+
   it('cada campo tiene su label asociada', () => {
     for (const id of ['nombre', 'email', 'telefono', 'mensaje']) {
       expect(doc.querySelector(`label[for="${id}"]`)).toBeTruthy();

@@ -8,7 +8,7 @@
  * guardada. Al revés —renderizarlo visible y ocultarlo con JS— provocaría un
  * parpadeo en cada visita de quien ya decidió.
  */
-const hayMedicion = Boolean(import.meta.env.PUBLIC_GA4_ID || import.meta.env.PUBLIC_GOOGLE_ADS_ID);
+import { hayMedicion } from '../../lib/medicion';
 ---
 {hayMedicion && (
   <>

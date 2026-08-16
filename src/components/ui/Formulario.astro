@@ -25,6 +25,17 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
   <input type="hidden" name="from_name" value={empresa.nombre} />
   <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 
+  <!-- Atribución de la visita, capturada por Atribucion.astro en el <head>.
+       Nacen `disabled` a propósito: un campo deshabilitado no se envía, así
+       que el correo de un contacto orgánico no lleva dos filas vacías. El
+       script de abajo los habilita solo si hay algo que poner.
+
+       `gclid` va en su propio campo, separado de los UTM, porque es el que
+       se pega en la plantilla de conversiones offline de Google Ads: tiene
+       que poder copiarse del correo tal cual, sin recortar nada. -->
+  <input type="hidden" name="gclid" id="atribucion-gclid" disabled />
+  <input type="hidden" name="origen" id="atribucion-origen" disabled />
+
   <div>
     <label for="nombre" class="text-sm font-semibold">Nombre</label>
     <input id="nombre" name="nombre" type="text" required class={`mt-1 ${campo}`} />
@@ -46,3 +57,41 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
     Enviar solicitud
   </button>
 </form>
+
+<script is:inline>
+  (function () {
+    var datos;
+    try {
+      datos = JSON.parse(sessionStorage.getItem('mipc-atribucion') || 'null');
+    } catch (e) {
+      return; // sessionStorage bloqueado o contenido corrupto.
+    }
+    if (!datos) return;
+
+    function poner(id, valor) {
+      var campo = document.getElementById(id);
+      if (!campo || !valor) return;
+      campo.value = valor;
+      campo.disabled = false; // Deshabilitado no se envía: hay que soltarlo.
+    }
+
+    // `wbraid` y `gbraid` sustituyen al `gclid` en el tráfico de iOS y de
+    // aplicaciones. Van al mismo campo porque cumplen la misma función en la
+    // importación de conversiones offline, y con el prefijo delante para que
+    // quien lo pegue en Ads sepa en qué columna va.
+    poner(
+      'atribucion-gclid',
+      datos.gclid || (datos.wbraid ? 'wbraid:' + datos.wbraid : '') ||
+        (datos.gbraid ? 'gbraid:' + datos.gbraid : '')
+    );
+
+    // El resto, legible de un vistazo en el correo: quien atiende el contacto
+    // ve de qué campaña viene sin abrir ninguna herramienta.
+    var resto = [];
+    Object.keys(datos).forEach(function (clave) {
+      if (clave.indexOf('utm_') === 0) resto.push(clave.replace('utm_', '') + ': ' + datos[clave]);
+    });
+    if (datos.pagina_entrada) resto.push('entró por: ' + datos.pagina_entrada);
+    poner('atribucion-origen', resto.join(' · '));
+  })();
+</script>

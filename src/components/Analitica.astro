@@ -14,9 +14,7 @@
  * Google y la primera medición se hace sin respetar la decisión del usuario.
  * Por eso el primer <script> no es async y va antes que el de la biblioteca.
  */
-const ga4Id = import.meta.env.PUBLIC_GA4_ID;
-const adsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID;
-const hayMedicion = Boolean(ga4Id || adsId);
+import { ga4Id, adsId, hayMedicion } from '../lib/medicion';
 ---
 {hayMedicion && (
   <>

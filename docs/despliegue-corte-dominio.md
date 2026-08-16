@@ -172,10 +172,91 @@ plan de conservar el WordPress recuperable 60 días sigue intacto.
       herramienta no rellena hacia atrás. Si no aparece una propiedad
       preexistente, la comparación «antes/después» de la migración no se puede
       hacer: si a 60 días algo va mal, no habrá contra qué medirlo.
-- [ ] **Medición.** `PUBLIC_GA4_ID`, `PUBLIC_GOOGLE_ADS_ID` y
-      `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` en Build variables, y marcar
-      `clic_whatsapp` y `clic_telefono` como eventos clave en GA4 para
-      importarlos a Ads.
+- [x] **GA4 activo desde el 2026-08-16.** Propiedad `mipc.com.co`, flujo
+      `15447236201`, `PUBLIC_GA4_ID = G-S7TNWFZT72` en Build variables.
+      Verificado contra el HTML de producción: la etiqueta aparece una sola vez
+      —no hay etiqueta pegada a mano encima de la del sitio—, el Consent Mode
+      declara los cuatro almacenamientos como `denied` por defecto, y los
+      eventos `clic_whatsapp`, `clic_telefono`, `generate_lead` y la captura de
+      `gclid` están en las páginas construidas.
+- [ ] **Eventos clave en GA4.** Marcar `clic_whatsapp` y `clic_telefono` en
+      Administrar → Eventos clave. Sin eso Ads solo verá formularios, que son
+      la minoría de los contactos, y optimizará contra la señal equivocada.
+      **Ojo:** la medición mejorada registra los clics a WhatsApp también como
+      `click` genérico, porque `wa.me` es dominio externo; el que hay que
+      marcar es `clic_whatsapp`, no `click`.
+- [ ] **Cuenta de Google Ads creada el 2026-08-16: `230-212-2952`**, a nombre de
+      `santiago.martinez@mipc.com.co` —la misma que creó GA4, que es lo que
+      permite vincularlas sin permisos cruzados—. País Colombia, zona horaria
+      GMT-05:00 y **moneda COP** (ninguna de las dos se puede cambiar después;
+      el bono se anuncia en dólares, pero la autorización de la tarjeta es de
+      50.000 COP, que es lo que confirma la moneda real). Perfil de pagos
+      `2228-4739-6505` corregido a tipo **Empresa** antes de confirmarlo: nació
+      como «Particular», y ese tipo tampoco se puede cambiar una vez creado,
+      con lo que las facturas de publicidad habrían salido a nombre de una
+      persona y sin NIT deducible.
+
+      El acceso a la cuenta resultó estar **bloqueado hasta poner un método de
+      pago**: no hay forma de llegar a `/aw/overview` sin tarjeta, y el enlace
+      «Cambiar al modo experto» ya no existe en el alta nueva. Se puso una
+      tarjeta temporal, que cobró la autorización de 50.000 COP. **Hay que
+      sustituirla por una permanente de la empresa antes de lanzar campañas**:
+      si el cobro falla con una campaña viva, la cuenta se suspende y el impago
+      queda en su historial. No se creó ninguna campaña, así que el gasto es
+      cero.
+
+      Pendiente al cambiar la tarjeta, **en la misma sesión**: cargar el **NIT
+      901401211-7** en la información fiscal (Herramientas → Facturación →
+      Configuración, o payments.google.com) y corregir el nombre a
+      `MiPC Tecnología S.A.S.` —quedó como «MiPC Tecnologia SAS», sin tilde ni
+      puntos—. Google no pide el NIT al crear el perfil, solo al facturar, y una
+      factura electrónica ya emitida sin NIT es mucho más trabajo de corregir.
+      El bono de 350 US$ vence el **2026-10-15**.
+- [ ] **Google Ads: medición.** Acción de conversión creada el 2026-08-16:
+      categoría *Envío de formulario para clientes potenciales*, fuente sitio
+      web, evento manual, **recuento «Una conversión»**, ventana post-clic 90
+      días, atribución basada en datos. Aparece como «Inactivo / Configuración
+      errónea», que es lo correcto mientras no llegue la primera conversión.
+
+      ```
+      PUBLIC_GOOGLE_ADS_ID = AW-18393725809
+      PUBLIC_GOOGLE_ADS_CONVERSION_LABEL = Z2j9COSs6OIcEPH258JE
+      ```
+
+      La etiqueta de la conversión **no está** en el bloque de la etiqueta base
+      que la interfaz muestra primero: hay que abrir *Ver fragmento de evento*,
+      dentro de la acción de conversión → Gestionar → Configurar con una
+      etiqueta de Google → punto 2. El «Cambiar al modo experto» y el fragmento
+      de evento a la vista han desaparecido del alta nueva, y se pierde un buen
+      rato buscándolos.
+
+      Hasta entonces la conversión de `/gracias/` está inerte a propósito: en el
+      HTML se ve la llamada a `gtag('event','conversion', …)` precedida de
+      `const envioConversion = undefined`, y la rama no se ejecuta. No es un
+      fallo, es la guarda de las dos mitades del identificador.
+
+      **No pegar el snippet que ofrece Google.** El código desplegado ya emite
+      la etiqueta base en cuanto exista `PUBLIC_GOOGLE_ADS_ID`; pegarla además a
+      mano duplicaría cada conversión.
+- [ ] **Conversiones mejoradas: evaluar.** Hoy están inertes —requieren enviar
+      el correo del cliente cifrado junto a la conversión, y el formulario no le
+      pasa nada a `gtag`—. Son el remedio directo al problema del consentimiento
+      de la línea siguiente, y con presupuesto pequeño pueden ser la diferencia
+      entre observar la mitad de las conversiones o casi todas. Cambio pequeño
+      en `ConversionFormulario.astro`, pero con implicaciones de privacidad que
+      hay que mirar con el mismo criterio que el banner.
+- [ ] **Decisión sobre el banner de cookies, antes de pagar publicidad.** El
+      Consent Mode deniega `analytics_storage` y `ad_storage` por defecto, así
+      que quien no pulsa «Aceptar» no genera conversión observada. Google
+      compensa con conversiones modeladas, pero **el modelado exige un volumen
+      mínimo de clics diarios que una cuenta nueva y pequeña no alcanza**: en la
+      práctica no se modela nada, simplemente no se registra. Es una decisión de
+      privacidad legítima y bien implementada, no un fallo — pero conviene
+      tomarla a sabiendas y con el criterio legal correcto: Colombia se rige por
+      la Ley 1581 de 2012, que no exige el consentimiento previo para analítica
+      igual que el RGPD. Vale la pena que lo mire quien revisó `/garantias/`.
+- [ ] **Conservación de datos en GA4.** Viene en 2 meses. Subirla a 14 en
+      Administrar → Configuración de datos. No es retroactivo.
 - [ ] **`www` → 301.** Hoy `www.mipc.com.co` responde 200 con el mismo
       contenido. El `canonical` ya apunta al raíz, así que Google consolida,
       pero un 301 ahorra rastreo. Se hace con una Redirect Rule de Cloudflare,

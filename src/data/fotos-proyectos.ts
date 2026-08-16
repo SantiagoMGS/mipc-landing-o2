@@ -144,9 +144,10 @@ export const fotosPorProyecto: Record<string, FotoProyecto[]> = {
     {
       src: bodegaCableado,
       alt:
-        'Técnico de MiPC Tecnología prepara el cableado sentado en el piso de la bodega, ' +
-        'rodeado de rollos de cable de colores, cajas del motor del portón y herramienta',
-      pie: 'Preparación del cableado y del motor del portón',
+        'Técnico de MiPC Tecnología prepara el cableado eléctrico sentado en el piso de la ' +
+        'bodega en obra, con rollos de cable de fase y de tierra amarillo y verde, tomas sin ' +
+        'instalar y herramienta alrededor',
+      pie: 'Preparación del cableado eléctrico durante la adecuación',
     },
   ],
 

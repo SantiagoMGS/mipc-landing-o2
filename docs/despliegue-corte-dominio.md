@@ -1,10 +1,198 @@
 # Despliegue y corte de dominio: mipc.com.co
 
-Este documento transcribe los pasos de despliegue y corte de dominio que **no**
-se pueden ejecutar desde este repositorio: requieren las cuentas propias del
-cliente (Cloudflare, Google, Hostinger) y control del DNS de `mipc.com.co`.
-Ningún agente automatizado los ejecutó. Quien haga el corte real debe seguir
-esta lista en orden.
+> ## ✅ EL CORTE SE EJECUTÓ EL 2026-08-16
+>
+> `mipc.com.co` sirve el sitio nuevo desde Cloudflare Workers. Lo de abajo
+> deja de ser un plan y pasa a ser dos cosas: **el registro de lo que pasó de
+> verdad** (esta sección y la siguiente) y **el runbook original**, que se
+> conserva porque la mayoría sigue siendo válida y porque hay que repetirlo el
+> día que se mueva otro dominio.
+>
+> | | |
+> |---|---|
+> | Plataforma | Cloudflare **Workers** con assets estáticos, proyecto `mipc-landing-o2` |
+> | Nameservers | `adi.ns.cloudflare.com` · `yahir.ns.cloudflare.com` |
+> | Registro del dominio | Hostinger, vence 2027-07-14, autorrenovación activa |
+> | Rollback | Volver a `ns1.dns-parking.com` y `ns2.dns-parking.com` en Hostinger. **La zona sigue ahí: no borrarla** |
+> | Zona de referencia | `docs/dns/zona-mipc.com.co-2026-08-16.txt` |
+>
+> **Verificado el mismo día:** las 17 redirecciones responden 301 al destino
+> correcto contra el dominio real; `x-robots-tag` NO se sirve en producción; el
+> 404 devuelve 404; HTTPS válido; los 4 MX de Google, el SPF y el DKIM
+> intactos; `admin.mipc.com.co` sigue resolviendo a `190.29.110.179`; correo
+> entrante y saliente confirmado por el cliente.
+
+Este documento transcribe los pasos que **no** se pueden ejecutar desde este
+repositorio: requieren las cuentas propias del cliente (Cloudflare, Google,
+Hostinger) y control del DNS de `mipc.com.co`. Ningún agente automatizado los
+ejecutó.
+
+---
+
+## Lo que la realidad corrigió del plan
+
+Nada de esto estaba previsto y todo costó tiempo. Se registra aquí porque la
+próxima vez no debería volver a costarlo.
+
+### 1. La importación de Cloudflare se dejó nueve registros — el fallo más caro
+
+Al añadir el dominio, Cloudflare escanea la zona e importa lo que encuentra.
+**No encontró el bloque entero de `coopebello`** (MX, SPF, tres DKIM,
+autoconfig, autodiscover), ni `os`, ni `pruebaapp`. Nueve registros, y entre
+ellos el correo completo de un subdominio.
+
+Si los nameservers se hubieran cambiado ahí, ese correo habría muerto en
+silencio: una zona que responde pero a la que le falta un MX no da ningún
+error, simplemente deja de recibir.
+
+Lo atrapó `npm run check:dns -- <ns-de-cloudflare>`, que compara la zona
+servida contra el archivo de referencia **preguntándole directamente a los
+nameservers de Cloudflare, con el correo todavía en Hostinger**. Esa es la
+propiedad que lo hace útil: los NS asignados responden por la zona en cuanto
+se añade el dominio, aunque el registrador siga apuntando a otro sitio, así
+que toda la verificación ocurre sin ventana de riesgo.
+
+**El aviso naranja de Cloudflare que dice «our scan may have missed uncommon
+records» va en serio. No es una fórmula de cortesía.**
+
+### 2. El archivo de referencia también tenía un hueco
+
+El escaneo de Cloudflare encontró `app` (A y TXT), que **no estaba en el export
+del 2026-08-15**. Es decir, las dos fuentes tenían puntos ciegos distintos y
+solo la unión de ambas daba la zona real.
+
+Y revela un límite de `check-dns.mjs` que conviene tener presente: detecta lo
+que falta respecto de la referencia, pero **no puede ver lo que existe en
+producción y no está en ella**. No se puede consultar un nombre que no se sabe
+que existe. La única fuente que lo lista todo es el export del panel.
+
+### 3. Cloudflare importó TODO proxificado
+
+Todos los `A` y `CNAME` entraron con la nube naranja. Hubo que pasar a **DNS
+only**:
+
+- `hostingermail-a/b/c._domainkey` — proxificados, la consulta TXT deja de
+  seguir el CNAME y **la firma DKIM no se puede validar**: el correo saliente
+  empieza a caer en spam. Es el más peligroso porque no rompe nada visible.
+- `ftp` — FTP no es HTTP; proxificado deja de funcionar del todo.
+- `autoconfig`, `autodiscover` — Cloudflare serviría su propio certificado.
+- `admin` — **aplicación en producción**. Proxificar una app viva durante una
+  migración puede romperla por el certificado del origen, por WebSockets o por
+  peticiones largas, y ninguno de esos fallos tiene que ver con el corte pero
+  se le echaría la culpa al corte.
+
+`check-dns.mjs` también detecta esto: un registro proxificado resuelve a IPs de
+Cloudflare en vez de a su valor real, así que aparece como discrepancia.
+
+### 4. Conectar el dominio al Worker exige borrar el registro antes
+
+Cloudflare **no reemplaza** el registro existente: rechaza el Custom Domain con
+«hostname already has externally managed DNS records». Hay que borrar el `A`
+del raíz y el `CNAME` de `www` primero, y luego añadir el dominio.
+
+Es inocuo mientras los nameservers no se hayan movido —la zona de Cloudflare
+todavía no es autoritativa—, pero deja una ventana en la que la zona no tiene
+ni el registro viejo ni el Worker conectado. Si el «Add domain» fallara ahí,
+hay que recrear el registro a mano antes de seguir.
+
+### 5. Los Custom Domain no resuelven hasta que la zona está Activa
+
+Con la zona en **Pending**, los nameservers de Cloudflare responden a los MX y
+TXT normales pero devuelven NODATA para el raíz y el `www`. Es esperado: las
+rutas de Worker se materializan al activarse la zona, y la zona se activa
+cuando el registro publica la delegación. **No es un fallo y no hay que
+arreglarlo.**
+
+### 6. Las variables de entorno de un Worker de assets van en otro sitio
+
+`Settings → Variables & Secrets` es de **runtime**, y un Worker de solo assets
+estáticos ni siquiera las admite — el panel lo dice explícitamente. Este sitio
+es estático: Vite sustituye `import.meta.env.PUBLIC_*` **durante el build**.
+
+> **Settings → Build → Build variables and secrets**
+
+Ese error se llevó por delante una protección: la guarda que falla el build sin
+`PUBLIC_WEB3FORMS_KEY` comprobaba `process.env.CF_PAGES`, que solo existe en
+Pages. En Workers la variable es `WORKERS_CI`, así que la red de seguridad
+llevaba todo el proyecto sin tenderse justo en la plataforma real. Corregido en
+`src/lib/despliegue.ts`, con test.
+
+### 7. `ccemail` de Web3Forms es de pago y rechazaba TODOS los envíos
+
+No lo ignora en el plan gratuito: devuelve «You are trying to use a Pro
+feature» y **descarta la solicitud entera**. El formulario se veía bien,
+validaba bien, y el visitante recibía una pantalla de error tras escribir su
+mensaje. Del lado de la empresa la única señal era la ausencia de correos.
+
+Campo retirado. La copia a una segunda dirección se resuelve con una regla de
+reenvío en la bandeja de `gerencia@` — el MX es de Google.
+
+### 8. DNSSEC estaba desactivado, y menos mal
+
+Comprobado antes del corte: sin registros `DS` ni `DNSKEY`. Si hubiera estado
+activo con las claves del proveedor anterior, mover los nameservers sin
+desactivarlo primero **habría dejado el dominio sin resolver por completo** —web
+y correo—, con un fallo cacheado y lento de revertir. Es el único error de esta
+lista que sí mata un dominio. **Comprobarlo siempre antes de mover nada.**
+
+---
+
+## Decisiones de alcance tomadas el 2026-08-16
+
+El cliente acotó el objetivo del corte a **tres cosas**: la aplicación en
+`admin.mipc.com.co`, la landing y el correo. Todo lo que no sirviera a una de
+las tres se dejó morir.
+
+| Registro | Decisión |
+|---|---|
+| `admin` | **Conservado.** Aplicación en producción, en DNS only |
+| MX, SPF, `krs._domainkey`, `hostingermail-*`, `autoconfig`, `autodiscover` | **Conservados.** Son el correo |
+| `coopebello` (8 registros) | Retirado: correo sobre subdominio que ya no se usa |
+| `os`, `app`, `ftp`, `pruebaapp` | Retirados: servicios viejos y restos |
+
+Los retirados **siguen listados** en `docs/dns/zona-mipc.com.co-2026-08-16.txt`
+con sus valores exactos, y `check-dns.mjs` avisa de su ausencia sin fallar. Se
+documentan en vez de borrarse para que la decisión sea reversible, y se avisa
+en cada ejecución para que siga siendo una decisión visible y no un olvido.
+
+Nota sobre `ftp`: borrarlo **no quita el acceso FTP** al hosting. Hostinger da
+su propio host y credenciales en el panel; ese registro era un alias cómodo. El
+plan de conservar el WordPress recuperable 60 días sigue intacto.
+
+---
+
+## Lo que queda pendiente
+
+- [ ] **Search Console.** Crear la propiedad de tipo **Dominio** (verificación
+      por TXT, que ahora es trivial porque el DNS es propio) y enviar
+      `sitemap-index.xml`. **Mirar primero si ya existe una propiedad** bajo
+      `gerencia@mipc.com.co`: si la hay, se hereda el histórico del WordPress.
+- [ ] **Línea base perdida.** El plan pedía verificar Search Console *antes*
+      del corte para poder comparar impresiones después. No se hizo, y la
+      herramienta no rellena hacia atrás. Si no aparece una propiedad
+      preexistente, la comparación «antes/después» de la migración no se puede
+      hacer: si a 60 días algo va mal, no habrá contra qué medirlo.
+- [ ] **Medición.** `PUBLIC_GA4_ID`, `PUBLIC_GOOGLE_ADS_ID` y
+      `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` en Build variables, y marcar
+      `clic_whatsapp` y `clic_telefono` como eventos clave en GA4 para
+      importarlos a Ads.
+- [ ] **`www` → 301.** Hoy `www.mipc.com.co` responde 200 con el mismo
+      contenido. El `canonical` ya apunta al raíz, así que Google consolida,
+      pero un 301 ahorra rastreo. Se hace con una Redirect Rule de Cloudflare,
+      disponible en el plan Free.
+- [ ] **`mipctecnologia.com`.** Sigue en la cuenta del tío, **vence el
+      2026-09-19** y hoy devuelve error 500. Hay que traspasarlo, confirmar la
+      autorrenovación y redirigirlo con un 301 a `https://mipc.com.co/`.
+- [ ] **No borrar el WordPress** hasta pasados 60 días del corte.
+
+---
+
+# Runbook
+
+De aquí abajo está el procedimiento tal como se escribió antes del corte, con
+el estado real de cada paso anotado en su cabecera. Se conserva porque casi
+todo sigue siendo válido y porque hay que repetirlo el día que se mueva otro
+dominio — empezando por `mipctecnologia.com`.
 
 ## Antes de cualquier otra cosa: el comando de build
 
@@ -33,12 +221,22 @@ publicando el sitio con cero redirecciones y mandando a un 404 a todo el que
 llegue por un enlace o resultado viejo. El mecanismo viejo ya no existe; esta
 nota queda porque explica por qué el actual está donde está.
 
-Configuración correcta en Cloudflare Pages:
+Configuración correcta —confirmada en el proyecto real de Workers el 2026-08-16:
 - **Build command:** `npm run build`
 - **Build output directory:** `dist`
-- **Variable de entorno:** `PUBLIC_WEB3FORMS_KEY`
+- **Variables:** `PUBLIC_WEB3FORMS_KEY` y las de medición van en
+  **Settings → Build → Build variables and secrets**, NO en
+  `Settings → Variables & Secrets`. La segunda es de runtime y un Worker de
+  solo assets estáticos ni siquiera la admite: el panel responde «Variables
+  cannot be added to a Worker that only has static assets». Este sitio es
+  estático, así que las necesita en el build, que es cuando Vite sustituye
+  `import.meta.env.PUBLIC_*` y las hornea en el HTML.
 
 ## Paso 1: Crear el proyecto en Cloudflare
+> ✅ **Hecho.** Acabó siendo **Workers** con assets estáticos (`mipc-landing-o2`),
+> no Pages — la duda que plantea el aviso de abajo quedó resuelta por la
+> realidad. `wrangler.jsonc` con `not_found_handling: "404-page"` fue necesario
+> y funciona: las URLs inexistentes devuelven 404 con la página propia.
 
 > ### ⚠️ Puede que no exista la opción «Pages»
 >
@@ -113,6 +311,10 @@ Configuración correcta en Cloudflare Pages:
       demuestra que Ads lo reciba.
 
 ## Paso 2: Impedir la indexación mientras el sitio vive en pages.dev
+> ✅ **Hecho y validado por el corte.** La regla acotada por host funcionó
+> exactamente como se esperaba: `workers.dev` sirve `X-Robots-Tag: noindex` y
+> `mipc.com.co` **no lo sirve**. Comprobado con `curl` el 2026-08-16, ya en
+> producción. Por eso las reglas se quedan puestas — ver más abajo.
 
 > **Si el proyecto acabó siendo de Workers** (ver Paso 1), sustituir
 > `pages.dev` por `workers.dev` en todo lo que sigue, aquí y en el Paso 3.
@@ -172,6 +374,12 @@ staging queda indexable por accidente.
 > comprobarlo otra vez con el comando de arriba.
 
 ## Paso 3: Revisar en pages.dev antes de cortar
+> ⚠️ **Hecho a medias.** Se verificaron contra `workers.dev` las 17
+> redirecciones, el formulario (llegada real del correo) y el HTML construido.
+> **No** se hizo la revisión en un móvil real ni la comprobación de barra final
+> con `curl`. Salió bien igualmente, pero es suerte, no método: la revisión
+> móvil sigue siendo la forma de atrapar un desbordamiento horizontal antes de
+> que lo vea un cliente.
 
 En un móvil real, contra la URL de `pages.dev`:
 
@@ -223,6 +431,14 @@ En un móvil real, contra la URL de `pages.dev`:
   sincronizada con las rutas para siempre. Se deja como está a propósito.
 
 ## Paso 4: Lista de verificación previa al corte
+> ⚠️ **Hecho salvo dos puntos, y uno de ellos tiene consecuencias.**
+> Sí se hizo: horario confirmado, `npm run verify` en verde, zona DNS
+> inventariada y verificada, DNSSEC comprobado, autorrenovación confirmada.
+> **NO se hizo:** verificar Search Console antes del corte —así que no hay
+> línea base de impresiones contra la que comparar— ni bajar el TTL a 300 s con
+> antelación. Lo segundo no dolió: el TTL de 4 h del registro `A` viejo solo
+> produjo que durante unas horas parte de los visitantes siguiera viendo el
+> WordPress, que responde igual de bien. Lo primero no se puede recuperar.
 
 - [x] Horario de atención confirmado con el cliente el 2026-08-15: **Lun a Vie 08:00–17:00, Sáb 09:00–13:00**. Ya está en `src/data/empresa.ts`, de donde salen el pie, `/contacto/` y el `openingHoursSpecification` del schema.
 - [ ] **Ficha de Google Business Profile: no crear, corregir.** La ficha ya existe y la administra el cliente (CID `15154712519055002689`). Entrar y comprobar, campo por campo, que coincide con `src/data/empresa.ts` — cualquier diferencia entre la ficha y el schema del sitio es una señal contradictoria para el posicionamiento local, y la ficha pesa más que el sitio en el paquete local de resultados:
@@ -244,6 +460,15 @@ En un móvil real, contra la URL de `pages.dev`:
 - [ ] TTL del DNS de `mipc.com.co` bajado a 300 s, 24-48 horas antes del corte.
 
 ## Paso 5: Ejecutar el corte
+> ✅ **Hecho el 2026-08-16.** El aviso de abajo sobre el correo resultó ser el
+> punto exacto donde estuvo el peligro, aunque no por donde se esperaba: no
+> falló el traslado de la zona, falló **la importación automática de
+> Cloudflare**, que se dejó nueve registros. Ver «Lo que la realidad corrigió
+> del plan», punto 1.
+>
+> El correo se confirmó funcionando en los dos sentidos antes de dar el corte
+> por bueno. El `noindex` **no se retiró**, y es lo correcto: está acotado por
+> host y quitarlo habría hecho indexable el subdominio de Workers.
 
 > ### ⚠️ El dominio no solo sirve el sitio: también sirve el correo
 >
@@ -338,6 +563,10 @@ En un móvil real, contra la URL de `pages.dev`:
 - [ ] **No borrar el WordPress.** Apagarlo pero mantenerlo recuperable durante 60 días, por si algo del corte falla y hay que volver atrás.
 
 ## Paso 6: Verificar las redirecciones en producción
+> ✅ **Hecho.** `Las 17 redirecciones responden correctamente` contra
+> `https://mipc.com.co`, incluida la regla comodín de `/wp-content/uploads/*`,
+> que se comprueba con la URL de ejemplo declarada en el mapa.
+> Falta el 301 de `mipctecnologia.com`, que sigue pendiente.
 
 Correr, ya con el dominio en vivo apuntando al sitio nuevo:
 
@@ -361,6 +590,11 @@ esta de aquí es la confirmación final contra producción.
       `https://mipc.com.co/` (Paso 5) y ya no el error 500 anterior.
 
 ## Paso 7: Enviar el sitemap y arrancar la vigilancia
+> ⏳ **Pendiente entero.** Es lo único del corte que queda sin hacer, junto con
+> activar la medición. Ver «Lo que queda pendiente» arriba, y ojo con el punto
+> de la línea base: sin propiedad previa en Search Console, el umbral de alarma
+> del 20 % que se define abajo **no se puede evaluar**, porque no hay
+> histórico contra el que compararlo.
 
 - [ ] Enviar `https://mipc.com.co/sitemap-index.xml` en Google Search Console.
 - [ ] Inspeccionar manualmente las páginas clave (home, cada servicio, contacto) en Search Console para forzar su rastreo.

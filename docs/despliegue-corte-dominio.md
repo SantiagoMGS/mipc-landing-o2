@@ -17,7 +17,7 @@ La razón no es una preferencia de estilo. `npm run build` son dos cosas:
 "build": "astro build && node scripts/check-html.mjs"
 ```
 
-`scripts/check-html.mjs` es el control de calidad que recorre las 18 páginas
+`scripts/check-html.mjs` es el control de calidad que recorre las 32 páginas
 construidas y falla el build si alguna pierde su `h1`, su meta descripción, su
 canónica, su `lang`, o si un `alt` es un nombre de archivo. Son exactamente los
 defectos que tenía el sitio de WordPress. Si Cloudflare invoca `astro build` a
@@ -56,10 +56,10 @@ Configuración correcta en Cloudflare Pages:
 > |---|---|---|
 > | `_headers` y `_redirects` | Funcionan | Funcionan igual (9/9 redirecciones y 7/7 cabeceras comprobadas) |
 > | Página 404 propia | Automática | Requiere `wrangler.jsonc` con `not_found_handling: "404-page"` |
-> | `noindex` mientras no hay dominio | Lo pone `public/_headers` (Paso 2) | Cloudflare **ya lo inyecta** en todo `*.workers.dev`, y desaparece solo al conectar el dominio |
+> | `noindex` mientras no hay dominio | Lo pone `public/_headers` (Paso 2) | Lo pone `public/_headers` **igual**: Cloudflare NO lo inyecta solo (medido el 2026-08-15, ver Paso 2) |
 >
 > Una diferencia sí puede morder: **`_redirects` en Workers no admite el
-> código 404**. Nuestro mapa no usa ninguna regla así —las 16 son 301 a
+> código 404**. Nuestro mapa no usa ninguna regla así —las 17 son 301 a
 > páginas que existen—, de modo que no nos afecta, pero conviene saberlo antes
 > de añadir una.
 
@@ -74,24 +74,64 @@ Configuración correcta en Cloudflare Pages:
 - [ ] Añadir la variable de entorno `PUBLIC_WEB3FORMS_KEY` con la clave real de Web3Forms.
 - [ ] Analítica, **solo cuando se quiera activar**: `PUBLIC_GA4_ID` (formato
       `G-XXXXXXX`) y `PUBLIC_GOOGLE_ADS_ID` (formato `AW-XXXXXXX`).
+- [ ] `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL`: la etiqueta de la acción de
+      conversión «formulario enviado», es decir **solo el trozo posterior a la
+      barra** del identificador que Ads muestra como
+      `AW-123456789/AbC-D_efGhIj`. Se crea en Google Ads → Objetivos →
+      Conversiones → acción de conversión del sitio web → «Instalar la
+      etiqueta manualmente».
 
-  Mientras esas dos variables no existan, el sitio **no emite una sola línea
-  de Google**: ni el script, ni el `dataLayer`, ni el banner de cookies. Lo
-  comprueba `tests/analitica.test.ts` sobre las 32 páginas construidas, así
-  que se puede desplegar y cortar el dominio sin decidir nada de analítica y
-  sin arrastrar etiquetas vacías.
+  Sin ella —aun con `PUBLIC_GOOGLE_ADS_ID` puesto— la conversión de
+  `/gracias/` no se emite. Es deliberado: una conversión con el identificador
+  a medias no se registra en ningún sitio y tampoco da error, así que es
+  preferible el hueco visible en Ads a la pérdida silenciosa.
+
+  Mientras `PUBLIC_GA4_ID` y `PUBLIC_GOOGLE_ADS_ID` no existan, el sitio **no
+  emite una sola línea de Google**: ni el script, ni el `dataLayer`, ni el
+  banner de cookies, ni los eventos de conversión. Lo comprueba
+  `tests/analitica.test.ts` sobre las 32 páginas construidas, así que se puede
+  desplegar y cortar el dominio sin decidir nada de analítica y sin arrastrar
+  etiquetas vacías.
 
   El día que se pongan, se activa Consent Mode v2 con **todo denegado de
   entrada** y aparece el banner. Nada se mide hasta que el visitante acepta.
 
+- [ ] **En GA4, marcar `clic_whatsapp` y `clic_telefono` como eventos clave**,
+      y luego importarlos en Google Ads como conversiones (Ads → Objetivos →
+      Conversiones → Importar → Google Analytics 4).
+
+  Este paso no está en el código y no hay forma de que lo esté: esos dos
+  eventos se envían a GA4, no a Ads, porque un clic en WhatsApp no es una
+  conversión inequívoca —se abre la aplicación y puede no escribirse nada— y
+  conviene poder decidir en la interfaz si cuenta o no sin volver a desplegar.
+  Si nadie hace esta importación, Ads seguirá viendo solo los formularios, que
+  probablemente son la minoría de los contactos.
+
+- [ ] Comprobar las conversiones con la **vista previa de etiquetas de Google**
+      (Ads → Herramientas → Diagnóstico de etiquetas, o la extensión Tag
+      Assistant), no leyendo el HTML. Que el evento esté en la página no
+      demuestra que Ads lo reciba.
+
 ## Paso 2: Impedir la indexación mientras el sitio vive en pages.dev
 
 > **Si el proyecto acabó siendo de Workers** (ver Paso 1), sustituir
-> `pages.dev` por `workers.dev` en todo lo que sigue —aquí y en el Paso 3—, y
-> saltarse este paso: Cloudflare ya inyecta `X-Robots-Tag: noindex` en todo
-> `*.workers.dev` por su cuenta, y lo retira solo al conectar el dominio
-> propio. La regla de `public/_headers` no estorba, pero tampoco hace falta.
-> Comprobarlo igualmente con `curl -I` antes de darlo por bueno.
+> `pages.dev` por `workers.dev` en todo lo que sigue, aquí y en el Paso 3.
+> **Este paso NO se salta.**
+>
+> Una versión anterior de esta nota decía que Cloudflare inyecta
+> `X-Robots-Tag: noindex` en todo `*.workers.dev` por su cuenta y que la regla
+> de `public/_headers` no hacía falta. **Es falso**, y lo desmiente la
+> medición del 2026-08-15 registrada unas líneas más abajo en este mismo
+> documento: el despliegue real en
+> `mipc-landing-o2.santiago-martinez.workers.dev` **no traía la cabecera**
+> hasta que se corrigió el host en `public/_headers`. Comprobado de nuevo el
+> 2026-08-16, ya con el host correcto, la cabecera sí se sirve — es decir,
+> viene de `_headers`, no de Cloudflare.
+>
+> Las dos afirmaciones no podían ser ciertas a la vez y la equivocada era la
+> que no tenía ninguna medición detrás. Se corrige aquí porque creerla lleva a
+> saltarse el paso y a dejar el sitio de pruebas indexable, que es exactamente
+> lo que ya pasó una vez.
 
 `public/_headers` ya incluye la regla de `noindex` para el subdominio de
 `pages.dev`:
@@ -160,7 +200,7 @@ En un móvil real, contra la URL de `pages.dev`:
   preset y descartó el comando personalizado —, `dist/_redirects` de todas
   formas se genera ahora vía el hook `astro:build:done` de
   `astro.config.mjs`, pero correr esto contra `pages.dev` es lo que confirma
-  que las 16 reglas realmente están sirviendo, en vez de asumirlo.
+  que las 17 reglas realmente están sirviendo, en vez de asumirlo.
 - [ ] Con `curl -I`, comparar la misma URL con y sin barra final contra
       `pages.dev`, para confirmar qué forma responde 200:
 
@@ -169,10 +209,12 @@ En un móvil real, contra la URL de `pages.dev`:
   curl -I https://<proyecto>.pages.dev/servicios/
   ```
 
-  El proyecto está configurado con `trailingSlash: 'always'` y las 16
-  fuentes del mapa de redirecciones terminan todas en `/`. Si la plataforma
-  normaliza al revés (sin barra final), tanto las URLs canónicas del sitio
-  nuevo como las 16 redirecciones heredadas de WordPress fallan silenciosamente.
+  El proyecto está configurado con `trailingSlash: 'always'` y todas las
+  fuentes del mapa de redirecciones terminan en `/`, salvo `/wp-sitemap.xml`
+  y el comodín `/wp-content/uploads/*`, que por su naturaleza no pueden. Si la
+  plataforma normaliza al revés (sin barra final), tanto las URLs canónicas del
+  sitio nuevo como las redirecciones heredadas de WordPress fallan
+  silenciosamente.
 
   **Lo que sí es normal y no hay que arreglar:** que `/servicios` responda
   **307** hacia `/servicios/` en lugar de 301. Es el comportamiento por
@@ -264,8 +306,10 @@ Correr, ya con el dominio en vivo apuntando al sitio nuevo:
 node --experimental-strip-types scripts/check-redirecciones.mjs https://mipc.com.co
 ```
 
-Se espera: las 16 redirecciones definidas en `src/data/redirecciones.ts`
-responden 301 al destino correcto. Esta invocación concreta, contra
+Se espera: las 17 redirecciones definidas en `src/data/redirecciones.ts`
+responden 301 al destino correcto. La regla comodín de `/wp-content/uploads/*`
+se comprueba con la URL de ejemplo que lleva declarada, no con el asterisco
+literal. Esta invocación concreta, contra
 `https://mipc.com.co`, **no se puede ejecutar antes del corte** — hasta el
 corte ese dominio sigue sirviendo el WordPress viejo, así que correrla antes
 no prueba nada sobre el sitio nuevo. El mismo script sí se corrió antes del

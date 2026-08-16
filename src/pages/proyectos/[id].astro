@@ -1,0 +1,98 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Boton from '../../components/ui/Boton.astro';
+import CTAWhatsApp from '../../components/ui/CTAWhatsApp.astro';
+import Figura from '../../components/ui/Figura.astro';
+import { breadcrumb } from '../../lib/jsonld';
+import { fotosPorProyecto } from '../../data/fotos-proyectos';
+
+export async function getStaticPaths() {
+  const proyectos = await getCollection('proyectos');
+  return proyectos.map((p) => ({ params: { id: p.id } }));
+}
+
+const { id } = Astro.params;
+const entrada = (await getEntry('proyectos', id!))!;
+const d = entrada.data;
+const { Content } = await render(entrada);
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const fotos = fotosPorProyecto[entrada.id] ?? [];
+
+// Los servicios se resuelven contra la colección real, no se imprimen a mano:
+// un slug que deje de existir se ve aquí como un enlace que falta, y
+// tests/proyectos.test.ts lo convierte en fallo antes de llegar a eso.
+const servicios = await getCollection('servicios');
+const relacionados = d.servicios
+  .map((slug: string) => servicios.find((s) => s.id === slug))
+  .filter(Boolean);
+
+const jsonld = [
+  breadcrumb([
+    { nombre: 'Inicio', url: new URL('/', Astro.site).href },
+    { nombre: 'Proyectos', url: new URL('/proyectos/', Astro.site).href },
+    { nombre: d.cliente, url },
+  ]),
+];
+---
+<Base title={d.metaTitle} metaDescription={d.metaDescription} {jsonld}>
+  <article class="mx-auto max-w-3xl px-5 py-16">
+    <nav aria-label="Ruta" class="cifra text-xs uppercase tracking-widest text-tinta-2">
+      <a href="/" class="hover:text-senal-oscuro">Inicio</a> /
+      <a href="/proyectos/" class="hover:text-senal-oscuro">Proyectos</a> / {d.cliente}
+    </nav>
+
+    <h1 class="mt-4 text-4xl font-semibold">{d.h1}</h1>
+
+    <dl class="cifra mt-6 flex flex-wrap gap-x-8 gap-y-2 border-y border-borde py-4 text-sm">
+      <div><dt class="inline text-tinta-2">Cliente:</dt> <dd class="inline font-semibold">{d.cliente}</dd></div>
+      <div><dt class="inline text-tinta-2">Sector:</dt> <dd class="inline font-semibold">{d.sector}</dd></div>
+      <div><dt class="inline text-tinta-2">Lugar:</dt> <dd class="inline font-semibold">{d.lugar}</dd></div>
+      <div><dt class="inline text-tinta-2">Año:</dt> <dd class="inline font-semibold">{d.anio}</dd></div>
+    </dl>
+
+    {fotos.length > 0 && (
+      <div class="mt-10 grid gap-6">
+        {fotos.map((f) => <Figura src={f.src} alt={f.alt} pie={f.pie} />)}
+      </div>
+    )}
+
+    <div class="mt-12 space-y-6">
+      <div class="etiqueta pl-4">
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-tinta-2">El reto</h2>
+        <p class="mt-1">{d.reto}</p>
+      </div>
+      <div class="etiqueta pl-4">
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-tinta-2">Lo que se hizo</h2>
+        <p class="mt-1">{d.solucion}</p>
+      </div>
+      <div class="etiqueta pl-4">
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-tinta-2">El resultado</h2>
+        <p class="mt-1">{d.resultado}</p>
+      </div>
+    </div>
+
+    <div class="prose prose-neutral mt-12 max-w-none"><Content /></div>
+
+    {relacionados.length > 0 && (
+      <section class="mt-14 border-t border-borde pt-8">
+        <h2 class="text-2xl font-semibold">Servicios que intervinieron</h2>
+        <ul class="mt-4 flex flex-wrap gap-3">
+          {relacionados.map((s: any) => (
+            <li>
+              <a
+                href={`/servicios/${s.id}/`}
+                class="inline-block border border-borde bg-superficie px-4 py-2 text-sm hover:border-senal hover:text-senal-oscuro"
+              >{s.data.titulo}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <div class="mt-12 flex flex-wrap gap-3">
+      <Boton href="/contacto/">Solicitar cotización</Boton>
+      <CTAWhatsApp mensaje={`Hola, vi el proyecto de ${d.cliente} y quiero algo similar`} />
+    </div>
+  </article>
+</Base>

@@ -1,10 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import MuroClientes from '../components/ui/MuroClientes.astro';
 import Boton from '../components/ui/Boton.astro';
+import { fotosPorProyecto } from '../data/fotos-proyectos';
 
-const casos = (await getCollection('casos')).sort((a, b) => a.data.orden - b.data.orden);
+// Los tres primeros proyectos como adelanto. El listado completo vive en
+// /proyectos/: esta página es de clientes, y duplicar aquí las doce fichas
+// dejaba dos páginas compitiendo por la misma consulta.
+const destacados = (await getCollection('proyectos'))
+  .sort((a, b) => a.data.orden - b.data.orden)
+  .slice(0, 3);
 ---
 <Base
   title="Clientes y Casos de Éxito en Medellín | MiPC Tecnología"
@@ -20,20 +27,46 @@ const casos = (await getCollection('casos')).sort((a, b) => a.data.orden - b.dat
   <div class="mt-12"><MuroClientes /></div>
 
   <section class="mx-auto max-w-6xl px-5 py-16">
-    <h2 class="text-3xl font-semibold">Casos</h2>
-    <div class="mt-8 grid gap-6 lg:grid-cols-3">
-      {casos.map((c) => (
-        <article class="border border-borde bg-superficie p-6">
-          <p class="cifra text-xs uppercase tracking-widest text-tinta-2">{c.data.sector}</p>
-          <h3 class="mt-2 text-xl font-semibold">{c.data.cliente}</h3>
-          <dl class="mt-4 space-y-3 text-sm">
-            <div><dt class="font-semibold">Reto</dt><dd class="text-tinta-2">{c.data.reto}</dd></div>
-            <div><dt class="font-semibold">Solución</dt><dd class="text-tinta-2">{c.data.solucion}</dd></div>
-            <div><dt class="font-semibold">Resultado</dt><dd class="text-tinta-2">{c.data.resultado}</dd></div>
-          </dl>
-        </article>
-      ))}
+    <h2 class="text-3xl font-semibold">Obra ejecutada</h2>
+    <p class="mt-2 max-w-prose text-tinta-2">
+      Proyectos reales, con fotografía de la instalación tal como quedó.
+    </p>
+
+    <ul class="mt-8 grid gap-6 lg:grid-cols-3">
+      {destacados.map((p) => {
+        const foto = fotosPorProyecto[p.id]?.[0];
+        return (
+          <li>
+            <a href={`/proyectos/${p.id}/`} class="canto group flex h-full flex-col overflow-hidden bg-acero transition-colors hover:bg-[#1c303a]">
+              {foto && (
+                <div class="aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={foto.src}
+                    alt={foto.alt}
+                    widths={[400, 800]}
+                    sizes="(max-width: 640px) 100vw, 380px"
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </div>
+              )}
+              <div class="flex flex-1 flex-col gap-2 p-6">
+                <span class="cifra text-[0.6875rem] uppercase tracking-[0.16em] text-white/50">
+                  {p.data.sector} · {p.data.anio}
+                </span>
+                <h3 class="text-xl font-semibold text-white">{p.data.cliente}</h3>
+                <p class="text-sm leading-relaxed text-white/70">{p.data.titulo}</p>
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+      <Boton href="/proyectos/">Ver todos los proyectos</Boton>
+      <Boton href="/contacto/" variante="borde">Quiero algo así para mi empresa</Boton>
     </div>
-    <div class="mt-10"><Boton href="/contacto/">Quiero algo así para mi empresa</Boton></div>
   </section>
 </Base>

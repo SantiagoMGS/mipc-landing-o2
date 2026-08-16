@@ -1,0 +1,72 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Marcador from '../../components/ui/Marcador.astro';
+import Boton from '../../components/ui/Boton.astro';
+import { breadcrumb } from '../../lib/jsonld';
+import { fotosPorProyecto } from '../../data/fotos-proyectos';
+
+const proyectos = (await getCollection('proyectos')).sort((a, b) => a.data.orden - b.data.orden);
+
+const jsonld = [
+  breadcrumb([
+    { nombre: 'Inicio', url: new URL('/', Astro.site).href },
+    { nombre: 'Proyectos', url: new URL('/proyectos/', Astro.site).href },
+  ]),
+];
+---
+<Base
+  title="Proyectos de Redes y CCTV en Medellín | MiPC Tecnología"
+  metaDescription="Obra ejecutada por MiPC Tecnología: cableado estructurado, cámaras, canalización y control de acceso en retail, industria, bodegas y propiedad horizontal."
+  {jsonld}
+>
+  <div class="mx-auto max-w-6xl px-5 pt-16">
+    <Marcador texto="Obra ejecutada" />
+    <h1 class="mt-4 text-4xl font-semibold">Proyectos</h1>
+    <p class="mt-4 max-w-prose text-lg text-tinta-2">
+      Trabajo hecho, con fotografía de la instalación real. Retail de marca, centros
+      comerciales, plantas industriales, bodegas, criaderos y propiedad horizontal.
+    </p>
+  </div>
+
+  <section class="mx-auto max-w-6xl px-5 py-14">
+    <ul class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {proyectos.map((p) => {
+        const foto = fotosPorProyecto[p.id]?.[0];
+        return (
+          <li>
+            <a
+              href={`/proyectos/${p.id}/`}
+              class="canto group flex h-full flex-col overflow-hidden bg-acero transition-colors hover:bg-[#1c303a]"
+            >
+              {foto && (
+                <div class="aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={foto.src}
+                    alt={foto.alt}
+                    widths={[400, 800]}
+                    sizes="(max-width: 640px) 100vw, 380px"
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </div>
+              )}
+              <div class="flex flex-1 flex-col gap-2 p-6">
+                <span class="cifra text-[0.6875rem] uppercase tracking-[0.16em] text-white/50">
+                  {p.data.sector} · {p.data.anio}
+                </span>
+                <h2 class="text-xl font-semibold text-white">{p.data.cliente}</h2>
+                <p class="text-sm leading-relaxed text-white/70">{p.data.titulo}</p>
+                <p class="cifra mt-auto pt-3 text-xs text-white/50">{p.data.lugar}</p>
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+
+    <div class="mt-12"><Boton href="/contacto/">Quiero algo así para mi empresa</Boton></div>
+  </section>
+</Base>

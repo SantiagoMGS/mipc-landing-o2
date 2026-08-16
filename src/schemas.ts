@@ -48,14 +48,34 @@ export const esquemaCliente = z.object({
   orden: z.number().int().default(99),
 });
 
-export const esquemaCaso = z.object({
+/**
+ * Proyecto ejecutado. Sustituye al antiguo `esquemaCaso`, cuyos tres casos
+ * eran narrativas verosímiles pero inventadas sobre clientes reales.
+ *
+ * Cada campo de aquí tiene que poder señalarse en una fotografía o en un
+ * registro: `lugar` y `anio` salen de la marca de agua de las fotos, y
+ * `servicios` de lo que se ve instalado. Si un proyecto no da para llenar
+ * esto sin adornar, no es un proyecto publicable — es relleno.
+ */
+export const esquemaProyecto = z.object({
+  titulo: z.string(),
+  h1: z.string(),
+  ...seo,
   cliente: z.string(),
   sector: z.string(),
-  reto: z.string(),
-  solucion: z.string(),
-  resultado: z.string(),
-  imagen: imagen.optional(),
+  lugar: z.string(),
+  anio: z.number().int().min(2009, 'La empresa se fundó en 2009').max(2030),
+  /** Slugs de `src/content/servicios/`. tests/proyectos.test.ts comprueba que existen. */
+  servicios: z.array(z.string()).min(1, 'Un proyecto sin servicio asociado no se puede clasificar'),
+  reto: z.string().min(40, 'El reto debe describir una situación, no una etiqueta'),
+  solucion: z.string().min(40, 'La solución debe decir qué se instaló'),
+  resultado: z.string().min(30, 'El resultado debe ser comprobable'),
   orden: z.number().int().default(99),
+  // Las fotografías NO viven aquí: van en src/data/fotos-proyectos.ts, igual
+  // que las de servicios. El motivo es astro:assets — optimizar una imagen
+  // exige importarla, y una ruta en texto plano dentro del frontmatter no se
+  // importa. tests/proyectos.test.ts comprueba que ningún proyecto se quede
+  // sin foto, que es el fallo que esta separación hace posible.
 });
 
 export const esquemaEntrada = z.object({

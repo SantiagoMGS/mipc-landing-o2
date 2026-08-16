@@ -19,8 +19,12 @@
  * - Ningún destino («a») es a su vez origen («de») de otra fila: eso
  *   crearía una cadena de redirecciones, que pierde señal y añade latencia.
  * - No hay orígenes duplicados.
+ *
+ * `ejemplo` solo hace falta en las reglas con comodín: el verificador pide
+ * cada URL contra el dominio en vivo, y pedir literalmente una ruta con `*`
+ * no comprueba la regla, comprueba una URL que no existe.
  */
-export const redirecciones: Array<{ de: string; a: string }> = [
+export const redirecciones: Array<{ de: string; a: string; ejemplo?: string }> = [
   { de: '/home/servicios/', a: '/servicios/' },
   { de: '/home/servicios-mipc-tecnologia-copy/', a: '/nosotros/' },
   { de: '/servicios-mipc-tecnologia/', a: '/nosotros/' },
@@ -45,4 +49,20 @@ export const redirecciones: Array<{ de: string; a: string }> = [
   { de: '/author/santiago-martinezmipc-com-co/', a: '/' },
   { de: '/wp-sitemap.xml', a: '/sitemap-index.xml' },
   { de: '/feed/', a: '/blog/' },
+
+  // Las imágenes y adjuntos de WordPress vivían bajo /wp-content/uploads/.
+  // No aparecen en ningún sitemap —por eso la verificación contra los cuatro
+  // sub-sitemaps no las vio— pero pueden estar indexadas en Google Imágenes o
+  // enlazadas desde fuera, y son incontables una a una: la única forma de
+  // cubrirlas es un comodín. Va al final porque Cloudflare aplica la primera
+  // regla que coincide y ninguna regla exacta debe quedar por debajo de esta.
+  //
+  // Destino `/` y no una sección: bajo uploads había fotos, logotipos y PDF
+  // sin equivalente en el sitio nuevo, y mandarlos todos a /proyectos/ sería
+  // afirmar una correspondencia que no existe.
+  {
+    de: '/wp-content/uploads/*',
+    a: '/',
+    ejemplo: '/wp-content/uploads/2023/05/imagen-de-prueba.jpg',
+  },
 ];

@@ -10,7 +10,11 @@ const base = process.argv[2] ?? 'https://mipc.com.co';
 let fallos = 0;
 
 for (const r of redirecciones) {
-  const res = await fetch(base + r.de, { redirect: 'manual' });
+  // Las reglas con comodín se comprueban con una URL de ejemplo que el
+  // comodín deba capturar. Pedir literalmente '/wp-content/uploads/*' no
+  // prueba la regla: prueba una ruta con un asterisco que nadie visita.
+  const ruta = r.ejemplo ?? r.de;
+  const res = await fetch(base + ruta, { redirect: 'manual' });
   const destino = res.headers.get('location') ?? '';
   // `endsWith(r.a)` hacía pasar cualquier destino que terminara en la misma
   // barra que r.a — la fila '/home/' -> '/' pasaba con CUALQUIER destino
@@ -20,7 +24,8 @@ for (const r of redirecciones) {
   const ok = res.status === 301 && pathnameDestino === r.a;
   if (!ok) {
     fallos++;
-    console.error(`FALLA ${r.de} -> esperaba 301 a ${r.a}, obtuvo ${res.status} ${destino}`);
+    const etiqueta = r.ejemplo ? `${r.de} (probada con ${r.ejemplo})` : r.de;
+    console.error(`FALLA ${etiqueta} -> esperaba 301 a ${r.a}, obtuvo ${res.status} ${destino}`);
   }
 }
 

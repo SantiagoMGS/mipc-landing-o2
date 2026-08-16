@@ -43,6 +43,31 @@ describe('mapa de redirecciones', () => {
   it('no hay orígenes duplicados', () => {
     expect(new Set(redirecciones.map((r) => r.de)).size).toBe(redirecciones.length);
   });
+
+  // Las imágenes y adjuntos de WordPress no aparecen en ningún sitemap, así
+  // que la verificación contra los cuatro sub-sitemaps no podía verlos. Son
+  // el único hueco que quedaba del mapa y solo un comodín los cubre.
+  it('cubre /wp-content/uploads/* con un comodín', () => {
+    expect(destinos.get('/wp-content/uploads/*')).toBe('/');
+  });
+
+  // El verificador contra producción pide cada URL de verdad. Una regla con
+  // comodín pedida literalmente comprueba una ruta con un asterisco que nadie
+  // visita: por eso `ejemplo` es obligatorio en ellas y tiene que ser una
+  // ruta que el propio comodín capture.
+  it('toda regla con comodín trae un ejemplo verificable que ese comodín captura', () => {
+    for (const r of redirecciones.filter((r) => r.de.includes('*'))) {
+      expect(r.ejemplo, `${r.de} no trae ejemplo`).toBeTruthy();
+      expect(r.ejemplo).not.toContain('*');
+      expect(r.ejemplo!.startsWith(r.de.replace(/\*$/, ''))).toBe(true);
+    }
+  });
+
+  it('ninguna regla sin comodín necesita ejemplo', () => {
+    for (const r of redirecciones.filter((r) => !r.de.includes('*'))) {
+      expect(r.ejemplo, `${r.de} trae un ejemplo que no hace falta`).toBeUndefined();
+    }
+  });
 });
 
 describe('archivo _redirects generado', () => {

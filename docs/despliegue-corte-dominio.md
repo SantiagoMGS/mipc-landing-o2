@@ -306,7 +306,28 @@ En un móvil real, contra la URL de `pages.dev`:
       dirección externa confirmando que no cae en spam. El correo es lo
       primero que hay que comprobar después del cambio, antes que el sitio:
       un sitio caído se nota en minutos, un correo perdido no se nota nunca.
-- [ ] Retirar la regla de `noindex` de `public/_headers` (o eliminar el archivo, o eliminar solo esa línea) y volver a desplegar — un dominio de producción con `X-Robots-Tag: noindex` no aparece en buscadores aunque el resto del SEO esté perfecto.
+- [ ] **Comprobar** el `noindex` en el dominio real. NO retirarlo de entrada:
+
+  ```bash
+  curl -I https://mipc.com.co/ | grep -i x-robots   # debe devolver NADA
+  ```
+
+  Las dos reglas de `public/_headers` están acotadas por host a
+  `mipc-landing-o2.santiago-martinez.workers.dev` y a `mipc-landing-o2.pages.dev`.
+  Ninguna coincide con `https://mipc.com.co/*`, así que **no deberían aplicar a
+  producción**, y dejarlas puestas tiene una ventaja concreta: el subdominio de
+  Workers sigue fuera del índice para siempre, en vez de convertirse en una
+  copia del sitio de producción compitiendo como contenido duplicado justo
+  después del corte.
+
+  Retirarlas «por si acaso» es lo que crea ese duplicado. Retíralas **solo si
+  el `curl` de arriba devuelve la cabecera** en el dominio real — en cuyo caso
+  el acotado por host no está funcionando como se espera y hay que quitar las
+  reglas y volver a desplegar de inmediato.
+
+  Esta comprobación es **bloqueante**: un dominio de producción con
+  `X-Robots-Tag: noindex` no aparece en buscadores por perfecto que esté el
+  resto del SEO, y no da ningún error que lo delate.
 - [ ] Configurar en `mipctecnologia.com` (dominio que hoy responde HTTP 500)
       un 301 hacia `https://mipc.com.co/`. El spec lo exige y ninguna tarea
       del proyecto lo posee porque vive fuera de este repositorio: es

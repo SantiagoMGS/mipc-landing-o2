@@ -13,9 +13,18 @@
 # aplicar a nada, en silencio y sin fallar. Confirmar siempre con:
 #   curl -I https://<host>/ | grep -i x-robots
 #
-# RETIRAR esta regla al cortar el dominio real: un dominio de producción con
-# X-Robots-Tag: noindex no aparece en buscadores aunque el resto del SEO esté
-# perfecto (ver docs/despliegue-corte-dominio.md).
+# NO RETIRAR AL CORTAR EL DOMINIO. Las dos reglas están acotadas POR HOST y
+# ninguna coincide con https://mipc.com.co/*, así que no vuelven noindex a
+# producción. Dejarlas puestas mantiene el subdominio de Workers fuera del
+# índice para siempre, en vez de convertirlo en una copia del sitio de
+# producción compitiendo como contenido duplicado justo después del corte.
+#
+# Lo que sí es obligatorio el día del corte es COMPROBARLO, porque si el
+# acotado por host no funcionara como se espera, producción quedaría invisible
+# en buscadores sin dar ningún error:
+#   curl -I https://mipc.com.co/ | grep -i x-robots   # debe devolver NADA
+# Si devuelve la cabecera, entonces sí: quitar las reglas y volver a desplegar
+# de inmediato (ver docs/despliegue-corte-dominio.md).
 https://mipc-landing-o2.santiago-martinez.workers.dev/*
   X-Robots-Tag: noindex
 

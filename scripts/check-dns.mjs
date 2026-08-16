@@ -35,20 +35,30 @@ const DOMINIO = 'mipc.com.co';
 const DEL_SITIO = new Set(['@|A', 'www|CNAME']);
 
 /**
- * Registros cuya ausencia se avisa pero no se trata como fallo.
+ * Registros que el cliente decidió NO migrar el 2026-08-16. Su ausencia se
+ * informa pero no es un fallo.
  *
- * `pruebaapp` tiene toda la pinta de una verificación de propiedad que alguien
- * dejó puesta hace años.
+ * El objetivo declarado del corte se reduce a tres cosas: la aplicación de
+ * `admin.mipc.com.co`, la landing y el correo. Todo lo que no sirve a una de
+ * las tres se deja caer: el bloque `coopebello` (un correo sobre subdominio
+ * alojado en Hostinger), `os` y `app` (servicios viejos), `ftp` (alias de
+ * conveniencia — el acceso FTP al hosting no depende de él) y `pruebaapp`
+ * (un resto de verificación).
  *
- * El bloque `coopebello` es un correo alojado en Hostinger sobre subdominio
- * que el cliente decidió el 2026-08-16 no migrar: se deja morir con el corte.
- * Está aquí y no borrado del archivo de zona a propósito — si la ausencia se
- * volviera un problema, `docs/dns/zona-mipc.com.co-2026-08-16.txt` conserva
- * los valores exactos para recrearlo. Que se avise en cada ejecución hace que
- * la decisión siga siendo visible en vez de convertirse en un olvido.
+ * Se quedan LISTADOS en el archivo de zona en vez de borrados, y se avisa en
+ * cada ejecución, por dos motivos: la decisión sigue siendo visible en lugar
+ * de convertirse en un olvido, y si mañana alguna ausencia duele, ahí están
+ * los valores exactos para recrear el registro.
+ *
+ * `admin` NO está en esta lista y no debe entrar: es una aplicación en
+ * producción.
  */
-const PRESCINDIBLES = new Set([
+const RETIRADOS = new Set([
   'pruebaapp|TXT',
+  'os|A',
+  'app|A',
+  'app|TXT',
+  'ftp|A',
   'coopebello|MX',
   'coopebello|TXT',
   'autoconfig.coopebello|CNAME',
@@ -184,7 +194,7 @@ for (const [clave, valores] of esperado) {
 
   const detalle = `  ${clave.padEnd(28)} FALTA: ${faltan.join(', ')}` +
     (sobran.length ? `\n  ${''.padEnd(28)} (hay en su lugar: ${sobran.join(', ')})` : '');
-  (PRESCINDIBLES.has(clave) ? avisos : fallos).push(detalle);
+  (RETIRADOS.has(clave) ? avisos : fallos).push(detalle);
 }
 
 if (delSitio.length) {
@@ -192,7 +202,7 @@ if (delSitio.length) {
   console.log(delSitio.join('\n') + '\n');
 }
 if (avisos.length) {
-  console.log('PRESCINDIBLES — ausentes, probablemente sin consecuencia:');
+  console.log('RETIRADOS a propósito el 2026-08-16 — ausentes, como se decidió:');
   console.log(avisos.join('\n') + '\n');
 }
 

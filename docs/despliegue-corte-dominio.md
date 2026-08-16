@@ -38,14 +38,49 @@ Configuración correcta en Cloudflare Pages:
 - **Build output directory:** `dist`
 - **Variable de entorno:** `PUBLIC_WEB3FORMS_KEY`
 
-## Paso 1: Crear el proyecto en Cloudflare Pages
+## Paso 1: Crear el proyecto en Cloudflare
 
-- [ ] Crear el proyecto en Cloudflare Pages conectado al repositorio.
+> ### ⚠️ Puede que no exista la opción «Pages»
+>
+> Todo este documento se escribió para **Cloudflare Pages**. Un despliegue
+> paralelo de este mismo sitio, hecho el 2026-08-14, se encontró con que el
+> asistente de Cloudflare **crea proyectos de Workers por defecto** y que Pages
+> quedó en modo mantenimiento para proyectos nuevos. No he podido comprobarlo
+> yo —haría falta la cuenta del cliente—, así que quien despliegue debe mirar
+> qué le ofrece la consola y seguir la rama que corresponda.
+>
+> **Da igual cuál sea**: el sitio es HTML estático y funciona en las dos. Lo
+> que cambia son tres detalles, ya verificados en ese despliegue paralelo:
+>
+> | | Pages | Workers con assets estáticos |
+> |---|---|---|
+> | `_headers` y `_redirects` | Funcionan | Funcionan igual (9/9 redirecciones y 7/7 cabeceras comprobadas) |
+> | Página 404 propia | Automática | Requiere `wrangler.jsonc` con `not_found_handling: "404-page"` |
+> | `noindex` mientras no hay dominio | Lo pone `public/_headers` (Paso 2) | Cloudflare **ya lo inyecta** en todo `*.workers.dev`, y desaparece solo al conectar el dominio |
+>
+> Una diferencia sí puede morder: **`_redirects` en Workers no admite el
+> código 404**. Nuestro mapa no usa ninguna regla así —las 16 son 301 a
+> páginas que existen—, de modo que no nos afecta, pero conviene saberlo antes
+> de añadir una.
+
+- [ ] Crear el proyecto conectado al repositorio (Pages si la consola lo
+      ofrece; Workers con assets estáticos si no).
 - [ ] Build command `npm run build` (ver advertencia arriba, no `astro build`).
 - [ ] Build output directory `dist`.
+- [ ] Si el proyecto acabó siendo de Workers: añadir `wrangler.jsonc` con
+      `not_found_handling: "404-page"`, o `dist/404.html` no se servirá y las
+      URLs inexistentes darán la página de error genérica de Cloudflare en vez
+      de la nuestra.
 - [ ] Añadir la variable de entorno `PUBLIC_WEB3FORMS_KEY` con la clave real de Web3Forms.
 
 ## Paso 2: Impedir la indexación mientras el sitio vive en pages.dev
+
+> **Si el proyecto acabó siendo de Workers** (ver Paso 1), sustituir
+> `pages.dev` por `workers.dev` en todo lo que sigue —aquí y en el Paso 3—, y
+> saltarse este paso: Cloudflare ya inyecta `X-Robots-Tag: noindex` en todo
+> `*.workers.dev` por su cuenta, y lo retira solo al conectar el dominio
+> propio. La regla de `public/_headers` no estorba, pero tampoco hace falta.
+> Comprobarlo igualmente con `curl -I` antes de darlo por bueno.
 
 `public/_headers` ya incluye la regla de `noindex` para el subdominio de
 `pages.dev`:
@@ -107,6 +142,12 @@ En un móvil real, contra la URL de `pages.dev`:
   normaliza al revés (sin barra final), tanto las URLs canónicas del sitio
   nuevo como las 16 redirecciones heredadas de WordPress fallan silenciosamente.
 
+  **Lo que sí es normal y no hay que arreglar:** que `/servicios` responda
+  **307** hacia `/servicios/` en lugar de 301. Es el comportamiento por
+  defecto de Cloudflare Assets, Google sigue los 307 sin problema, y forzar
+  301 exigiría una regla por página en `_redirects` que habría que mantener
+  sincronizada con las rutas para siempre. Se deja como está a propósito.
+
 ## Paso 4: Lista de verificación previa al corte
 
 - [x] Horario de atención confirmado con el cliente el 2026-08-15: **Lun a Vie 08:00–17:00, Sáb 09:00–13:00**. Ya está en `src/data/empresa.ts`, de donde salen el pie, `/contacto/` y el `openingHoursSpecification` del schema.
@@ -164,7 +205,7 @@ En un móvil real, contra la URL de `pages.dev`:
       `MX` de Google, el `TXT` de SPF, el `TXT` de `krs._domainkey`, los tres
       CNAME `hostingermail-*._domainkey`, el bloque de `coopebello`, y los
       registros de `admin`, `ftp`, `os` y `www`.
-- [ ] Añadir en Cloudflare el registro que apunta el sitio a Cloudflare Pages
+- [ ] Añadir en Cloudflare el registro que apunta el sitio al proyecto (Pages o Workers)
       (`www` y el ápice), sin tocar ninguno de los anteriores.
 - [ ] **Solo cuando lo anterior esté verificado:** cambiar los nameservers en
       el registrador a los de Cloudflare.

@@ -4,6 +4,7 @@ metaTitle: Qué Preguntar al Instalar Cámaras CCTV | MiPC Tecnología
 metaDescription: "Las preguntas que debes hacerle a un instalador de CCTV antes de contratar: certificación de alturas, documentación, garantía y quién puede mantener el sistema."
 fecha: 2026-07-31
 resumen: Cuatro preguntas que separan a un instalador serio de uno que te deja atado.
+servicio: camaras-de-seguridad
 ---
 
 Un sistema de cámaras mal instalado no se nota el primer día. Se nota cuando hay que

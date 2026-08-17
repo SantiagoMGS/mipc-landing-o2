@@ -122,6 +122,23 @@ export const esquemaEntrada = z.object({
   fecha: z.coerce.date(),
   resumen: z.string().min(20, 'El resumen debe decir algo, no ser una etiqueta'),
   imagen: imagen.optional(),
+
+  /**
+   * Slug del servicio al que sirve esta entrada. tests/blog.test.ts comprueba
+   * que exista en `src/content/servicios/`.
+   *
+   * Existe porque el 2026-08-16 se midió que **ninguna entrada del blog
+   * enlazaba a un servicio**. Ni una. El tráfico que ganara una entrada no
+   * tenía ruta hacia la página que convierte, así que el blog trabajaba para
+   * nadie: ni para el visitante, que se quedaba con la explicación y sin
+   * saber a quién llamar, ni para el buscador, que no veía relación entre el
+   * artículo y el servicio del que habla.
+   *
+   * Es opcional a propósito. Una entrada que no sirva a ningún servicio es
+   * legítima —una nota, un aviso— y forzarla a elegir uno produciría enlaces
+   * falsos, que es peor que no tenerlos.
+   */
+  servicio: z.string().optional(),
 });
 
 export const esquemaPagina = z.object({

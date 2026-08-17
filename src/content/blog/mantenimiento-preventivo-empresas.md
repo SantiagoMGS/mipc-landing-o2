@@ -4,6 +4,7 @@ metaTitle: Mantenimiento Preventivo de Computadores | MiPC Tecnología
 metaDescription: Cada cuánto hacer mantenimiento preventivo a los equipos de tu empresa, qué incluye y cómo calcular si te sale más barato que reparar cuando falla.
 fecha: 2026-08-14
 resumen: La frecuencia depende del ambiente, no del calendario. Cómo definirla para tu operación.
+servicio: soporte-ti-empresarial
 ---
 
 La respuesta corta es dos veces al año. La respuesta útil es que depende del ambiente

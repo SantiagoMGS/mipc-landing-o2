@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { parse } from 'node-html-parser';
 
 describe('blog', () => {
@@ -32,6 +32,46 @@ describe('blog', () => {
       const html = readFileSync(p, 'utf-8');
       expect(html, p).not.toMatch(MESES_EN);
       expect(html, p).toMatch(/de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre) de \d{4}/);
+    }
+  });
+});
+
+describe('blog conectado con los servicios', () => {
+  const entradas = readdirSync('src/content/blog')
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => f.replace(/\.md$/, ''));
+
+  /*
+   * El 2026-08-16 se midió que NINGUNA entrada del blog enlazaba a un
+   * servicio. Ni una. Una entrada así es un callejón sin salida: explica algo,
+   * lo explica bien, y deja al lector sin saber a quién llamar. El tráfico que
+   * ganara no tenía ruta hacia la página que convierte.
+   *
+   * El campo `servicio` del frontmatter es opcional a propósito —una nota o un
+   * aviso pueden no servir a ninguno— pero si se declara tiene que existir, y
+   * el bloque de llamada a la acción tiene que llegar al HTML.
+   */
+  it('el servicio declarado por una entrada existe de verdad', () => {
+    const servicios = readdirSync('src/content/servicios')
+      .filter((f) => f.endsWith('.md'))
+      .map((f) => f.replace(/\.md$/, ''));
+
+    for (const e of entradas) {
+      const m = /^servicio:\s*(\S+)\s*$/m.exec(readFileSync(`src/content/blog/${e}.md`, 'utf-8'));
+      if (!m) continue;
+      expect(servicios, `${e} declara el servicio «${m[1]}», que no existe`).toContain(m[1]);
+    }
+  });
+
+  it('la entrada que declara servicio publica su bloque de contacto', () => {
+    for (const e of entradas) {
+      const fuente = readFileSync(`src/content/blog/${e}.md`, 'utf-8');
+      if (!/^servicio:\s*\S+/m.test(fuente)) continue;
+
+      const html = readFileSync(`dist/blog/${e}/index.html`, 'utf-8');
+      expect(html, `${e} declara servicio pero no enlaza a ninguno`)
+        .toMatch(/href="\/servicios\/[a-z-]+\/"/);
+      expect(html, `${e} no ofrece WhatsApp`).toContain('wa.me');
     }
   });
 });

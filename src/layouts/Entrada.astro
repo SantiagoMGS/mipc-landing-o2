@@ -1,5 +1,8 @@
 ---
+import { getEntry } from 'astro:content';
 import Base from './Base.astro';
+import Boton from '../components/ui/Boton.astro';
+import CTAWhatsApp from '../components/ui/CTAWhatsApp.astro';
 import { article, breadcrumb } from '../lib/jsonld';
 import { formatearFecha } from '../lib/fecha';
 
@@ -7,6 +10,16 @@ const { entrada } = Astro.props;
 const d = entrada.data;
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const fecha = formatearFecha(d.fecha);
+
+/**
+ * Servicio al que sirve la entrada, si lo declara.
+ *
+ * Sin esto, una entrada del blog era un callejón sin salida: explicaba algo,
+ * lo explicaba bien, y dejaba al lector sin saber a quién llamar. Medido el
+ * 2026-08-16 — ninguna de las tres entradas publicadas enlazaba a un solo
+ * servicio.
+ */
+const servicio = d.servicio ? await getEntry('servicios', d.servicio) : undefined;
 
 const jsonld = [
   article({ titulo: d.titulo, descripcion: d.metaDescription, url, fecha: d.fecha }),
@@ -24,5 +37,26 @@ const jsonld = [
     </time>
     <h1 class="mt-3 text-4xl font-semibold">{d.titulo}</h1>
     <div class="prose prose-neutral mt-8 max-w-none"><slot /></div>
+
+    {servicio && (
+      <aside class="canto mt-14 border-l-4 border-l-senal bg-superficie p-6">
+        <p class="cifra text-xs uppercase tracking-widest text-tinta-2">
+          Servicio relacionado
+        </p>
+        <h2 class="mt-2 text-xl font-semibold">
+          <a href={`/servicios/${servicio.id}/`} class="hover:text-senal-oscuro">
+            {servicio.data.titulo}
+          </a>
+        </h2>
+        <p class="mt-2 text-tinta-2">{servicio.data.resumen}</p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <Boton href={`/servicios/${servicio.id}/`}>Ver el servicio</Boton>
+          <CTAWhatsApp
+            mensaje={servicio.data.mensajeWhatsApp ?? `Hola, me interesa el servicio de ${servicio.data.titulo}`}
+            texto="Escríbenos por WhatsApp"
+          />
+        </div>
+      </aside>
+    )}
   </article>
 </Base>

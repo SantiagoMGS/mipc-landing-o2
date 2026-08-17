@@ -79,10 +79,19 @@ export const esquemaServicio = z.object({
     .optional(),
 });
 
+/**
+ * Cliente del muro de la portada.
+ *
+ * El logotipo NO va aquí. Vive en `src/data/logos-clientes.ts`, importado,
+ * por la misma razón que las fotos de proyectos y servicios: astro:assets
+ * necesita una importación para optimizar, y una ruta en texto plano dentro
+ * del frontmatter no se importa. Mientras el campo `logo` fue una cadena, los
+ * veinte logotipos se sirvieron crudos desde `public/` — 248 KB de PNG, casi
+ * un tercio del peso de la portada.
+ */
 export const esquemaCliente = z.object({
   nombre: z.string(),
   sector: z.string(),
-  logo: z.string().optional(),
   orden: z.number().int().default(99),
 });
 

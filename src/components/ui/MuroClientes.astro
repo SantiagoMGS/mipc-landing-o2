@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Marcador from './Marcador.astro';
+import { logoPorCliente } from '../../data/logos-clientes';
 const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden - b.data.orden);
 
 /**
@@ -10,7 +12,7 @@ const clientes = (await getCollection('clientes')).sort((a, b) => a.data.orden -
  * cuando hay un cliente sin logo en medio.
  */
 const idsEager = new Set(
-  clientes.filter((c) => c.data.logo).slice(0, 6).map((c) => c.id)
+  clientes.filter((c) => logoPorCliente[c.id]).slice(0, 6).map((c) => c.id)
 );
 ---
 <section class="border-b border-borde bg-superficie py-14">
@@ -27,12 +29,12 @@ const idsEager = new Set(
     <ul class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] items-center gap-x-8 gap-y-7">
       {clientes.map((c) => (
         <li data-cliente class="flex items-center justify-center" title={c.data.sector}>
-          {c.data.logo ? (
-            <img
-              src={c.data.logo}
+          {logoPorCliente[c.id] ? (
+            <Image
+              src={logoPorCliente[c.id]}
               alt={`Logotipo de ${c.data.nombre}, cliente de MiPC Tecnología`}
-              width="88"
-              height="52"
+              widths={[88, 176]}
+              sizes="88px"
               loading={idsEager.has(c.id) ? 'eager' : 'lazy'}
               decoding="async"
               class="h-auto w-[88px] grayscale transition hover:grayscale-0"

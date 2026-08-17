@@ -1,9 +1,17 @@
 ---
 titulo: Reparación de Computadores
-h1: Reparación de computadores en Medellín
+h1: Reparación de computadores en Medellín, con recogida a domicilio gratis
+# El metaTitle NO lleva «a domicilio», y no es un olvido. El schema exige que
+# termine en «| MiPC Tecnología» (17 car.) y tope de 65, lo que deja 47 para el
+# resto. Las únicas variantes que caben son «Reparación de Computadores a
+# Domicilio Medellín» o «... Medellín a Domicilio»: las dos afirman que se
+# repara en casa del cliente, y no se repara —el trabajo se hace en el taller.
+# Preferimos perder la palabra en el título antes que insinuar eso. El término
+# está en el h1, en la metaDescription, en la primera FAQ y en el cuerpo, que
+# son las otras cuatro posiciones donde la usa la competencia.
 metaTitle: Reparación de Computadores en Medellín | MiPC Tecnología
-metaDescription: "Reparación de computadores en Medellín: recogemos tu equipo gratis y el diagnóstico no te cuesta nada si autorizas la reparación. Garantía de 30 días."
-resumen: Recogemos tu equipo gratis y te lo devolvemos reparado. El diagnóstico no te cuesta nada si autorizas la reparación. Cualquier marca, incluido Apple.
+metaDescription: Recogemos tu computador a domicilio gratis en Medellín y te lo devolvemos reparado. Diagnóstico sin costo si autorizas la reparación. Garantía de 30 días.
+resumen: Recogemos tu equipo a domicilio gratis y te lo devolvemos reparado. El diagnóstico no te cuesta nada si autorizas la reparación. Cualquier marca, incluido Apple.
 publico: ambos
 orden: 2
 # Quien contacta desde esta página es, la mayoría de las veces, un particular
@@ -29,7 +37,7 @@ oferta:
 # visible en la página, en las FAQ y en el schema. Es el mismo trato contado
 # desde el lado que le toca a la mayoría.
 beneficios:
-  - Recogemos y devolvemos tu equipo gratis, máximo un día hábil
+  - Recogemos y devolvemos tu equipo a domicilio gratis, máximo un día hábil
   - Diagnóstico sin costo si autorizas la reparación
   - Si decides no repararlo, pagas $25.000 y te llevas el informe
   - Garantía de 30 días sobre la mano de obra
@@ -42,8 +50,11 @@ beneficios:
 faq:
   - pregunta: ¿Recogen el computador en mi casa?
     respuesta: Sí, y la recogida es gratis. Pasamos por el equipo en Medellín, Envigado, Sabaneta, Itagüí, Bello y La Estrella, y te lo devolvemos reparado en la misma dirección. Máximo un día hábil desde que nos escribes hasta que el equipo está en el taller.
-  - pregunta: ¿Reparan en mi casa o se llevan el equipo?
-    respuesta: "Nos lo llevamos al taller. Un cambio de pantalla, una soldadura o el rescate de un disco necesitan banco de trabajo y herramienta que no caben en un maletín, y hacerlos sobre la mesa del comedor es peor trabajo. Por eso la recogida es gratis: para que llevarlo al taller no te cueste nada."
+  # La pregunta se formula con las palabras del buscador —«a domicilio»— y la
+  # respuesta empieza desmintiendo la lectura equivocada, no confirmándola. Así
+  # quien busca un técnico en su casa se entera antes del clic, no después.
+  - pregunta: ¿Reparan computadores a domicilio en Medellín?
+    respuesta: "No reparamos dentro de tu casa: recogemos el equipo a domicilio, gratis, y te lo devolvemos reparado en la misma dirección. Un cambio de pantalla, una soldadura o el rescate de un disco necesitan banco de trabajo y herramienta que no caben en un maletín, y hacerlos sobre la mesa del comedor es peor trabajo. Por eso la recogida es gratis: para que llevarlo al taller no te cueste nada."
   - pregunta: ¿Cuánto cuesta reparar un computador en Medellín?
     respuesta: "Si autorizas la reparación, el diagnóstico no te cuesta nada: los $25.000 que vale se abonan al total. Si decides no repararlo, pagas solo esos $25.000 y te llevas el equipo con el informe. La reparación en sí depende de qué encuentre el diagnóstico y se cotiza antes de hacer nada: no hay trabajo sin cotización aprobada."
   - pregunta: ¿Cuánto se demora el diagnóstico?
@@ -82,7 +93,7 @@ o se apagan solos, discos que fallan, equipos lentos, infecciones por virus,
 sistemas operativos que no arrancan, derrames de líquido y rescate de
 información. **Cualquier marca, incluidos los equipos Apple.**
 
-## Recogemos tu equipo gratis
+## Recogemos tu equipo a domicilio, gratis
 
 No tienes que traerlo. Pasamos por él **sin costo** en Medellín, Envigado,
 Sabaneta, Itagüí, Bello y La Estrella, y te lo devolvemos reparado en la misma

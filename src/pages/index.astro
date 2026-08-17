@@ -25,6 +25,13 @@ const entradas = (await getCollection('blog'))
 // y subestimaba el negocio en un factor de casi cuatro. El razonamiento
 // completo está junto al dato.
 const anios = new Date().getFullYear() - empresa.fundacion;
+// Antes era «Soporte TI Empresarial en Medellín | MiPC Tecnología», idéntico al
+// de /servicios/soporte-ti-empresarial/. Con dos páginas compitiendo por el
+// mismo título, Google elige una y descarta la otra. Este nombra además la
+// reparación, que es la primera campaña. «Medellín» se cae por el tope de 65
+// caracteres; lo sostienen el h1, la metaDescription y el schema LocalBusiness.
+const titulo = 'Soporte TI y Reparación de Computadores | MiPC Tecnología';
+
 const cifras = [
   { valor: `${anios}+`, etiqueta: 'años de experiencia' },
   { valor: `${empresa.empresasAtendidas}+`, etiqueta: 'empresas atendidas' },
@@ -32,7 +39,7 @@ const cifras = [
 ];
 ---
 <Base
-  title="Soporte TI Empresarial en Medellín | MiPC Tecnología"
+  title={titulo}
   metaDescription="Soporte TI, redes de datos, CCTV y alquiler de equipos para empresas en Medellín. Atendemos emisoras, IPS e instituciones educativas desde 2009."
 >
   <Hero {cifras} />

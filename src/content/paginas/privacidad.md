@@ -100,9 +100,9 @@ Como titular de los datos, la ley te reconoce el derecho a:
   la autoridad de protección de datos en Colombia.
 
 Para ejercerlos, escríbenos a **gerencia@mipc.com.co** indicando qué solicitas.
-Responderemos dentro de los plazos que fija la ley: quince días hábiles para
-consultas y quince días hábiles para reclamos, prorrogables cuando la norma lo
-permite y avisándote del motivo.
+Responderemos dentro de los plazos que fija la ley: **diez días hábiles para
+consultas** y **quince días hábiles para reclamos**, prorrogables cuando la norma
+lo permite y avisándote del motivo.
 
 ## 6. Cookies
 

@@ -166,3 +166,76 @@ abogado.
 **Recomendado: el 3, junto con la revisión de garantías.** Dos encargos
 separados sobre el mismo sitio cuestan más que uno, y el de garantías lleva
 pendiente desde antes del corte de dominio.
+
+---
+
+## Añadido el 2026-08-17: dos puntos que llegaron de una revisión externa
+
+Santiago pasó por otro modelo de lenguaje una revisión del sitio. De sus tres
+«críticos», uno era falso —afirmaba que seguían publicadas páginas del WordPress
+antiguo, incluida una entrada sobre una adquisición de Amazon que no ocurrió;
+comprobado: todas esas URL devuelven 404 y ninguna de esas palabras aparece en
+el sitio, lo que leyó fue el índice de Google, no la web—. Los otros dos son
+buenos, y uno es el punto de mayor exposición de todo el sitio.
+
+### 4. La garantía de 30 días sobre la mano de obra puede ser inferior al mínimo legal
+
+**Dónde:** `/servicios/reparacion-de-computadores/` (sección propia, una FAQ y
+los beneficios), `/garantias/`, y como beneficio en varias páginas más.
+
+**Qué dice:** «La mano de obra de los servicios de reparación, instalación y
+configuración queda con garantía de 30 días.»
+
+**El aviso externo:** que la Ley 1480 fija, para servicios de reparación que
+implican la entrega del bien, **tres meses** cuando no se ha informado y
+aceptado por escrito la prestación sin garantía.
+
+**Por qué es el punto más grave de los cuatro de este documento y de los siete
+del de garantías:**
+
+1. Si es cierto, el sitio publica una garantía **más corta que la legal**. Eso
+   no reduce la obligación —el mínimo legal se aplica igual— pero sí es una
+   afirmación incorrecta hecha al consumidor, y de las que la SIC mira.
+2. Los 30 días se usan como **argumento de venta destacado**, y con razón:
+   ninguno de los cuatro competidores medidos publica una garantía en días. Si
+   el mínimo legal son tres meses, el diferenciador no es que MiPC dé 30 días —
+   es que los demás no dicen nada teniendo la misma obligación.
+3. Está en la página que más trabajo recibió el 2026-08-16 y la que va a recibir
+   la primera campaña pagada.
+
+**Lo que NO se hizo:** cambiar 30 por 90. Alargar un plazo de garantía es asumir
+una obligación mayor, y hacerlo por criterio de quien escribe el sitio es tan
+equivocado como acortarlo. Si el abogado confirma los tres meses, el cambio es
+sencillo y además **mejora** la página.
+
+### 5. La razón social no coincide consigo misma
+
+| Dónde | Qué dice |
+|---|---|
+| `src/data/empresa.ts` → pie, `/contacto/`, JSON-LD `legalName` | **MiPC Tecnología S.A.S.** |
+| `/garantias/`, diez veces | **MI PC TECNOLOGÍA S.A.S.** |
+
+Una de las dos está mal, y la correcta es la que figure en el RUT y en el
+certificado de Cámara de Comercio. No es cosmético: la razón social aparece en
+el `legalName` del schema y junto al NIT en `/contacto/`, que es lo que un
+cliente corporativo copia para facturar.
+
+La forma con espacios llegó en la migración del texto de garantías, así que la
+sospecha razonable es que la del RUT sea esa. **Pero es una sospecha.** Basta
+mirar el certificado.
+
+*(Nota aparte, de marca y no legal: `MiPC Tecnología` es la marca comercial y se
+usa consistentemente en las 76 apariciones del resto del sitio. Eso está bien;
+lo que hay que resolver es cuál de las dos es la razón social.)*
+
+### Y una corrección ya aplicada, para confirmación
+
+`/privacidad/` decía «quince días hábiles para consultas y quince días hábiles
+para reclamos». La Ley 1581 fija **diez** para consultas y quince para reclamos.
+Se corrigió el 2026-08-17 a diez y quince.
+
+Se aplicó sin esperar la revisión porque la dirección del cambio es segura: si
+la cifra correcta es diez, la anterior era incumplimiento; si fueran quince,
+prometer diez solo obliga a MiPC a responder más rápido. En ningún escenario el
+cambio empeora la posición. Aun así, conviene que el abogado lo confirme junto
+con el resto.

@@ -8,8 +8,7 @@ sector: Construcción y adecuación
 lugar: Antioquia
 anio: 2025
 servicios:
-  - soporte-ti-empresarial
-  - redes-de-datos
+  - instalaciones-electricas
 reto: >-
   Una edificación con estructura de madera vista no admite el recurso habitual de esconder la instalación: no hay cielo raso, y cualquier canalización mal resuelta queda formando parte del acabado arquitectónico.
 solucion: >-

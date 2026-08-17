@@ -8,8 +8,7 @@ sector: Industria
 lugar: La Estrella, Antioquia
 anio: 2025
 servicios:
-  - redes-de-datos
-  - soporte-ti-empresarial
+  - instalaciones-electricas
 reto: >-
   Una planta industrial no perdona improvisaciones: las alturas son grandes, la placa es de concreto reticular y todo lo que se tienda queda a la vista y sometido a vibración, polvo y maniobras de montacargas durante años.
 solucion: >-

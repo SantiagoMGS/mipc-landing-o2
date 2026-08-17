@@ -1,7 +1,33 @@
 # Verificación de los nueve proyectos pendientes
 
-Lista hecha el **2026-08-16** para que confirmar o desmentir cada proyecto
-cueste minutos y no una tarde.
+> **CERRADO el 2026-08-16.** Santiago confirmó los nueve, incluidos uno por uno
+> los datos contrastables de `ingycon-conexion-sur` —switch de 48 puertos,
+> firewall Fortinet FortiGate, fibra óptica, categoría 6, panel de alarma,
+> puntos certificados y el año— y de `veterinaria-rosales` —patch panel de 24
+> puertos, switch de 8, gabinete de pared, categoría 6 y el año—.
+>
+> Con eso, **los doce proyectos publicados están verificados**.
+>
+> El documento se conserva sin recortar. Sirve como registro de qué se preguntó
+> y como plantilla para el próximo proyecto que se publique: las preguntas
+> útiles son las de conteos, marcas, años y alcances, no «¿este cliente es
+> real?». Bodega El Palo también era un cliente real; lo inventado era el
+> trabajo.
+>
+> Lo aplicado a raíz de esta revisión:
+>
+> - `criadero-gente-buena` pasó de **insinuar** la certificación de trabajo en
+>   alturas a afirmarla, una vez confirmada. La certificación se publicó además
+>   en cámaras, instalaciones eléctricas y soporte TI.
+> - `global-la-estrella` y `don-diego` se reclasificaron a
+>   `instalaciones-electricas`. Declaraban `redes-de-datos` y
+>   `soporte-ti-empresarial` mientras su título y todo su cuerpo describían obra
+>   eléctrica, así que no aparecían en el servicio al que pertenecen.
+
+## Lista original
+
+Hecha el **2026-08-16** para que confirmar o desmentir cada proyecto costara
+minutos y no una tarde.
 
 ## Por qué existe
 

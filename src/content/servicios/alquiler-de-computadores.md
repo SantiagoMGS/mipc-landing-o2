@@ -5,7 +5,7 @@ metaTitle: Alquiler de Computadores en Medellín | MiPC Tecnología
 metaDescription: Computadores de escritorio y portátiles por contrato en Medellín, entregados configurados, con soporte y mantenimiento incluidos y opción de compra al final.
 resumen: Equipos por contrato, entregados configurados, con soporte y mantenimiento incluidos y opción de compra al final.
 publico: empresa
-orden: 5
+orden: 6
 # Esta página está deliberadamente corta y sin cifras. El 2026-08-16 Santiago
 # confirmó cómo funciona de verdad el servicio: NO hay inventario —cero equipos
 # en bodega—, cada contrato se abastece comprando equipo corporativo

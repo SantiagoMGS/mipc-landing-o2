@@ -10,6 +10,7 @@ anio: 2025
 servicios:
   - redes-de-datos
   - soporte-ti-empresarial
+  - instalaciones-electricas
 reto: >-
   Un punto de información en un centro comercial es un mueble de diseño en mitad de un pasillo transitado. Tiene que llevar red, pantalla, iluminación, tomas eléctricas y equipos dentro, sin que se vea un solo cable y sin cerrar el pasillo durante el montaje.
 solucion: >-

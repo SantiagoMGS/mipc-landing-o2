@@ -10,6 +10,7 @@ anio: 2025
 servicios:
   - redes-de-datos
   - camaras-de-seguridad
+  - instalaciones-electricas
 reto: >-
   Una bodega en adecuación es un espacio sin instalaciones, y lo que va a entrar en ella son equipos industriales que no funcionan con una toma corriente cualquiera. Todo tiene que quedar tendido mientras la obra sigue abierta, porque después cada cambio es romper pared o dejar canaleta a la vista.
 solucion: >-

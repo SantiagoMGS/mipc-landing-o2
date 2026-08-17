@@ -27,10 +27,11 @@ cubierta: perforar una lámina de cubierta para colgar un equipo es la manera
 más rápida de tener una gotera encima de la instalación en la primera
 temporada de lluvias. El cableado se tendió siguiendo la perfilería.
 
-Todo el trabajo en altura se hizo con **arnés de cuerpo completo y eslinga
-anclada a estructura**. No es un detalle de imagen: en Colombia el trabajo en
-alturas está reglamentado, y una empresa que contrata a alguien sin
-certificación asume la responsabilidad de lo que pase en su predio.
+Todo el trabajo en altura lo ejecutó **personal certificado en trabajo en
+alturas**, con arnés de cuerpo completo y eslinga anclada a estructura. No es
+un detalle de imagen: en Colombia el trabajo en alturas está reglamentado, y la
+empresa que permite subir a alguien sin certificación en su predio responde por
+lo que pase ahí. Los certificados se pueden pedir antes de contratar.
 
 Es la misma razón por la que un criadero, una bodega o una planta industrial son
 trabajos distintos de instalar una cámara en una casa.

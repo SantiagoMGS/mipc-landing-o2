@@ -12,14 +12,14 @@ beneficios:
   - NVR y grabación centralizados en el gabinete
   - Alarmas, control de acceso y contador de personas
   - Mantenimiento de sistemas instalados por otro proveedor
-  - Trabajo en alturas con arnés y equipo de protección
+  - Personal certificado en trabajo en alturas
 faq:
   - pregunta: ¿Hacen mantenimiento de cámaras que instaló otro proveedor?
     respuesta: Sí. Hacemos diagnóstico del sistema existente y proponemos el mantenimiento o las mejoras necesarias. No exigimos cambiar el equipo instalado para poder atenderlo.
   - pregunta: ¿Las cámaras van por el mismo cable que la red?
     respuesta: "No: van en cableado dedicado y de otro color. Comparten el recorrido y el gabinete, pero no la identificación. Así, cuando algo falla, se sabe en qué sistema mirar antes de tocar nada."
   - pregunta: ¿Instalan en fachadas y postes?
-    respuesta: Sí. Ese trabajo se ejecuta con arnés, casco y equipo de protección. Para un cliente institucional no es un detalle estético, es parte del cumplimiento que le van a auditar a él.
+    respuesta: Sí, con personal certificado en trabajo en alturas, arnés de cuerpo completo, casco y anclaje a estructura. Puedes pedirnos los certificados antes de contratar. Importa porque la empresa que deja subir a alguien sin certificación a su predio responde por lo que pase ahí, y eso aparece en la auditoría un año después.
   - pregunta: ¿Se puede ver la grabación desde el celular?
     respuesta: Sí, es la configuración habitual. El acceso remoto se define en la puesta en marcha, junto con cuánto tiempo se conserva la grabación.
   - pregunta: ¿Cuánto tiempo guarda las grabaciones?
@@ -62,15 +62,24 @@ es una búsqueda por el local.
   gente entra frente a cuánta compra.
 - **Video portero** en propiedad horizontal y unidades residenciales.
 
-## Trabajo en alturas, con lo que eso exige
+## Personal certificado en trabajo en alturas
 
-Las cámaras de exterior van en fachadas, postes y cubiertas. Ese trabajo se
-ejecuta con **arnés, casco y equipo de protección**.
+Las cámaras de exterior van en fachadas, postes y cubiertas. Ese trabajo lo
+ejecuta **personal certificado en trabajo en alturas**, con arnés de cuerpo
+completo, casco y anclaje a estructura.
 
-No lo decimos por adorno. Para un cliente institucional —un colegio, una IPS, un
-centro comercial— la seguridad del contratista es parte del cumplimiento que le
-van a auditar **a él**, no a nosotros. Un instalador sin protección en una
-fachada es un problema del contratante el día que se cae.
+No lo decimos por adorno, y no es un detalle nuestro: es un problema **tuyo**.
+En Colombia el trabajo en alturas está reglamentado, y la empresa que permite
+que alguien suba a una fachada de su predio sin certificación **responde por lo
+que pase ahí**. No responde el instalador: responde quien lo contrató y lo dejó
+subir.
+
+Por eso, para un colegio, una IPS o un centro comercial, esto no es una casilla
+de calidad sino de cumplimiento — y es de las cosas que aparecen en la auditoría
+un año después, cuando ya nadie recuerda quién colgó la cámara.
+
+**Puedes pedirnos los certificados antes de contratar.** Deberías pedírselos a
+cualquiera que vaya a subir a tu fachada.
 
 ## Mantenemos lo que instaló otro
 

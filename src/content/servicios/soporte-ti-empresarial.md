@@ -12,7 +12,7 @@ beneficios:
   - Escalamiento y seguimiento de incidentes hasta su cierre
   - Inventario y control de equipos
   - Acompañamiento en aperturas y traslados de sede
-  - Trabajo en alturas con arnés y equipo de protección
+  - Personal certificado en trabajo en alturas
 faq:
   - pregunta: ¿Atienden fuera de Medellín?
     respuesta: Sí. Cubrimos Envigado, Sabaneta, Itagüí, Bello y La Estrella, además de Medellín. Para proyectos puntuales hemos trabajado en otras ciudades del país.

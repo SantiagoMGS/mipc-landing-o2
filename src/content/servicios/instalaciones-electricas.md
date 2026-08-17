@@ -42,7 +42,7 @@ faq:
   - pregunta: ¿Las instalaciones cumplen RETIE?
     respuesta: "Cuando el proyecto lo exige, la instalación se entrega cumpliendo RETIE. Conviene decirlo en la cotización y no a mitad de la obra, porque cambia el alcance y el costo del trabajo: es de esas cosas que salen mucho más baratas previstas desde el principio que resueltas al final."
   - pregunta: ¿Trabajan en alturas?
-    respuesta: "Sí, con arnés, casco y equipo de protección. Para un cliente institucional la seguridad del contratista es parte del cumplimiento que le van a auditar a él, no a nosotros."
+    respuesta: "Sí, con personal certificado en trabajo en alturas, arnés de cuerpo completo, casco y anclaje a estructura. Puedes pedirnos los certificados antes de contratar. Importa porque la empresa que deja subir a alguien sin certificación a su predio responde por lo que pase ahí."
 ---
 
 Hacemos la instalación eléctrica de locales, bodegas, oficinas y puntos de
@@ -126,11 +126,19 @@ una ubicación nueva, en un edificio con público dentro. Ahí lo que se planifi
 no es el montaje: es la ventana en que se puede desconectar, y qué queda
 funcionando mientras tanto.
 
-## Trabajo en alturas
+## Personal certificado en trabajo en alturas
 
-Fachadas, postes y cubiertas se atienden con **arnés, casco y equipo de
-protección**. Para un cliente institucional eso no es un detalle: es parte del
-cumplimiento que le van a auditar **a él**.
+Fachadas, postes y cubiertas se atienden con **personal certificado en trabajo
+en alturas**, con arnés de cuerpo completo, casco y anclaje a estructura.
+
+En Colombia el trabajo en alturas está reglamentado, y la empresa que permite
+que alguien suba en su predio sin certificación **responde por lo que pase ahí**.
+No responde el instalador: responde quien lo contrató y lo dejó subir. Por eso
+esto no es una casilla de calidad sino de cumplimiento, y es de las que aparecen
+en la auditoría un año después.
+
+**Puedes pedirnos los certificados antes de contratar.** Deberías pedírselos a
+cualquiera que vaya a subir.
 
 ## RETIE, cuando el proyecto lo exige
 

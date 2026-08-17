@@ -23,7 +23,7 @@ describe('localBusiness', () => {
   // cambiarlo también en la ficha, que al menos falle aquí y se acuerde.
   it('incluye el horario confirmado como openingHoursSpecification', () => {
     expect(ld.openingHoursSpecification).toHaveLength(2);
-    expect(ld.openingHoursSpecification[0].opens).toBe('08:00');
+    expect(ld.openingHoursSpecification[0].opens).toBe('08:30');
     expect(ld.openingHoursSpecification[0].closes).toBe('17:00');
     expect(ld.openingHoursSpecification[1].opens).toBe('09:00');
     expect(ld.openingHoursSpecification[1].closes).toBe('13:00');

@@ -19,7 +19,7 @@ describe('pie de página (CRIT-04)', () => {
   // porque el JSON-LD guarda los días en inglés — solo el pie puede
   // producirlas, así que son las que de verdad prueban que el pie renderiza.
   it('publica correo y horario en español, no solo en el schema', () => {
-    expect(html).toContain('Lun a Vie: 08:00 a 17:00');
+    expect(html).toContain('Lun a Vie: 08:30 a 17:00');
     expect(html).toContain('Sáb: 09:00 a 13:00');
     expect(html).toContain(`mailto:${'gerencia@mipc.com.co'}`);
   });

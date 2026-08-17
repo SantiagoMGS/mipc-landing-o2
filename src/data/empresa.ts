@@ -121,7 +121,9 @@ export const empresa = Object.freeze({
   // Google descarta el horario si no lo encuentra. La traducción al español
   // ocurre en la capa de presentación (Tasks 7 y 13), no en el dato.
   horario: Object.freeze([
-    Object.freeze({ dias: Object.freeze(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']), abre: '08:00', cierra: '17:00' }),
+    // Corregido el 2026-08-17: Santiago indicó que el horario oficial es de
+    // 8:30 a 5. Estaba publicado como 08:00 desde el lanzamiento.
+    Object.freeze({ dias: Object.freeze(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']), abre: '08:30', cierra: '17:00' }),
     Object.freeze({ dias: Object.freeze(['Saturday']), abre: '09:00', cierra: '13:00' }),
   ]),
 

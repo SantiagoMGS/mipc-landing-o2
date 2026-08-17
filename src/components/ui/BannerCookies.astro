@@ -65,11 +65,35 @@ import { hayMedicion } from '../../lib/medicion';
           try { localStorage.setItem(k, v); } catch (e) { /* modo privado */ }
         }
 
+        /*
+         * El aviso tapaba por completo el botón flotante de WhatsApp: los dos
+         * van anclados abajo y el aviso está en z-50 contra el z-40 del botón.
+         * Siendo el flotante lo más pulsado en móvil, la vía de contacto más
+         * usada quedaba oculta durante las tres primeras páginas de cada
+         * visitante nuevo.
+         *
+         * Se publica la altura real del aviso en una variable CSS y global.css
+         * sube el botón por encima. La altura se MIDE en vez de fijarse porque
+         * en móvil el texto ocupa más líneas y el aviso crece; una constante
+         * habría cuadrado en un solo tamaño de pantalla.
+         */
+        var raiz = document.documentElement;
+        function ajustarFlotante() {
+          raiz.style.setProperty('--alto-aviso', banner.offsetHeight + 'px');
+        }
+
         // Con decisión tomada —cualquiera de las dos— el aviso no vuelve.
         if (!leer(CLAVE)) {
           var vistas = parseInt(leer(VISTAS) || '0', 10) || 0;
           if (vistas < MAX_VISTAS) {
             banner.hidden = false;
+            // Después de quitar `hidden`: con el elemento oculto, offsetHeight
+            // es 0 y el botón no se movería.
+            ajustarFlotante();
+            raiz.classList.add('aviso-cookies-visible');
+            // Al rotar el móvil o cambiar el ancho, el texto se recompone y el
+            // aviso cambia de alto.
+            window.addEventListener('resize', ajustarFlotante);
             guardar(VISTAS, String(vistas + 1));
           }
         }
@@ -77,6 +101,9 @@ import { hayMedicion } from '../../lib/medicion';
         function decidir(valor) {
           guardar(CLAVE, valor);
           banner.hidden = true;
+          // El botón vuelve a su sitio de siempre.
+          raiz.classList.remove('aviso-cookies-visible');
+          window.removeEventListener('resize', ajustarFlotante);
           // Solo el rechazo mueve el consentimiento: aceptar ya es el estado
           // por defecto desde Analitica.astro, y volver a concederlo sería una
           // llamada sin efecto.

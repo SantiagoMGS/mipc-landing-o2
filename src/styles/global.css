@@ -173,3 +173,32 @@ footer :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     scroll-behavior: auto !important;
   }
 }
+
+/* El aviso de cookies y el botón flotante de WhatsApp viven los dos anclados
+   abajo, y el aviso —que va en z-50— tapaba al flotante —z-40— por completo.
+   Lo detectó el cliente el 2026-08-17.
+   
+   No es un defecto cosmético: el flotante es el elemento más pulsado del sitio
+   en móvil, y el aviso se muestra durante las tres primeras páginas de cada
+   visitante nuevo. O sea que la vía de contacto más usada quedaba oculta
+   justo en la ventana en la que alguien decide si escribe.
+   
+   La solución no es subir el z-index del flotante: quedaría encima del texto
+   del aviso y podría tapar los botones «Rechazar» y «Entendido», que es peor.
+   Se sube el botón por encima del aviso mientras el aviso está visible.
+   
+   La altura la mide el script del banner y la publica en `--alto-aviso`,
+   porque no es fija: en móvil el texto se reparte en más líneas y el aviso
+   crece. Una constante habría funcionado en el escritorio del que la escribió
+   y en ningún otro sitio. */
+:root {
+  --alto-aviso: 0px;
+}
+
+.flotante-whatsapp {
+  transition: bottom 200ms ease, transform 200ms ease;
+}
+
+html.aviso-cookies-visible .flotante-whatsapp {
+  bottom: calc(var(--alto-aviso) + 1.25rem);
+}

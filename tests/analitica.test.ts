@@ -155,3 +155,60 @@ describe('analítica', () => {
     expect(politica).toContain('puedes desactivarlas con un clic');
   });
 });
+
+describe('el aviso de cookies no tapa el botón de WhatsApp', () => {
+  /*
+   * Los dos elementos van anclados abajo y el aviso está en z-50 contra el
+   * z-40 del flotante, así que el aviso lo tapaba por completo. Lo encontró
+   * Santiago el 2026-08-17.
+   *
+   * No es cosmético: el flotante es el elemento más pulsado del sitio en móvil
+   * —por eso existe— y el aviso se muestra durante las tres primeras páginas
+   * de cada visitante nuevo. La vía de contacto más usada quedaba oculta justo
+   * en la ventana en que alguien decide si escribe.
+   *
+   * Se comprueba contra el CÓDIGO FUENTE y el CSS, no contra dist/index.html:
+   * sin `PUBLIC_GA4_ID` el banner no se emite —regla de oro de medicion.ts— y
+   * un test que lo buscara en el HTML construido pasaría en verde por vacío en
+   * cada ejecución local y de CI.
+   */
+  const banner = readFileSync('src/components/ui/BannerCookies.astro', 'utf-8');
+  const flotante = readFileSync('src/components/ui/FlotanteWhatsApp.astro', 'utf-8');
+  const css = readFileSync('src/styles/global.css', 'utf-8');
+
+  it('el botón lleva la clase que lo desplaza', () => {
+    expect(flotante).toContain('flotante-whatsapp');
+  });
+
+  it('el CSS sube el botón por encima del aviso, sin taparlo', () => {
+    expect(css).toContain('html.aviso-cookies-visible .flotante-whatsapp');
+    expect(css).toContain('var(--alto-aviso)');
+    // La alternativa mala: subir el z-index del flotante lo pondría sobre el
+    // texto del aviso y podría tapar «Rechazar» y «Entendido».
+    expect(flotante).toContain('z-40');
+  });
+
+  it('la altura se mide después de mostrar el aviso, no antes', () => {
+    // Con el elemento `hidden`, offsetHeight es 0 y el botón no se movería.
+    //
+    // Se compara contra la LLAMADA `ajustarFlotante()`, no contra la
+    // definición de la función: la definición va arriba del bloque y la
+    // primera versión de este test la encontraba a ella, fallando con el
+    // código correcto. El orden que importa es el de ejecución.
+    const iMostrar = banner.indexOf('banner.hidden = false');
+    const iLlamada = banner.indexOf('ajustarFlotante();');
+    expect(iMostrar).toBeGreaterThan(-1);
+    expect(iLlamada, 'no se llama a ajustarFlotante()').toBeGreaterThan(-1);
+    expect(iLlamada).toBeGreaterThan(iMostrar);
+  });
+
+  it('la altura se recalcula al cambiar el ancho de la ventana', () => {
+    // En móvil el texto ocupa más líneas y el aviso crece. Una constante
+    // habría cuadrado en un solo tamaño de pantalla.
+    expect(banner).toContain("addEventListener('resize', ajustarFlotante)");
+  });
+
+  it('el botón vuelve a su sitio cuando se decide', () => {
+    expect(banner).toContain("classList.remove('aviso-cookies-visible')");
+  });
+});

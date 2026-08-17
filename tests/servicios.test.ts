@@ -72,6 +72,25 @@ describe('páginas de servicio', () => {
     expect(decodeURIComponent(html)).toContain('tengo un computador dañado');
   });
 
+  /*
+   * RETIE se menciona SIEMPRE condicionado. Santiago confirmó el 2026-08-16
+   * que se cumple «cuando el cliente lo exige», que no es lo mismo que tener
+   * un sello permanente. «Instalaciones certificadas RETIE» a secas sería una
+   * afirmación de cumplimiento regulatorio que nadie ha respaldado, y de las
+   * más caras que se pueden publicar: un cliente institucional la exige por
+   * escrito el día que audita.
+   *
+   * Si algún día se confirma una certificación propia, este test se cambia a
+   * propósito. Lo que no puede pasar es que la condición se caiga al reescribir
+   * un párrafo.
+   */
+  it('nunca reclama certificación RETIE sin condicionarla', () => {
+    const html = readFileSync('dist/servicios/instalaciones-electricas/index.html', 'utf-8');
+    expect(html).toContain('Cuando el proyecto lo exige');
+    expect(html).not.toMatch(/instalaciones certificadas RETIE/i);
+    expect(html).not.toMatch(/somos RETIE|certificados? RETIE/i);
+  });
+
   it('alquiler habla de alquiler y no de redes (CONT-01)', () => {
     const html = readFileSync('dist/servicios/alquiler-de-computadores/index.html', 'utf-8');
     expect(html).toContain('por contrato');

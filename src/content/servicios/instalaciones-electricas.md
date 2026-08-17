@@ -12,12 +12,17 @@ orden: 5
 # «instalaciones eléctricas Medellín» no encontraba nada, y el detalle vivía
 # enterrado dentro de la página de redes de datos.
 #
-# NO se reclama certificación RETIE ni matrícula CONTE en ninguna parte, porque
-# a la fecha de escribir esto no está confirmado si MiPC las tiene o si el
-# trabajo se ejecuta con un tercero que las tenga. Describir obra ejecutada es
-# un hecho; afirmar un cumplimiento regulatorio sin confirmarlo es de las cosas
-# más caras que se pueden publicar. Si la certificación existe, añadirla aquí
-# es un diferenciador fuerte — pero solo cuando esté confirmada.
+# Sobre RETIE, y la redacción es deliberada. Santiago confirmó el 2026-08-16:
+# «cumplimos con RETIE cuando el cliente lo exige». Eso NO es lo mismo que
+# tener un sello permanente, así que la página dice exactamente eso —«cuando el
+# proyecto lo exige»— y en ningún sitio dice «instalaciones certificadas
+# RETIE», que sería una afirmación general que nadie ha respaldado.
+#
+# Pendiente de revisión legal, por quien vio /garantias/: en Colombia el RETIE
+# no siempre queda a criterio del contratante. Para instalaciones nuevas,
+# ampliaciones y modificaciones conectadas a la red, el dictamen de inspección
+# lo pide la norma. Si eso se confirma, esta redacción se queda corta y hay que
+# cambiarla — pero hacia decir MÁS, no menos.
 beneficios:
   - Puntos regulados en circuito propio, separados de los comerciales
   - Tomas trifásicas con polo a tierra para equipo industrial
@@ -34,6 +39,8 @@ faq:
     respuesta: "Sí, y es un encargo distinto. Mover un servicio que está operando —una acometida, un teléfono de ascensor— exige planificar la ventana en que se puede desconectar, no el montaje. Lo hemos ejecutado en un edificio con público dentro."
   - pregunta: ¿Qué iluminación instalan?
     respuesta: "La que corresponda al espacio. En bodega, lámparas UFO de alta potencia, que es lo que cubre mucha área con pocos puntos y techos altos. En comercio, LED, reflectores y spots dirigidos en riel orientable sobre la zona de atención."
+  - pregunta: ¿Las instalaciones cumplen RETIE?
+    respuesta: "Cuando el proyecto lo exige, la instalación se entrega cumpliendo RETIE. Conviene decirlo en la cotización y no a mitad de la obra, porque cambia el alcance y el costo del trabajo: es de esas cosas que salen mucho más baratas previstas desde el principio que resueltas al final."
   - pregunta: ¿Trabajan en alturas?
     respuesta: "Sí, con arnés, casco y equipo de protección. Para un cliente institucional la seguridad del contratista es parte del cumplimiento que le van a auditar a él, no a nosotros."
 ---
@@ -124,3 +131,16 @@ funcionando mientras tanto.
 Fachadas, postes y cubiertas se atienden con **arnés, casco y equipo de
 protección**. Para un cliente institucional eso no es un detalle: es parte del
 cumplimiento que le van a auditar **a él**.
+
+## RETIE, cuando el proyecto lo exige
+
+**Cuando el proyecto exige certificación RETIE, la instalación se entrega
+cumpliéndola.**
+
+Vale la pena plantearlo al cotizar y no a mitad de la obra. El cumplimiento
+cambia el alcance del trabajo y su costo, y es de esas cosas que salen mucho más
+baratas previstas desde el principio que resueltas al final, con la instalación
+ya hecha y el espacio a punto de abrir.
+
+Si no sabes si tu obra lo exige, dilo igual cuando nos escribas: es una pregunta
+que conviene resolver antes de tender el primer cable.

@@ -55,7 +55,7 @@ export const fotosPorServicio: Record<string, FotoServicio[]> = {
       src: fotoFachadaAlturas,
       alt:
         'Dos técnicos de MiPC Tecnología con arnés de seguridad instalan cableado en la ' +
-        'fachada interior de una nave industrial, uno sobre una escalera y otro en una plataforma elevada',
+        'fachada interior de una bodega industrial, uno sobre una escalera y otro en una plataforma elevada',
       pie: 'Cableado en fachada industrial, con arnés de seguridad',
     },
     {
@@ -78,8 +78,8 @@ export const fotosPorServicio: Record<string, FotoServicio[]> = {
       src: fotoEscaleraAlturas,
       alt:
         'Dos técnicos con casco y arnés de seguridad instalan una tubería de conducción ' +
-        'para cableado en el interior de una nave industrial, uno en lo alto de una escalera y otro sosteniendo el tramo inferior',
-      pie: 'Instalación de canalización para cableado en una nave industrial',
+        'para cableado en el interior de una bodega industrial, uno en lo alto de una escalera y otro sosteniendo el tramo inferior',
+      pie: 'Instalación de canalización para cableado en una bodega industrial',
     },
     {
       src: fotoTechoInterior,

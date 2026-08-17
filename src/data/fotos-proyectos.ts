@@ -106,8 +106,8 @@ export const fotosPorProyecto: Record<string, FotoProyecto[]> = {
       src: globalCanalizacion,
       alt:
         'Tubería metálica de canalización y ducto galvanizado tendidos bajo una placa de ' +
-        'concreto reticular en la nave industrial',
-      pie: 'Canalización bajo la placa reticular de la nave',
+        'concreto reticular en la planta industrial',
+      pie: 'Canalización bajo la placa reticular de la planta',
     },
   ],
 

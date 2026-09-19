@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import { redirecciones } from './src/data/redirecciones.ts';
+import { reglasDesplegadas } from './src/data/redirecciones.ts';
 
 /**
  * Escribe dist/_redirects (formato Cloudflare Pages) desde el hook
@@ -25,7 +25,7 @@ function redirectsIntegration() {
     hooks: {
       /** @param {{ dir: URL }} args */
       'astro:build:done': ({ dir }) => {
-        const lineas = redirecciones.map((r) => `${r.de} ${r.a} 301`);
+        const lineas = reglasDesplegadas().map((r) => `${r.de} ${r.a} 301`);
         writeFileSync(new URL('_redirects', dir), lineas.join('\n') + '\n');
       },
     },

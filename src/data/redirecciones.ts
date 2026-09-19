@@ -45,6 +45,21 @@ export const redirecciones: Array<{ de: string; a: string; ejemplo?: string }> =
   { de: '/amazon-anuncia-la-adquisicion-de-la-empresa-de-tecnologia-cuantica-psiquantum/', a: '/blog/' },
   { de: '/google-anuncia-actualizaciones-de-sus-productos-de-realidad-virtual-y-aumentada/', a: '/blog/' },
 
+  // Restos de la tienda WooCommerce del WordPress. No estaban en ningún
+  // sitemap —de ahí que la verificación del 2026-08-14 no los viera— y
+  // aparecieron el 2026-09-19 mirando en GA4 qué páginas de entrada reales
+  // responden 404: `/shop` recibió 23 sesiones en 35 días y la ficha de un
+  // monitor, una.
+  //
+  // Van a `/servicios/` y no a `/`: quien tiene guardada la tienda es un
+  // cliente buscando qué vende MiPC, y el listado de servicios es la página
+  // que más se parece a esa intención. MiPC ya no vende producto suelto, así
+  // que no hay un destino exacto; mandarlo a la portada sería perder lo poco
+  // que se sabe de lo que venía a hacer.
+  { de: '/shop', a: '/servicios/' },
+  { de: '/shop/*', a: '/servicios/', ejemplo: '/shop/monitores/' },
+  { de: '/monitor-aoc-24b30hm2', a: '/servicios/' },
+
   { de: '/category/uncategorized/', a: '/blog/' },
   { de: '/author/santiago-martinezmipc-com-co/', a: '/' },
   { de: '/wp-sitemap.xml', a: '/sitemap-index.xml' },
@@ -66,3 +81,38 @@ export const redirecciones: Array<{ de: string; a: string; ejemplo?: string }> =
     ejemplo: '/wp-content/uploads/2023/05/imagen-de-prueba.jpg',
   },
 ];
+
+/**
+ * Las reglas tal como se despliegan: cada una, más su variante SIN barra
+ * final.
+ *
+ * POR QUÉ HACE FALTA. Cloudflare solo normaliza la barra final de rutas que
+ * existen. `/servicios` responde 307 a `/servicios/` porque `/servicios/`
+ * existe; pero `/experiencia` da 404 seco, porque lo que existe es una regla
+ * de redirección y no una página, y la regla estaba escrita solo con barra.
+ *
+ * Comprobado en producción el 2026-09-19: las DIECISIETE reglas fallaban sin
+ * la barra. `/experiencia/` bien, `/experiencia` 404. `/home/contacto/` bien,
+ * `/home/contacto` 404 —y esa recibió cuatro sesiones reales en 35 días—.
+ *
+ * Importa porque la forma sin barra es la que más se copia a mano: al dictar
+ * una dirección, al pegarla en una conversación, al teclearla. El mapa cubría
+ * justo la variante que menos se escribe.
+ *
+ * No se añade la variante si ya existe como origen propio, para no producir
+ * dos líneas con el mismo `de` —la segunda sería inalcanzable— ni contradecir
+ * una regla escrita a mano.
+ */
+export function reglasDesplegadas(): Array<{ de: string; a: string }> {
+  const origenes = new Set(redirecciones.map((r) => r.de));
+  const salida: Array<{ de: string; a: string }> = [];
+
+  for (const r of redirecciones) {
+    salida.push({ de: r.de, a: r.a });
+    const sinBarra = r.de.replace(/\/$/, '');
+    if (r.de.endsWith('/') && sinBarra && !origenes.has(sinBarra)) {
+      salida.push({ de: sinBarra, a: r.a });
+    }
+  }
+  return salida;
+}

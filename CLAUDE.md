@@ -26,12 +26,18 @@ Verificaciones contra producción, no contra el build:
 node --experimental-strip-types scripts/check-redirecciones.mjs https://mipc.com.co
 node scripts/check-dns.mjs
 node scripts/gsc.mjs propiedades   # Search Console por API, sin dependencias
+node scripts/ga4.mjs asistentes    # GA4 por API: tráfico de asistentes de IA
 ```
 
-`gsc.mjs` necesita credenciales de cuenta de servicio en `~/.config/mipc/gsc.json`
-(o `$GSC_CREDENCIALES`), nunca dentro del repositorio. **Empezar siempre por
-`gsc.mjs dias`**: un pico anómalo distorsiona todos los promedios y en un total
-mensual no se ve.
+`gsc.mjs` y `ga4.mjs` comparten las MISMAS credenciales de cuenta de servicio,
+en `~/.config/mipc/gsc.json` (o `$GSC_CREDENCIALES`), nunca dentro del
+repositorio. **Empezar siempre por `gsc.mjs dias`**: un pico anómalo distorsiona
+todos los promedios y en un total mensual no se ve.
+
+**Antes de citar cualquier cifra global de GA4, descontar el tráfico directo.**
+Son 1.618 sesiones de 250 usuarios con una media de 2,3 segundos: una carga
+automática, no visitantes. Es el 94% de las sesiones de la propiedad y falsea
+todo promedio del sitio. Ver `medicion-ga4-asistentes-ia-2026-09-19.md`.
 
 Node 22 (`.nvmrc`). CI corre `npm run verify` en cada push (`.github/workflows/verificar.yml`).
 
@@ -156,6 +162,9 @@ existe `mensajeWhatsApp` en el esquema.
   **nunca lanzada**. Lleva su propia corrección al principio.
 - `medicion-ga4-pagina-de-inicio.md` — cómo mide GA4 y el asunto de
   `mipctecnologia.com`.
+- `medicion-ga4-asistentes-ia-2026-09-19.md` — el canal de los asistentes de IA,
+  medido. Y el hallazgo que obliga a releer toda cifra de GA4: el tráfico
+  directo no es tráfico.
 - `revision-legal-garantias.md` — **abierto**. El articulado de `/garantias/` es
   una adaptación de un texto mexicano; «días naturales» está exento del test de
   español porque cambiarlo altera un plazo legal. Lo decide un abogado.

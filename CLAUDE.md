@@ -183,6 +183,20 @@ conversiones instrumentada, huecos de schema, FAQ a 5 o más por servicio
   *(El vencimiento del dominio que ese documento daba como urgente ya está
   resuelto: se renovó el 2026-08-23 y expira en 2028.)*
 
+  **El dominio no lo administra MiPC: lo organiza su dueño** (confirmado el
+  2026-09-19). O sea que ni el arreglo ni su fecha dependen de este equipo, y
+  no tiene sentido volver a plantear «entramos al panel y lo cambiamos». Lo
+  que sí depende de aquí es **comprobarlo**, porque nadie va a avisar cuando
+  se haga y porque un `301` mal puesto —a `app.mipc.com.co`, a `/index.php` o
+  en cadena— se ve igual de bien desde fuera que uno correcto:
+
+  ```bash
+  curl -sI https://mipctecnologia.com/ | head -3
+  ```
+
+  Tiene que responder `301` y `location: https://mipc.com.co/`. Mientras diga
+  `302`, o apunte a cualquier otra cosa, sigue roto.
+
 ### Pendiente
 
 - **La campaña de Ads nunca se lanzó.** La ventana fijada era 2026-09-15 →

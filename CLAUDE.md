@@ -35,9 +35,12 @@ repositorio. **Empezar siempre por `gsc.mjs dias`**: un pico anómalo distorsion
 todos los promedios y en un total mensual no se ve.
 
 **Antes de citar cualquier cifra global de GA4, descontar el tráfico directo.**
-Son 1.618 sesiones de 250 usuarios con una media de 2,3 segundos: una carga
-automática, no visitantes. Es el 94% de las sesiones de la propiedad y falsea
-todo promedio del sitio. Ver `medicion-ga4-asistentes-ia-2026-09-19.md`.
+Son 1.618 sesiones de 250 usuarios, el 94% de la propiedad, con media de 2,3
+segundos y el 90% entrando por `/`. **No son bots**: el pico horario está entre
+las 7 y las 9 de la mañana y de madrugada no hay casi nada. Son los equipos de
+clientes que llevan el sitio puesto como página de inicio del navegador. Gente
+real que no decidió visitar. Falsean todo promedio del sitio. Ver
+`pagina-de-inicio-en-equipos-de-clientes.md`.
 
 Node 22 (`.nvmrc`). CI corre `npm run verify` en cada push (`.github/workflows/verificar.yml`).
 
@@ -165,6 +168,9 @@ existe `mensajeWhatsApp` en el esquema.
 - `medicion-ga4-asistentes-ia-2026-09-19.md` — el canal de los asistentes de IA,
   medido. Y el hallazgo que obliga a releer toda cifra de GA4: el tráfico
   directo no es tráfico.
+- `pagina-de-inicio-en-equipos-de-clientes.md` — si la práctica de dejar el
+  sitio como página de inicio al formatear sirve o no. Respuesta corta: como
+  recuerdo de marca sí, como canal no, y cuesta la medición del negocio.
 - `revision-legal-garantias.md` — **abierto**. El articulado de `/garantias/` es
   una adaptación de un texto mexicano; «días naturales» está exento del test de
   español porque cambiarlo altera un plazo legal. Lo decide un abogado.

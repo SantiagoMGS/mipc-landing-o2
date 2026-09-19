@@ -1,5 +1,20 @@
 # Asistentes de IA en GA4 — primera medición
 
+> **CORRECCIÓN (2026-09-19, mismo día).** Más abajo este documento llama al
+> tráfico directo «una carga automática, no visitantes». **Es falso y manda
+> esta corrección.** Al mirar la hora del día aparece el patrón contrario:
+> 2 sesiones a las 2 a.m. y 198 a las 8 a.m., con pico entre las 7 y las 9 y
+> caída sostenida durante la tarde. Un proceso automático no duerme de
+> madrugada. Son **personas reales encendiendo el computador**, que es
+> justamente lo que predice la práctica de dejar el sitio como página de
+> inicio del navegador al formatear un equipo.
+>
+> Lo que sí se sostiene del cuerpo: esas sesiones duran 2,3 segundos, el 90%
+> entra por `/` y no representan a nadie que haya decidido visitar el sitio.
+> Siguen falseando cualquier promedio global y siguen habiendo que excluirse.
+> Lo que cambia es **qué son**: no ruido de máquina, sino impresiones de marca
+> forzadas. Ver `docs/pagina-de-inicio-en-equipos-de-clientes.md`.
+
 **Fecha:** 2026-09-19
 **Periodo:** 2026-08-16 (corte de dominio) → 2026-09-19
 **Método:** API de datos de GA4, propiedad `550105266`, vía `scripts/ga4.mjs`.

@@ -70,7 +70,21 @@ const jsonld = [
         </div>
         <div>
           <dt class="font-semibold">Cobertura</dt>
-          <dd class="text-tinta-2">{empresa.zonaServicio.join(' · ')}</dd>
+          <dd class="text-tinta-2">
+            {empresa.zonaServicio.join(' · ')}
+            {/* Rionegro NO está en `empresa.zonaServicio` y se nombra aparte a
+                propósito. Esa lista es la cobertura declarada del negocio y
+                tiene que coincidir con la ficha de Google —ver empresa.ts—,
+                así que no se amplía desde aquí. Pero hay tres obras
+                ejecutadas en el municipio, y callarlo en la única página
+                donde alguien viene a mirar si le cubrimos sería peor que la
+                asimetría. Cuando la ficha incluya el Oriente, esto se
+                simplifica. */}
+            <span class="mt-2 block">
+              También trabajamos en el Oriente:
+              <a class="font-semibold text-senal-oscuro" href="/rionegro/">Rionegro</a>.
+            </span>
+          </dd>
         </div>
       </dl>
 

@@ -80,6 +80,21 @@ export function service(opts: {
    * hay que interpretar; en `offers` es un dato con moneda.
    */
   oferta?: { nombre: string; precio: number; descripcion?: string };
+  /**
+   * Municipios de `areaServed`, cuando no son los de `empresa.zonaServicio`.
+   *
+   * Existe para las páginas de cobertura. `zonaServicio` es la cobertura
+   * declarada del negocio y tiene que coincidir con la ficha de Google —ver
+   * empresa.ts—, así que no se toca desde aquí. Pero una página dedicada a un
+   * municipio concreto necesita decir de qué municipio habla, y repetirle al
+   * buscador los seis del Valle de Aburrá en una página sobre Rionegro es
+   * decirle lo contrario de lo que la página dice.
+   *
+   * Solo se declara si hay obra ejecutada allí que la página muestre. Un
+   * `areaServed` sin proyecto detrás es una promesa de cobertura sin nada que
+   * la sostenga.
+   */
+  zona?: readonly string[];
 }) {
   return {
     '@context': 'https://schema.org',
@@ -88,7 +103,7 @@ export function service(opts: {
     description: opts.descripcion,
     url: opts.url,
     provider: { '@type': 'LocalBusiness', '@id': ID_NEGOCIO, name: empresa.nombre },
-    areaServed: empresa.zonaServicio.map((z) => ({ '@type': 'City', name: z })),
+    areaServed: (opts.zona ?? empresa.zonaServicio).map((z) => ({ '@type': 'City', name: z })),
     ...(opts.oferta
       ? {
           offers: {

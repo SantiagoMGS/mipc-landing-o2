@@ -1,0 +1,219 @@
+---
+/**
+ * Página de cobertura de Rionegro.
+ *
+ * Es la ÚNICA página de municipio del sitio, y está aquí por una razón
+ * concreta: al precisar el campo `lugar` de los doce proyectos —2026-09-19—
+ * aparecieron tres obras en Rionegro, dos de ellas en la misma vereda. Es el
+ * mayor grupo fuera de Medellín y el único municipio con material suficiente
+ * para escribir algo que no sea una plantilla.
+ *
+ * Ver docs/serp-barrios-vs-ciudad-2026-09-19.md: lo que hace rendir a la
+ * página de Laureles no es que diga «Laureles», es que dice por dónde se
+ * entra al taller. La regla que sale de ahí es que un lugar merece página
+ * cuando hay algo cierto y específico que contar de él. Rionegro lo cumple
+ * —cubierta metálica, aleros, estructura de madera vista—; los otros cuatro
+ * municipios del inventario, hoy, no.
+ *
+ * NO clonar este archivo cambiando el nombre del municipio. Sin obra propia
+ * detrás, la copia es contenido duplicado con un topónimo distinto, que es
+ * exactamente lo que ese documento dice que no hay que hacer.
+ */
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Marcador from '../components/ui/Marcador.astro';
+import Boton from '../components/ui/Boton.astro';
+import { breadcrumb, service } from '../lib/jsonld';
+import { fotosPorProyecto } from '../data/fotos-proyectos';
+import { empresa } from '../data/empresa';
+
+// Los proyectos NO se listan a mano: se filtran por el municipio del campo
+// `lugar`, que desde 2026-09-19 tiene formato «Barrio, Municipio» validado en
+// schemas.ts. Así, el día que entre una cuarta obra en Rionegro aparece aquí
+// sola, y el día que se corrija un lugar mal puesto, desaparece sola.
+const enRionegro = (await getCollection('proyectos'))
+  .filter((p) => p.data.lugar.split(',').pop()!.trim() === 'Rionegro')
+  .sort((a, b) => b.data.anio - a.data.anio);
+
+const url = new URL('/rionegro/', Astro.site).href;
+
+const jsonld = [
+  breadcrumb([
+    { nombre: 'Inicio', url: new URL('/', Astro.site).href },
+    { nombre: 'Rionegro', url },
+  ]),
+  service({
+    nombre: 'Cámaras, redes e instalaciones eléctricas en Rionegro',
+    descripcion:
+      'Videovigilancia, cableado de red e instalaciones eléctricas en fincas, ' +
+      'construcciones campestres y predios rurales del Oriente antioqueño, ' +
+      'ejecutadas en sitio.',
+    url,
+    zona: ['Rionegro'],
+  }),
+];
+---
+<Base
+  title="Cámaras y Redes en Rionegro y Llano Grande | MiPC Tecnología"
+  metaDescription="Videovigilancia, redes e instalaciones eléctricas en fincas y construcciones del Oriente antioqueño. Obra ejecutada en Llano Grande y Don Diego, Rionegro."
+  mensajeWhatsApp="Hola, necesito una instalación en Rionegro"
+  {jsonld}
+>
+  <div class="mx-auto max-w-3xl px-5 pt-16">
+    <Marcador texto="Cobertura" />
+    <h1 class="mt-4 text-4xl font-semibold">
+      Cámaras, redes e instalaciones eléctricas en Rionegro
+    </h1>
+    <p class="mt-6 text-lg text-tinta-2">
+      El taller está en Laureles, en Medellín. En Rionegro no hay mostrador: el
+      trabajo se hace en sitio, y conviene decirlo antes que después.
+    </p>
+  </div>
+
+  <div class="prose prose-neutral mx-auto max-w-3xl px-5 py-14">
+    <p>
+      Hemos ejecutado tres obras en el municipio —dos en <strong>Llano Grande</strong>
+      y una en <strong>Don Diego</strong>, camino de La Fe—, y las tres tienen algo
+      en común que no es casualidad: <strong>en ninguna había dónde esconder la
+      instalación</strong>. Una cubierta metálica sin cielo raso, los aleros de una
+      casa de campo, una estructura de madera vista. Son tres versiones del mismo
+      problema, y es un problema que en una oficina de la ciudad no existe.
+    </p>
+
+    <h2>Por qué una construcción campestre no se cablea como una oficina</h2>
+
+    <p>
+      En una oficina, el cielo raso resuelve casi todo: la canalización sube,
+      cruza por encima y baja donde toca. Nadie la ve, así que nadie discute por
+      dónde va. En el Oriente esa comodidad rara vez está, y de ahí salen cuatro
+      reglas que en la ciudad casi nunca hacen falta.
+    </p>
+
+    <p>
+      <strong>La canalización a la vista es un acabado, no un trabajo técnico.</strong>
+      Cuando la estructura de madera es lo que se ve, el tubo forma parte de la
+      arquitectura para siempre. Un recorrido paralelo a una viga desaparece a los
+      dos días; el mismo tubo en diagonal se ve durante toda la vida de la
+      construcción. Cuesta lo mismo: solo hay que decidirlo antes de taladrar.
+    </p>
+
+    <p>
+      <strong>La cubierta no se perfora.</strong> Colgar un equipo de una lámina es
+      la manera más rápida de tener una gotera justo encima de la instalación en la
+      primera temporada de lluvias. Los soportes van sobre la estructura —columnas,
+      perfilería—, que es donde hay dónde anclar de verdad.
+    </p>
+
+    <p>
+      <strong>La intemperie decide dónde va la cámara.</strong> Lo que envejece una
+      cámara de exterior no es el uso: es la lluvia directa y el sol de mediodía.
+      Por eso en una casa de campo el alero no es un detalle estético, es el sitio
+      donde el equipo dura años en vez de meses.
+    </p>
+
+    <p>
+      <strong>La altura está reglamentada.</strong> En un criadero o una bodega
+      agropecuaria hay mucha altura libre y ningún punto de anclaje pensado para
+      trabajar. El trabajo en alturas exige personal certificado, con arnés de
+      cuerpo completo y eslinga anclada a estructura. No es un detalle de imagen:
+      quien permite subir a alguien sin certificación en su predio responde por lo
+      que pase ahí. Los certificados se pueden pedir antes de contratar, y vale la
+      pena pedirlos.
+    </p>
+
+    <h2>Perímetro grande, gente poca</h2>
+
+    <p>
+      El problema de una propiedad rural casi nunca es la falta de cámaras. Es que
+      hay mucho que cubrir y pocas personas para mirarlo: el acceso, el parqueadero
+      y las zonas cubiertas quedan lejos unos de otros, y desde la casa no se ve
+      ninguno.
+    </p>
+
+    <p>
+      Por eso en Llano Grande el sistema termina en un <strong>monitor dedicado con
+      las vistas en vivo</strong>, no solo en un grabador. Es la diferencia entre un
+      sistema de grabación y un sistema de vigilancia: si hay que sentarse a buscar
+      en el historial, se usa <em>después</em> de que pasó algo; si la imagen está a
+      la vista, se usa <em>mientras</em> está pasando.
+    </p>
+
+    <h2>Qué no hacemos en Rionegro</h2>
+
+    <p>
+      Conviene ser claro, porque ahorra un viaje: <strong>la reparación de
+      computadores se atiende en el taller de Laureles</strong>, no en sitio. Si el
+      equipo se puede mover, lo mejor es traerlo. Lo que sí se hace en el Oriente es
+      la obra: cámaras, cableado de red, instalaciones eléctricas y las visitas de
+      mantenimiento que esos sistemas necesitan después.
+    </p>
+
+    <p>
+      Y una advertencia honesta sobre los tiempos: Rionegro no está a la vuelta de
+      la esquina del taller. Una visita se programa; no es una salida de la misma
+      mañana. Para una urgencia real de un equipo suelto, casi siempre es más rápido
+      traerlo a Medellín que esperar a que suba un técnico.
+    </p>
+  </div>
+
+  <section class="mx-auto max-w-6xl px-5 pb-16">
+    <Marcador texto="Obra ejecutada" />
+    <h2 class="mt-4 text-3xl font-semibold">Lo que hemos hecho en el municipio</h2>
+    <p class="mt-2 max-w-prose text-tinta-2">
+      Con fotografía de la instalación tal como quedó.
+    </p>
+
+    <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {enRionegro.map((p) => {
+        const foto = fotosPorProyecto[p.id]?.[0];
+        return (
+          <li>
+            <a
+              href={`/proyectos/${p.id}/`}
+              class="canto group flex h-full flex-col overflow-hidden bg-acero transition-colors hover:bg-[#1c303a]"
+            >
+              {foto && (
+                <div class="aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={foto.src}
+                    alt={foto.alt}
+                    widths={[400, 800]}
+                    sizes="(max-width: 640px) 100vw, 380px"
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </div>
+              )}
+              <div class="flex flex-1 flex-col gap-2 p-6">
+                <span class="cifra text-[0.6875rem] uppercase tracking-[0.16em] text-white/50">
+                  {p.data.sector} · {p.data.anio}
+                </span>
+                <h3 class="text-xl font-semibold text-white">{p.data.cliente}</h3>
+                <p class="text-sm leading-relaxed text-white/70">{p.data.titulo}</p>
+                <p class="cifra mt-auto pt-3 text-xs text-white/50">{p.data.lugar}</p>
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+
+    <div class="mt-12 border border-borde bg-superficie p-8">
+      <h2 class="text-2xl font-semibold">¿Tienes una obra en el Oriente?</h2>
+      <p class="mt-3 max-w-prose text-tinta-2">
+        Cuéntanos qué hay que cubrir y cómo es la construcción —cubierta, altura,
+        si la instalación va a quedar a la vista—. Con eso se puede cotizar sin
+        adivinar. También atendemos por teléfono al
+        <a class="font-semibold text-senal-oscuro" href={`tel:${empresa.telefonoE164}`}>
+          {empresa.telefono}
+        </a>.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <Boton href="/contacto/">Solicitar cotización</Boton>
+        <Boton href="/servicios/camaras-de-seguridad/" variante="borde">Ver cámaras de seguridad</Boton>
+      </div>
+    </div>
+  </section>
+</Base>

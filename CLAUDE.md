@@ -171,7 +171,9 @@ existe `mensajeWhatsApp` en el esquema.
   directo no es tráfico.
 - `bing-e-indexnow-2026-09-19.md` — por qué Bing importa aunque su tráfico no,
   qué se verificó allí y cómo funciona `indexnow.mjs`. Incluye por qué «cero
-  citaciones de IA» no dice lo que parece.
+  citaciones de IA» no dice lo que parece, y el cierre del asunto de las URL de
+  spam del WordPress comprometido: **no están indexadas y no hay que
+  redirigirlas**.
 - `pagina-de-inicio-en-equipos-de-clientes.md` — si la práctica de dejar el
   sitio como página de inicio al formatear sirve o no. Respuesta corta: como
   recuerdo de marca sí, como canal no, y cuesta la medición del negocio.

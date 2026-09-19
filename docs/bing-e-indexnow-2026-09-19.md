@@ -134,7 +134,68 @@ medio rotar.
    páginas. No está automatizado a propósito: el build corre en Cloudflare,
    antes de que el sitio esté vivo, y automatizarlo ahí sería anunciar lo que
    todavía no se sirve.
-4. **Las URL de spam ruso del WordPress viejo.** Unas veinte rutas de
-   2021–2022 sobre casinos y apuestas aparecen todavía como páginas de entrada
-   en GA4. Hoy responden 404, que es lo correcto. Falta comprobar si Google o
-   Bing las conservan indexadas bajo este dominio.
+4. **Los enlaces que apuntan a las URL de spam.** Ver el apartado siguiente:
+   las URL no están indexadas, pero algo sigue pidiéndolas. La sección de
+   Backlinks de Bing lo diría y está vacía hasta que pasen las 48 horas.
+
+## Las URL de spam del WordPress viejo: resueltas
+
+Unas veinte rutas de 2021–2022 sobre casinos y apuestas —`/2022/02/25/как-взять-деньги-у-1xbet…`—
+seguían apareciendo como páginas de entrada en GA4. Confirman que **el
+WordPress estuvo comprometido** y sirvió esas páginas bajo el dominio de MiPC.
+
+**No están indexadas. Ni en Google ni en Bing.** Comprobado el 2026-09-19:
+
+| Buscador | Método | Resultado |
+|---|---|---|
+| Google | API de inspección de URL, las 19 | `URL is unknown to Google` |
+| Google | URL de control `/servicios/camaras-de-seguridad/` | `Submitted and indexed` |
+| Bing | Inspección de URL en Webmaster Tools | `Not discovered` |
+
+La URL de control importa: sin ella, un «desconocida» en las diecinueve podría
+significar que la medición no funciona, no que las URL no estén.
+
+### El paso que casi invalida la comprobación
+
+Las rutas que devuelve GA4 **parecen cortadas a mitad de palabra**
+(`…как-взять-в-долг-на-1xbe`). Si el corte fuera de GA4, preguntarle a Google
+por una URL incompleta daría «desconocida» siempre y la respuesta no valdría
+nada.
+
+No lo es. Las longitudes percent-encoded se apiñan entre **202 y 211
+caracteres**, doce de diecinueve entre 207 y 211. Restando el prefijo de fecha
+—`/2022/02/25/`, doce caracteres— quedan **199**: el límite de `post_name` en
+WordPress, que es `VARCHAR(200)`.
+
+**Las cortó WordPress al crearlas.** Son las URL reales y completas.
+
+Regla general que deja este caso: **antes de concluir de una medición, hay que
+comprobar que el dato de entrada no viene mutilado por la herramienta que lo
+entregó.** GA4 trunca rutas largas; aquí dio la casualidad de que no.
+
+### Quién las sigue pidiendo
+
+Origen de esas 20 sesiones, sin excepción:
+
+| | |
+|---|---|
+| Fuente | `(direct)` — 20 |
+| País | **Singapur** — 20 |
+| Navegador | Chrome — 20 |
+
+Un único origen, un único país, sin referente: **un rastreador automatizado
+desde un centro de datos**, trabajando sobre una lista vieja de URL de las que
+circulan entre redes de spam. No son personas ni buscadores.
+
+### Qué hacer: nada
+
+Las URL responden 404, que es la respuesta correcta para algo que ya no existe.
+
+**Redirigirlas sería peor.** Convertiría un 404 limpio —«esto no existe»— en un
+301 —«esto se mudó aquí»—, que es afirmar que las páginas de casinos son
+antecesoras legítimas de las de MiPC. Si alguien propone «arreglarlas» en el
+futuro, esta es la razón de no hacerlo.
+
+Lo único que queda abierto es si existen **enlaces externos** apuntando a esas
+rutas, que es lo que explicaría que un rastreador las conserve en su lista.
+Eso se mira en Backlinks cuando Bing termine de procesar.

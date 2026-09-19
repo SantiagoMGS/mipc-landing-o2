@@ -5,7 +5,7 @@ metaTitle: Canalización industrial en La Estrella | MiPC Tecnología
 metaDescription: Canalización metálica bajo placa reticular y tableros de distribución terminados para la planta industrial de Global, en el municipio de La Estrella.
 cliente: Global
 sector: Industria
-lugar: La Estrella, Antioquia
+lugar: La Estrella
 anio: 2025
 servicios:
   - instalaciones-electricas

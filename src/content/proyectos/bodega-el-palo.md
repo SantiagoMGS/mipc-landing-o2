@@ -5,7 +5,7 @@ metaTitle: Instalación eléctrica de bodega en Medellín | MiPC Tecnología
 metaDescription: Tomas trifásicas con polo a tierra, salida 110V, iluminación UFO, cableado de red y cámaras para una bodega en adecuación en el centro de Medellín.
 cliente: Bodega El Palo
 sector: Logística y bodegaje
-lugar: Centro de Medellín
+lugar: Centro, Medellín
 anio: 2025
 servicios:
   - redes-de-datos

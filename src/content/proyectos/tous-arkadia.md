@@ -5,7 +5,7 @@ metaTitle: Red y CCTV para tiendas TOUS | MiPC Tecnología
 metaDescription: Estándar de 19 enlaces de red, videovigilancia y acompañamiento de apertura, replicado en diecinueve tiendas TOUS del país desde Arkadia, Medellín.
 cliente: TOUS
 sector: Retail — joyería
-lugar: C.C. Arkadia, Medellín — y dieciocho tiendas más en el país
+lugar: C.C. Arkadia, Medellín
 anio: 2025
 servicios:
   - redes-de-datos

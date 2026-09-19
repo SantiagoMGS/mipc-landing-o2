@@ -110,7 +110,41 @@ export const esquemaProyecto = z.object({
   ...seo,
   cliente: z.string(),
   sector: z.string(),
-  lugar: z.string(),
+  /**
+   * Dónde se ejecutó, en el formato `Barrio, Municipio` —o solo `Municipio`
+   * cuando no se sabe el barrio ni la vereda—. Sin departamento y sin país:
+   * los doce proyectos están en Antioquia, así que escribirlo no distingue
+   * nada, y «La Estrella, Antioquia» ocupa el sitio donde debería ir el dato
+   * que sí informa.
+   *
+   * Las restricciones existen porque el campo fue `z.string()` libre hasta el
+   * 2026-09-19 y llegó a tener cuatro formatos a la vez, incluido uno que era
+   * prosa: «C.C. Arkadia, Medellín — y dieciocho tiendas más en el país». Ese
+   * añadido era cierto y valioso, pero `lugar` se imprime como una línea
+   * suelta bajo la tarjeta del proyecto y dentro de una lista de definiciones
+   * —ver proyectos/index.astro y proyectos/[id].astro—, donde una frase
+   * entera desborda. El dato sigue publicado donde corresponde: en
+   * `resultado` y en el cuerpo del proyecto.
+   *
+   * Lo que NO se valida, a propósito: que el municipio exista. Una lista
+   * blanca habría que ampliarla cada vez que la empresa trabaje en un
+   * municipio nuevo, y quien la ampliara sería justo quien tiene prisa. El
+   * formato se puede comprobar; la verdad del dato, no.
+   */
+  lugar: z
+    .string()
+    .trim()
+    .min(1, 'Un proyecto sin lugar no ancla nada')
+    .max(40, 'Un lugar es corto. Si necesita más, lo que sobra va en `resultado`.')
+    .refine((l) => !/\b(antioquia|colombia)\s*$/i.test(l), {
+      message: 'Sobra el departamento o el país: el formato es «Barrio, Municipio».',
+    })
+    .refine((l) => l.split(',').length <= 2, {
+      message: 'Máximo una coma: el formato es «Barrio, Municipio».',
+    })
+    .refine((l) => !/[—–;]/.test(l), {
+      message: 'Esto es prosa, no un lugar. Lo que sobra va en `resultado` o en el cuerpo.',
+    }),
   anio: z.number().int().min(2009, 'La empresa se fundó en 2009').max(2030),
   /** Slugs de `src/content/servicios/`. tests/proyectos.test.ts comprueba que existen. */
   servicios: z.array(z.string()).min(1, 'Un proyecto sin servicio asociado no se puede clasificar'),

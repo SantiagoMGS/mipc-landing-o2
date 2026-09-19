@@ -5,7 +5,7 @@ metaTitle: Canalización sobre estructura de madera | MiPC Tecnología
 metaDescription: Canalización, iluminación y puntos eléctricos tendidos sobre la estructura de madera de una edificación, sin intervenir la cubierta existente.
 cliente: Don Diego
 sector: Construcción y adecuación
-lugar: Antioquia
+lugar: Don Diego, Rionegro
 anio: 2025
 servicios:
   - instalaciones-electricas

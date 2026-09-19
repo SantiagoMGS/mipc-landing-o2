@@ -5,7 +5,7 @@ metaTitle: Cámaras en exteriores de finca | MiPC Tecnología
 metaDescription: Videovigilancia en exteriores para una propiedad rural, con cámaras bajo alero, cableado protegido y monitor con la vista en vivo de los accesos.
 cliente: Los Panes
 sector: Propiedad rural
-lugar: Antioquia
+lugar: Llano Grande, Rionegro
 anio: 2024
 servicios:
   - camaras-de-seguridad

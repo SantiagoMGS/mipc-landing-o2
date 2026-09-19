@@ -5,7 +5,7 @@ metaTitle: Cámaras en criadero agropecuario | MiPC Tecnología
 metaDescription: Instalación de cámaras de seguridad bajo cubierta metálica en un criadero agropecuario, con trabajo en altura ejecutado con arnés y eslinga.
 cliente: Criadero Gente Buena
 sector: Agropecuario
-lugar: Antioquia
+lugar: Llano Grande, Rionegro
 anio: 2025
 servicios:
   - camaras-de-seguridad

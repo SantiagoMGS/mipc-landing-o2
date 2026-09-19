@@ -97,24 +97,59 @@ hiciera. Está hecho.
 
 ---
 
+---
+
+## Verificación de las etiquetas sobre el sitio en vivo
+
+Hecha el **2026-09-19**, el mismo día, disparando los eventos a mano en
+`https://mipc.com.co/` y leyendo las peticiones de red del navegador.
+
+**Resultado: dos de los tres eventos quedan verificados de extremo a extremo.**
+
+| Evento | Se dispara | Llega a GA4 | Se envía a Ads |
+|---|---|---|---|
+| `clic_whatsapp` | ✅ | ✅ | ✅ |
+| `clic_telefono` | ✅ | ✅ | ✅ |
+| conversión de formulario | **sin probar** | — | — |
+
+Lo que se observó en la petición, que es más de lo que diría un «sí»:
+
+- El consentimiento va concedido (`gcs=G111`), así que el banner no estaba
+  bloqueando nada en esa sesión.
+- Los eventos viajan con sus parámetros: `ep.metodo=whatsapp` / `telefono` y
+  `ep.origen=/`.
+- Salen a **los dos destinos**: `analytics.google.com/g/collect` con
+  `tid=G-S7TNWFZT72`, y `google.com/ccm/collect` con `tid=AW-18393725809`.
+- Confirmado en **GA4 → Informes en tiempo real**, que registró `clic_whatsapp`
+  y `clic_telefono` en el minuto siguiente.
+
+**Aviso sobre un falso positivo de método.** Las peticiones de medición se
+envían con `sendBeacon`, y el observador de red del navegador las reportó como
+`503` o como `pending` **aunque habían llegado correctamente**. Leer esos
+códigos como un fallo lleva a concluir que la instrumentación está rota cuando
+no lo está. **La autoridad es el informe en tiempo real de GA4, no el código de
+estado.**
+
+La conversión del formulario no se probó porque un envío de prueba llega al
+buzón real de la empresa; queda como tarea con dueño humano.
+
+---
+
 ## Lo que queda por hacer, en orden
 
-1. **Verificar los tres eventos con Tag Assistant** sobre `mipc.com.co`. Sin
-   esto, lanzar es pagar por clics que no se sabe medir.
-   - `clic_whatsapp` — pulsar el botón flotante
-   - `clic_telefono` — pulsar el teléfono de la cabecera
-   - conversión de formulario — enviar el formulario y llegar a `/gracias/`.
-     **Ojo: un envío de prueba llega al buzón real.** Identificarlo como prueba
-     en el mensaje.
+1. **Probar la conversión del formulario**: enviarlo y llegar a `/gracias/`,
+   comprobando que disparan `generate_lead` y `conversion` con el `send_to` de
+   Ads. **Un envío de prueba llega al buzón real**: identificarlo como prueba en
+   el mensaje.
 2. **Leer el detalle de la acción de conversión mejorada con «urgent issues»**,
    que hoy no se pudo ver.
-3. **Lanzar la campaña.** La anomalía que lo bloqueaba está cerrada y la ventana
-   se está consumiendo sola.
+3. **Lanzar la campaña.** La anomalía que lo bloqueaba está cerrada, dos de los
+   tres eventos están verificados y la ventana se está consumiendo sola.
 
 ## Lo que sigue sin saberse
 
 - **Qué problema concreto tiene la acción de conversión mejorada.**
-- **Si las etiquetas disparan de verdad**, que es el punto 1 de arriba.
+- **Si la conversión del formulario dispara**, que es el punto 1 de arriba.
 - Las dos tasas que gobiernan la rentabilidad —clic→contacto y contacto→taller—
   siguen siendo estimaciones sin un dato detrás, y lo seguirán siendo hasta que
   la campaña corra. Es el motivo por el que la campaña existe.

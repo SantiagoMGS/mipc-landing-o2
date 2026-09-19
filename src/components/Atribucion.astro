@@ -20,25 +20,32 @@
  * resuelve el problema.
  *
  * POR QUÉ TAMBIÉN GUARDA EL REFERENTE. Hasta el 2026-09-19 esto solo escribía
- * algo si la URL traía `gclid` o `utm_*`, o sea si la visita venía de una
- * campaña propia. Todo lo demás llegaba al correo del formulario con las dos
- * filas vacías: orgánico, directo y —el que importa— las recomendaciones de
- * asistentes de IA.
+ * algo si la URL traía `gclid` o `utm_*`. El 2026-09-19 entró una clienta que
+ * dijo haber llegado porque le describió a ChatGPT su necesidad de redes y
+ * cámaras y le nombró a MiPC.
  *
- * Esa semana entró una clienta que dijo haber llegado porque le preguntó a
- * ChatGPT por redes y cámaras y le nombró a MiPC. Es el canal que mejor está
- * funcionando y era el único que no se medía: se supo por haberle preguntado
- * a ella, no por el sistema. Ahora se guarda el HOST del referente
- * —`chatgpt.com`, `perplexity.ai`, `google.com`—, que es lo que distingue
- * esos contactos de los directos.
+ * CUIDADO CON LA LECTURA FÁCIL DE ESE CASO. ChatGPT **sí etiqueta** los
+ * enlaces que muestra: les añade `utm_source=chatgpt.com`, y `utm_source` ya
+ * estaba en `CAMPOS`. Así que un clic desde una cita de ChatGPT ya se veía,
+ * y se seguiría viendo sin este cambio. El referente NO viene a arreglar eso.
+ *
+ * Viene a cubrir lo que queda fuera:
+ *
+ *  - Los asistentes que no etiquetan. Perplexity, Claude o Copilot mandan
+ *    referente pero no siempre parámetros.
+ *  - Cualquier sitio que hable de MiPC sin ser una campaña: un directorio, un
+ *    foro, un proveedor que enlace.
+ *
+ * Y LO QUE NO ARREGLA NADA DE ESTO, que es el caso más valioso: cuando el
+ * asistente NOMBRA a la empresa sin dar un enlace y la persona escribe el
+ * dominio o lo busca. Ahí no hay clic, no hay parámetro y no hay referente:
+ * la visita es indistinguible de una directa. Es justo la forma más fuerte
+ * de esta recomendación y es estructuralmente invisible para la analítica.
+ * Por eso la pregunta «¿cómo nos encontró?» no la sustituye ninguna medición.
  *
  * Solo el host, nunca la dirección completa: la ruta de un referente puede
  * llevar el texto de la consulta que escribió la persona, y eso no hace
  * falta para saber de qué canal viene.
- *
- * Lo que sigue sin verse: los asistentes que no envían referente. Un contacto
- * sin `referente` no es un contacto directo, es un contacto de origen
- * desconocido, y conviene seguir preguntando «¿cómo nos encontró?».
  *
  * POR QUÉ NO ESPERA AL CONSENTIMIENTO. Esto no es medición de terceros: son
  * los parámetros que el propio visitante trae en la URL con la que llega, se

@@ -104,13 +104,13 @@ hiciera. Está hecho.
 Hecha el **2026-09-19**, el mismo día, disparando los eventos a mano en
 `https://mipc.com.co/` y leyendo las peticiones de red del navegador.
 
-**Resultado: dos de los tres eventos quedan verificados de extremo a extremo.**
+**Resultado: los tres eventos quedan verificados de extremo a extremo.**
 
 | Evento | Se dispara | Llega a GA4 | Se envía a Ads |
 |---|---|---|---|
 | `clic_whatsapp` | ✅ | ✅ | ✅ |
 | `clic_telefono` | ✅ | ✅ | ✅ |
-| conversión de formulario | **sin probar** | — | — |
+| `generate_lead` + `conversion` | ✅ | ✅ | ✅ **con etiqueta** |
 
 Lo que se observó en la petición, que es más de lo que diría un «sí»:
 
@@ -130,26 +130,47 @@ códigos como un fallo lleva a concluir que la instrumentación está rota cuand
 no lo está. **La autoridad es el informe en tiempo real de GA4, no el código de
 estado.**
 
-La conversión del formulario no se probó porque un envío de prueba llega al
-buzón real de la empresa; queda como tarea con dueño humano.
+### La conversión del formulario
+
+Probada con un envío real, autorizado expresamente por Santiago el 2026-09-19 y
+marcado como prueba en el cuerpo del mensaje. Recorrido completo:
+
+1. `/contacto/` → el formulario se envía a Web3Forms
+2. Redirección correcta a **`/gracias/`**, que es lo que demuestra que
+   `PUBLIC_WEB3FORMS_KEY` es válida — con una clave mala Web3Forms devuelve
+   error y el visitante nunca llega ahí
+3. En `/gracias/` disparan **`generate_lead`** (`ep.metodo=formulario`) hacia
+   GA4 y **`conversion`** hacia Ads
+
+**La conversión de Ads viaja con su etiqueta**: `label=Z2j9COSs6OIcEPH258JE`
+sobre `AW-18393725809`, contra `googleadservices.com/pagead/conversion/`, que
+respondió `200`. Es decir, **`PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` está puesta y
+las dos mitades del identificador llegan completas**, que era justamente el modo
+de fallo silencioso descrito en `.env.example`: con una sola mitad no se
+registra nada y tampoco da error.
+
+Las peticiones llevan además `ec_mode=a` y `em=tv.1`, señal de que las
+**conversiones mejoradas** están activas. Es la función a la que se refiere el
+aviso de «urgent issues» del panel de diagnóstico.
+
+GA4 en tiempo real registró la secuencia entera: `form_start`, `form_submit`,
+`generate_lead`, `page_view` en las dos páginas.
 
 ---
 
 ## Lo que queda por hacer, en orden
 
-1. **Probar la conversión del formulario**: enviarlo y llegar a `/gracias/`,
-   comprobando que disparan `generate_lead` y `conversion` con el `send_to` de
-   Ads. **Un envío de prueba llega al buzón real**: identificarlo como prueba en
-   el mensaje.
+1. **Lanzar la campaña.** No queda nada bloqueándolo: el gasto es cero
+   confirmado, la anomalía de `Paid Search` está cerrada y los tres eventos
+   están verificados. La ventana del 2026-09-15 al 2026-10-06 lleva cuatro días
+   consumiéndose sin que sirva ningún anuncio.
 2. **Leer el detalle de la acción de conversión mejorada con «urgent issues»**,
-   que hoy no se pudo ver.
-3. **Lanzar la campaña.** La anomalía que lo bloqueaba está cerrada, dos de los
-   tres eventos están verificados y la ventana se está consumiendo sola.
+   que hoy no se pudo ver. No bloquea el lanzamiento: las conversiones mejoradas
+   afinan la atribución, no la condicionan.
 
 ## Lo que sigue sin saberse
 
 - **Qué problema concreto tiene la acción de conversión mejorada.**
-- **Si la conversión del formulario dispara**, que es el punto 1 de arriba.
 - Las dos tasas que gobiernan la rentabilidad —clic→contacto y contacto→taller—
   siguen siendo estimaciones sin un dato detrás, y lo seguirán siendo hasta que
   la campaña corra. Es el motivo por el que la campaña existe.

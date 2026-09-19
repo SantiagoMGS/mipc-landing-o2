@@ -5,4 +5,16 @@ dist/
 .superpowers/
 .DS_Store
 *.log
+
+# Credenciales de la cuenta de servicio de Search Console. El script las lee de
+# ~/.config/mipc/gsc.json, FUERA del repositorio; esto es solo la red por si
+# alguna copia acaba en el árbol de trabajo.
+#
+# La primera línea es el nombre exacto del archivo que descarga Google Cloud,
+# porque es el que aparece en la carpeta de descargas y el que alguien copiaría
+# aquí sin pensarlo. Los dos patrones de abajo NO lo cubren —el nombre que pone
+# Google es <proyecto>-<id de clave>.json, sin «gsc» ni «service-account»
+# dentro—, así que las tres líneas hacen falta y ninguna sobra.
 coral-sanctuary-505815-r2-13d341015388.json
+gsc*.json
+*-service-account*.json

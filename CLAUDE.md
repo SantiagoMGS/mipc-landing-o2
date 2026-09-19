@@ -25,7 +25,13 @@ Verificaciones contra producción, no contra el build:
 ```bash
 node --experimental-strip-types scripts/check-redirecciones.mjs https://mipc.com.co
 node scripts/check-dns.mjs
+node scripts/gsc.mjs propiedades   # Search Console por API, sin dependencias
 ```
+
+`gsc.mjs` necesita credenciales de cuenta de servicio en `~/.config/mipc/gsc.json`
+(o `$GSC_CREDENCIALES`), nunca dentro del repositorio. **Empezar siempre por
+`gsc.mjs dias`**: un pico anómalo distorsiona todos los promedios y en un total
+mensual no se ve.
 
 Node 22 (`.nvmrc`). CI corre `npm run verify` en cada push (`.github/workflows/verificar.yml`).
 
@@ -142,29 +148,88 @@ existe `mensajeWhatsApp` en el esquema.
   por prioridades. Es el mapa de lo que falta.
 - `verificacion-produccion.md` — lo que se midió en vivo tras el corte.
 - `despliegue-corte-dominio.md` — el procedimiento del corte.
+- `medicion-search-console-2026-09-19.md` — primera lectura de orgánico tras el
+  corte, y la línea base contra la que comparar.
+- `planificador-palabras-clave-medellin.md` — **el techo del canal pagado,
+  medido**. Léelo antes de proponer cualquier cosa sobre Google Ads.
+- `campana-reparacion-especificacion.md` — la campaña, lista para montar y
+  **nunca lanzada**. Lleva su propia corrección al principio.
+- `medicion-ga4-pagina-de-inicio.md` — cómo mide GA4 y el asunto de
+  `mipctecnologia.com`.
 - `revision-legal-garantias.md` — **abierto**. El articulado de `/garantias/` es
   una adaptación de un texto mexicano; «días naturales» está exento del test de
   español porque cambiarlo altera un plazo legal. Lo decide un abogado.
 
-## Estado a 2026-09-18
+Varios de estos documentos llevan una corrección al principio que **contradice
+su propio cuerpo**. No es descuido: el cuerpo se conserva como registro de lo
+que se creyó, y la corrección manda. Leer siempre el aviso de arriba antes que
+el contenido.
+
+## Estado a 2026-09-19
 
 Cerrado: corte de dominio (17/17 redirecciones en 301), medición de
-conversiones, huecos de schema, FAQ a 5 o más por servicio (reparación tiene 13).
+conversiones instrumentada, huecos de schema, FAQ a 5 o más por servicio
+(reparación tiene 13), línea base de Search Console registrada.
 
-Pendiente, del plan de `diagnostico-seo-geo-ads.md`:
+### Vivo y roto ahora mismo
 
-- **Dos servicios siguen por debajo del objetivo de 700–900 palabras de
-  cuerpo**: `alquiler-de-computadores` (461) y `camaras-de-seguridad` (599).
-  Los otros cuatro van de 803 a 1.861. Medir siempre el cuerpo sin frontmatter
-  —`awk 'BEGIN{n=0} /^---$/{n++; next} n>=2' archivo.md | wc -w`— porque el
-  conteo del archivo entero incluye las FAQ y da una cifra el doble de grande.
-- **Páginas por municipio** — ninguna. Se declara cobertura en seis municipios y
-  «cámaras de seguridad Envigado» no tiene dónde aterrizar. Cada una debe
-  anclarse a un proyecto real hecho ahí; si un municipio no tiene proyecto, no
-  se le crea página.
-- **Blog a medias** — tres entradas de ~815 palabras de cuerpo y tres que
-  siguen en ~130. El objetivo del plan es 1.200+.
-- **Sin reseñas citadas** y sin página de autor (`article()` firma como
-  `Organization`). No añadir `AggregateRating` autodeclarado.
+- **`mipctecnologia.com` redirige a un dominio que no existe.** Es la página de
+  inicio de Chrome de cientos de equipos de clientes, puesta ahí durante años al
+  formatear. Hoy responde `302` a `https://app.mipc.com.co`, que es `NXDOMAIN`:
+  cada mañana esos clientes ven una pantalla de error con la marca de MiPC
+  encima. Comprobado el 2026-09-19, sigue roto un mes después de detectarse.
+  Arreglo: `301` a `https://mipc.com.co/` en el panel de Hostinger, fuera de
+  este repositorio. Ver `medicion-ga4-pagina-de-inicio.md`.
+  *(El vencimiento del dominio que ese documento daba como urgente ya está
+  resuelto: se renovó el 2026-08-23 y expira en 2028.)*
+
+### Pendiente
+
+- **La campaña de Ads nunca se lanzó.** La ventana fijada era 2026-09-15 →
+  2026-10-06 y ya empezó; hay que confirmar si está sirviendo. Antes de lanzar
+  queda por cerrar una anomalía: GA4 registró 10 sesiones de `Paid Search` con
+  la campaña sin publicar, y hasta explicarlas no se puede dar por hecho que el
+  gasto es cero.
+- **Nadie ha comprobado que las conversiones lleguen a Ads.** Toda la Prioridad
+  1 del diagnóstico se construyó para eso. Que la etiqueta cargue y que la
+  conversión se registre son cosas distintas.
+- **Se está perdiendo la consulta de marca**: `mipc` en posición 6,2. Hay cinco
+  resultados por delante para el propio nombre, coherente con las entidades
+  homónimas que documenta `empresa.ts`. Sigue sin haber **ninguna reseña**
+  citada pese a la ficha verificada; es la palanca más barata que queda.
+- **Consultas objetivo en posición 13–22.** El contenido las puso en el tablero,
+  pero página 2 no recibe clics. Si no se mueven con más texto, el problema es
+  autoridad, no extensión.
+- **Blog y proyectos son invisibles** (57 y 20 impresiones, cero clics). Tres
+  entradas siguen en ~130 palabras de cuerpo frente al objetivo de 1.200.
+- **Dos servicios por debajo del objetivo de 700–900 palabras de cuerpo**:
+  `alquiler-de-computadores` (461) y `camaras-de-seguridad` (599). Medir el
+  cuerpo sin frontmatter —`awk 'BEGIN{n=0} /^---$/{n++; next} n>=2' archivo.md | wc -w`—
+  porque el conteo del archivo entero incluye las FAQ y casi lo duplica.
+- **Páginas por municipio: sigue sin decidirse.** Search Console da cero
+  impresiones para Envigado, Sabaneta, Itagüí, Bello y La Estrella, pero eso
+  significa «no tenemos visibilidad ahí», **no** «no hay demanda»: solo informa
+  de consultas en las que el sitio apareció. El Planificador midió **solo
+  Medellín**, así que tampoco lo responde. Lo que sí aporta es contexto en
+  contra: si toda la intención de servicio en Medellín son 1.500–3.000 búsquedas
+  al mes, en municipios mucho más pequeños queda poco que capturar.
 - **Imágenes de proyecto sin comprimir** — 3,6 MB, con un WebP de 616 KB.
 - **Core Web Vitals nunca medidos con datos de campo.**
+
+### Dos cosas que no hay que volver a suponer
+
+- **Google Ads no puede llenar el taller.** El mercado medido da 8–15 equipos al
+  mes, un 7–15% de la capacidad de dos técnicos. Es un complemento. Cualquier
+  plan que dependa de que la pauta llene la capacidad ociosa está mal fundado.
+- **Los «+70 clientes» no son una base de contactos.** Son las empresas
+  atendidas desde 2009 y con la mayoría ya no hay relación. Un documento de
+  estrategia supuso lo contrario y construyó sobre eso su recomendación
+  principal, que era inejecutable.
+
+### Irrecuperable
+
+**No se sabrá si la migración conservó el posicionamiento del WordPress.** La
+propiedad de Search Console se creó el 2026-08-13, tres días antes del corte, y
+el WordPress nunca estuvo conectado. La señal de fallo nº 1 del diagnóstico es
+inevaluable; las otras tres siguen en pie. Para la próxima migración: dar de
+alta la propiedad es trabajo **previo** al corte.

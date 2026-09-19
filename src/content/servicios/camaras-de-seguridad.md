@@ -54,6 +54,26 @@ momento en que más probable es que pase algo.
 Todo en un solo mueble, identificado, significa además que el mantenimiento no
 es una búsqueda por el local.
 
+## Cuántos días de grabación vas a tener
+
+Es la pregunta que casi nadie hace antes de firmar y la única que importa el día
+que hay que revisar algo.
+
+Los días que guarda un sistema no son una característica del grabador: son el
+resultado de tres cosas **multiplicadas entre sí** — cuántas cámaras graban, a
+qué resolución lo hacen y qué capacidad tiene el disco del NVR. Subir la
+resolución de todas las cámaras sin tocar el disco recorta los días de
+grabación, aunque no lo parezca y aunque nadie avise.
+
+Por eso el almacenamiento **se dimensiona en el diseño, no al final**.
+Dimensionarlo al final es lo que deja sistemas que guardan tres días: suficiente
+para que nadie lo note en la instalación, insuficiente para el robo que se
+descubre el lunes.
+
+Antes de aprobar un diseño, pide que te digan **cuántos días de grabación vas a
+tener** con las cámaras y la resolución que se van a instalar. Es un número, y
+quien diseñó bien el sistema lo tiene.
+
 ## Qué más va en el mismo sistema
 
 - **Control de acceso** a puertas y áreas restringidas.
@@ -61,6 +81,26 @@ es una búsqueda por el local.
 - **Contador de personas**, que en retail no es seguridad sino medición: cuánta
   gente entra frente a cuánta compra.
 - **Video portero** en propiedad horizontal y unidades residenciales.
+
+## Propiedad horizontal: todo depende de por dónde va el cable
+
+En un edificio que ya está habitado, la instalación no la decide el equipo sino
+la canalización. **Si la canalización existente sirve, el trabajo se hace en
+horas. Si no sirve, se convierte en obra** — con permisos de administración,
+intervención de zonas comunes y otro presupuesto.
+
+En un edificio residencial de **Laureles** cambiamos el citófono de audio por un
+video portero: estación exterior en el acceso, monitor interior en el
+apartamento y apertura de puerta integrada en el mismo equipo, con el cableado
+llevado por la canalización existente para no romper zonas comunes.
+
+El citófono de audio resuelve la mitad del problema. Deja identificar por voz
+—y la voz se imita, se tapa y se confunde por un altavoz barato— pero no deja
+ver a quién se le abre.
+
+Si administras una copropiedad, esa es la pregunta que conviene resolver antes
+de pedir cotizaciones: **por dónde pasaría el cable**. Cambia el precio, el
+plazo y si hace falta o no convocar a la asamblea.
 
 ## Personal certificado en trabajo en alturas
 

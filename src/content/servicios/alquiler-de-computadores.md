@@ -54,6 +54,38 @@ Sirve para crecimientos temporales de personal, proyectos con fecha de cierre, o
 para no inmovilizar capital en equipos que se deprecian desde el día que se
 compran.
 
+## Alquilar o comprar: la cuenta que suele faltar
+
+La comparación que casi todo el mundo hace es el costo del alquiler durante tres
+años contra el precio de compra. **Casi siempre gana la compra, y casi siempre
+esa cuenta está incompleta.**
+
+Lo que falta no es difícil de ver, solo es incómodo de presupuestar:
+
+- **Qué pasa cuando un equipo falla.** Quién lo repara, con qué prioridad y
+  cuánto tiempo está esa persona sin poder trabajar. Una semana de un empleado
+  parado cuesta más que varios meses de canon.
+- **Quién se ocupa del mantenimiento.** Si no hay área de TI, alguien termina
+  haciéndolo a medias, y ese alguien suele ser el que menos debería.
+- **Qué se hace con el equipo cuando ya no sirve.** La depreciación no aparece
+  en la factura de compra, pero llega igual.
+
+No es un argumento para alquilar siempre. Es un argumento para hacer la cuenta
+completa.
+
+## Cuándo conviene alquilar, y cuándo no
+
+**Alquilar tiene sentido** cuando el crecimiento de personal es temporal, cuando
+el proyecto tiene fecha de cierre, cuando no quieres inmovilizar capital en un
+activo que se deprecia desde el primer día, o cuando no tienes quien se ocupe
+del mantenimiento y la reposición.
+
+**Comprar tiene sentido** cuando el equipo es estable en el tiempo, cuando hay
+quien lo mantenga y cuando la inversión inicial no compromete el flujo de caja.
+
+Lo decimos así de claro porque preferimos no alquilarte algo que no necesitas:
+un contrato que no encaja se nota a los tres meses y nadie queda contento.
+
 ## Equipo corporativo, no de vitrina
 
 Los equipos son **de gama empresarial, repotenciados y revisados por nosotros**

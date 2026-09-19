@@ -5,7 +5,7 @@ metaTitle: Gabinete de red para una veterinaria | MiPC Tecnología
 metaDescription: Cableado estructurado categoría 6 y gabinete de red de pared con patch panel y switch para la operación de una clínica veterinaria.
 cliente: Veterinaria Rosales
 sector: Salud veterinaria
-lugar: Antioquia
+lugar: Belén Rosales, Medellín
 anio: 2021
 servicios:
   - redes-de-datos

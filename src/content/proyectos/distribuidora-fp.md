@@ -5,7 +5,7 @@ metaTitle: Mantenimiento de equipos en distribuidora | MiPC Tecnología
 metaDescription: Mantenimiento preventivo y correctivo del parque de computadores de Distribuidora FP, ejecutado en sitio para no sacar los equipos de la operación.
 cliente: Distribuidora FP
 sector: Distribución y comercio
-lugar: Antioquia
+lugar: Centro Empresarial Nortiko, Bello
 anio: 2025
 servicios:
   - soporte-ti-empresarial

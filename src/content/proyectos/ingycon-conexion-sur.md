@@ -5,7 +5,7 @@ metaTitle: Red corporativa con firewall y fibra | MiPC Tecnología
 metaDescription: Cableado categoría 6, switch de 48 puertos, enlace de fibra óptica y firewall Fortinet FortiGate para la sede del proyecto Conexión Sur de Ingycon.
 cliente: Ingycon — Ingeniería y Contratos
 sector: Ingeniería y construcción
-lugar: Antioquia
+lugar: La Tablaza, Caldas
 anio: 2021
 servicios:
   - redes-de-datos

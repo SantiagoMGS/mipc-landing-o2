@@ -178,16 +178,31 @@ diagnóstico sigue sin datos que la respalden ni que la descarten.
 
 ---
 
-## Lo que sigue sin respuesta
+## La pregunta que ya no se puede responder
 
-**¿Conservó la migración el posicionamiento del WordPress?** Sigue sin saberse.
-Hace falta una propiedad con histórico anterior al 2026-08-13 —típicamente una
-de prefijo de URL (`https://mipc.com.co/`) creada en tiempos del sitio viejo—.
-Si existe, basta darle acceso a la misma cuenta de servicio y `gsc.mjs`
-funciona contra ella con `--propiedad`.
+**¿Conservó la migración el posicionamiento del WordPress? No se sabrá nunca.**
 
-Si no existe, esa pregunta es irrecuperable: los datos no se pueden reconstruir
-hacia atrás. En ese caso la línea base pasa a ser esta medición.
+Comprobado el 2026-09-19 en el selector de propiedades de Search Console: bajo
+la cuenta propietaria (`santiago.martinez@mipc.com.co`) existe **una sola
+propiedad**, la de dominio creada el 2026-08-13. No hay ninguna de prefijo de
+URL, ni con `www` ni sin él, ni en `http` ni en `https`. Santiago confirma
+además que **el WordPress nunca se conectó a Search Console**.
+
+De modo que no hay datos anteriores al corte, y no los habrá: Google no guarda
+retroactivamente lo que nunca se le pidió medir. La señal de fallo nº 1 de
+`docs/diagnostico-seo-geo-ads.md` —«si a los 60 días hay menos impresiones que
+las que tenía WordPress»— **es inevaluable**, y conviene dejar de tratarla como
+pendiente.
+
+Esto no invalida el resto de aquel documento; invalida una sola de sus cuatro
+comprobaciones de fallo. Las otras tres siguen en pie y sí son medibles con
+esta propiedad.
+
+**Lección operativa, para la próxima migración:** dar de alta la propiedad de
+Search Console —y esperar a que acumule algunas semanas— es trabajo previo al
+corte, no posterior. Aquí se creó tres días antes, y esos tres días son toda la
+línea base que existió. Cuesta cinco minutos hacerlo con dos meses de
+antelación y no se puede recuperar después.
 
 ---
 

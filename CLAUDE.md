@@ -169,6 +169,9 @@ existe `mensajeWhatsApp` en el esquema.
 - `medicion-ga4-asistentes-ia-2026-09-19.md` — el canal de los asistentes de IA,
   medido. Y el hallazgo que obliga a releer toda cifra de GA4: el tráfico
   directo no es tráfico.
+- `bing-e-indexnow-2026-09-19.md` — por qué Bing importa aunque su tráfico no,
+  qué se verificó allí y cómo funciona `indexnow.mjs`. Incluye por qué «cero
+  citaciones de IA» no dice lo que parece.
 - `pagina-de-inicio-en-equipos-de-clientes.md` — si la práctica de dejar el
   sitio como página de inicio al formatear sirve o no. Respuesta corta: como
   recuerdo de marca sí, como canal no, y cuesta la medición del negocio.

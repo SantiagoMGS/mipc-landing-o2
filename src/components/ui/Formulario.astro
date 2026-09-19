@@ -101,6 +101,13 @@ const campo = 'w-full rounded-sm border border-borde bg-superficie px-3 py-2 tex
     // El resto, legible de un vistazo en el correo: quien atiende el contacto
     // ve de qué campaña viene sin abrir ninguna herramienta.
     var resto = [];
+
+    // El referente va PRIMERO porque es lo que se lee de un vistazo y porque
+    // es el único dato que aparece en un contacto sin campaña: es lo que
+    // distingue «vino de chatgpt.com» de un contacto directo. Ver
+    // Atribucion.astro para por qué se guarda solo el host.
+    if (datos.referente) resto.push('vino de: ' + datos.referente);
+
     Object.keys(datos).forEach(function (clave) {
       if (clave.indexOf('utm_') === 0) resto.push(clave.replace('utm_', '') + ': ' + datos[clave]);
     });

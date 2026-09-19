@@ -19,6 +19,27 @@
  * sobrevive al cierre del navegador. Es el almacenamiento más corto que
  * resuelve el problema.
  *
+ * POR QUÉ TAMBIÉN GUARDA EL REFERENTE. Hasta el 2026-09-19 esto solo escribía
+ * algo si la URL traía `gclid` o `utm_*`, o sea si la visita venía de una
+ * campaña propia. Todo lo demás llegaba al correo del formulario con las dos
+ * filas vacías: orgánico, directo y —el que importa— las recomendaciones de
+ * asistentes de IA.
+ *
+ * Esa semana entró una clienta que dijo haber llegado porque le preguntó a
+ * ChatGPT por redes y cámaras y le nombró a MiPC. Es el canal que mejor está
+ * funcionando y era el único que no se medía: se supo por haberle preguntado
+ * a ella, no por el sistema. Ahora se guarda el HOST del referente
+ * —`chatgpt.com`, `perplexity.ai`, `google.com`—, que es lo que distingue
+ * esos contactos de los directos.
+ *
+ * Solo el host, nunca la dirección completa: la ruta de un referente puede
+ * llevar el texto de la consulta que escribió la persona, y eso no hace
+ * falta para saber de qué canal viene.
+ *
+ * Lo que sigue sin verse: los asistentes que no envían referente. Un contacto
+ * sin `referente` no es un contacto directo, es un contacto de origen
+ * desconocido, y conviene seguir preguntando «¿cómo nos encontró?».
+ *
  * POR QUÉ NO ESPERA AL CONSENTIMIENTO. Esto no es medición de terceros: son
  * los parámetros que el propio visitante trae en la URL con la que llega, se
  * guardan solo en su navegador y salen de él únicamente si él mismo envía el
@@ -39,6 +60,23 @@
       'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
     ];
 
+    /**
+     * Host del sitio de procedencia, solo si es OTRO sitio.
+     *
+     * Un referente del propio dominio es navegación interna, y guardarlo
+     * pisaría la procedencia real en la segunda página que visite alguien.
+     */
+    function referenteExterno() {
+      if (!document.referrer) return '';
+      try {
+        var propio = location.hostname.replace(/^www\./, '');
+        var host = new URL(document.referrer).hostname.replace(/^www\./, '');
+        return host && host !== propio ? host.slice(0, 100) : '';
+      } catch (e) {
+        return '';
+      }
+    }
+
     try {
       var parametros = new URLSearchParams(location.search);
       var datos = {};
@@ -55,11 +93,19 @@
         }
       }
 
-      // Solo se escribe si la visita TRAE parámetros. Si no, navegar a una
-      // segunda página —que ya no los lleva en la URL— borraría la
-      // atribución de la entrada, que es exactamente el dato que se quiere.
-      if (!hay) return;
+      var referente = referenteExterno();
 
+      // Con parámetros de campaña se escribe siempre: es el dato más preciso
+      // y tiene que ganar.
+      //
+      // Sin ellos solo se escribe la PRIMERA vez, y solo si la visita viene
+      // de fuera. Las dos condiciones protegen lo mismo: que la procedencia
+      // guardada siga siendo la de la entrada. Sin la de `getItem`, llegar
+      // desde ChatGPT y luego salir a Google Maps y volver dejaría el
+      // contacto atribuido a Maps.
+      if (!hay && (!referente || sessionStorage.getItem(CLAVE))) return;
+
+      if (referente) datos.referente = referente;
       datos.pagina_entrada = location.pathname;
       sessionStorage.setItem(CLAVE, JSON.stringify(datos));
     } catch (e) {

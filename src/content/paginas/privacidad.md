@@ -46,11 +46,17 @@ en el formulario de contacto:
 | Mensaje | Entender qué necesitas y poder cotizarlo |
 
 Junto a esos datos, el formulario envía también **de dónde vino tu visita**:
-los parámetros que trae la dirección con la que llegaste al sitio cuando
-vienes de un anuncio o de una campaña (`gclid`, `utm_source` y similares) y la
-página por la que entraste. No dicen nada sobre ti —no identifican a una
-persona, identifican a un anuncio—, y nos sirven para saber qué publicidad
-merece la pena y cuál no.
+
+- Los parámetros que trae la dirección con la que llegaste al sitio cuando
+  vienes de un anuncio o de una campaña (`gclid`, `utm_source` y similares).
+- **El sitio desde el que llegaste**, y solo su nombre de dominio:
+  `google.com`, `chatgpt.com`, `facebook.com`. Nunca la dirección completa,
+  porque esa sí puede llevar dentro lo que escribiste en el buscador.
+- La página de este sitio por la que entraste.
+
+No dicen nada sobre ti —no identifican a una persona, identifican a un anuncio
+o a un canal—, y nos sirven para saber qué esfuerzo de difusión merece la pena
+y cuál no.
 
 Se guardan solo en tu navegador, durante esa sesión, y **salen de él
 únicamente si tú envías el formulario**. Si cierras la pestaña sin enviarlo,

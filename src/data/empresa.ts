@@ -59,6 +59,13 @@ export const empresa = Object.freeze({
    * Se escribe conservadora a propósito —el «+» hace el trabajo— para que
    * siga siendo cierta sin tener que tocarla cada año. Si algún día hay que
    * subirla, que sea porque el cliente da una cifra nueva, no por estimar.
+   *
+   * NO ES UNA BASE DE CONTACTOS. Aclarado por Santiago el 2026-08-18: son las
+   * empresas atendidas **en toda la historia** desde 2009, y con la mayoría ya
+   * no se mantiene contacto. Un documento de estrategia dio por hecho lo
+   * contrario y construyó sobre eso su recomendación principal —«una ronda a
+   * los 70 clientes, cuesta cero»—, que era inejecutable. Antigüedad no es
+   * relación viva.
    */
   empresasAtendidas: 70,
 

@@ -11,6 +11,32 @@ la decidirían no los tengo; están al final.
 
 ---
 
+> ## ⚠️ CORRECCIÓN DEL 2026-08-18, LEER ANTES QUE NADA
+>
+> **La recomendación principal de este documento —«la base instalada: una
+> ronda a los 70 contactos, cuesta cero y empieza mañana»— no es ejecutable, y
+> nunca lo fue.**
+>
+> Santiago aclaró que los «+70 empresas» son las atendidas **en toda la
+> historia desde 2009**, y que **con la mayoría ya no se mantiene contacto**.
+> No existe una lista de 70 relaciones vivas a las que llamar. El documento
+> leyó el dato de `empresa.ts` —pensado para dar credibilidad en la web— como
+> si fuera un CRM, y dedujo un canal que no existe. **Antigüedad no es relación
+> viva.**
+>
+> Lo que sigue siendo válido: el análisis competitivo, el diagnóstico de por
+> qué reparación a particulares es lenta y cara, y la corrección de que Ads no
+> tiene que esperar al contenido. Lo que hay que descartar: la sección «Lo que
+> haría primero, y cuesta cero» y el punto 1 de la recomendación final.
+>
+> **Consecuencia:** desaparece la alternativa barata que hacía de la pauta un
+> complemento. Quedan dos caminos, los dos con costo: la campaña de reparación
+> a particulares, y el mantenimiento de flotas B2B —que sigue siendo la jugada
+> de más valor por técnico, pero ahora necesita conseguir prospectos desde
+> cero, no reactivar conocidos.
+
+---
+
 ## Respuesta corta
 
 > **El instinto es correcto. El canal probablemente no es el más rápido.**
@@ -137,8 +163,9 @@ se lo come.
 
 ## Recomendación
 
-1. **Esta semana:** ronda a los 70 clientes de la base instalada. Cero costo,
-   cero dependencia técnica, empieza mañana.
+1. ~~**Esta semana:** ronda a los 70 clientes de la base instalada.~~
+   **DESCARTADO el 2026-08-18** — no existe tal base de contactos. Ver la
+   corrección al principio del documento.
 2. **En paralelo:** campaña de reparación con presupuesto pequeño, en cuanto
    estén los cuatro prerrequisitos. Como **prueba medida**, no como apuesta.
 3. **A cuatro semanas:** el trabajo de contenido de la auditoría, que es lo que

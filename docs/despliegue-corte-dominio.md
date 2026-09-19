@@ -179,13 +179,14 @@ plan de conservar el WordPress recuperable 60 días sigue intacto.
       declara los cuatro almacenamientos como `denied` por defecto, y los
       eventos `clic_whatsapp`, `clic_telefono`, `generate_lead` y la captura de
       `gclid` están en las páginas construidas.
-- [ ] **Eventos clave en GA4.** Marcar `clic_whatsapp` y `clic_telefono` en
+- [x] **Eventos clave en GA4, marcados el 2026-08-16 e importados a Ads el
+      2026-08-18.** Marcar `clic_whatsapp` y `clic_telefono` en
       Administrar → Eventos clave. Sin eso Ads solo verá formularios, que son
       la minoría de los contactos, y optimizará contra la señal equivocada.
       **Ojo:** la medición mejorada registra los clics a WhatsApp también como
       `click` genérico, porque `wa.me` es dominio externo; el que hay que
       marcar es `clic_whatsapp`, no `click`.
-- [ ] **Cuenta de Google Ads creada el 2026-08-16: `230-212-2952`**, a nombre de
+- [x] **Cuenta de Google Ads creada el 2026-08-16: `230-212-2952`**, a nombre de
       `santiago.martinez@mipc.com.co` —la misma que creó GA4, que es lo que
       permite vincularlas sin permisos cruzados—. País Colombia, zona horaria
       GMT-05:00 y **moneda COP** (ninguna de las dos se puede cambiar después;
@@ -212,6 +213,11 @@ plan de conservar el WordPress recuperable 60 días sigue intacto.
       puntos—. Google no pide el NIT al crear el perfil, solo al facturar, y una
       factura electrónica ya emitida sin NIT es mucho más trabajo de corregir.
       El bono de 350 US$ vence el **2026-10-15**.
+
+      **Cerrado el 2026-08-18:** medio de pago permanente puesto e información
+      fiscal cargada y **Aceptada** por Google —NIT `901401211-7` (Google lo
+      muestra concatenado, `9014012117`), régimen fiscal Empresa, régimen común
+      sí, sin fecha de caducidad—. La cuenta ya puede lanzar campañas.
 - [ ] **Google Ads: medición.** Acción de conversión creada el 2026-08-16:
       categoría *Envío de formulario para clientes potenciales*, fuente sitio
       web, evento manual, **recuento «Una conversión»**, ventana post-clic 90
@@ -222,6 +228,11 @@ plan de conservar el WordPress recuperable 60 días sigue intacto.
       PUBLIC_GOOGLE_ADS_ID = AW-18393725809
       PUBLIC_GOOGLE_ADS_CONVERSION_LABEL = Z2j9COSs6OIcEPH258JE
       ```
+
+      **Puestas y verificadas contra producción el 2026-08-16**: `/gracias/`
+      sirve `envioConversion = "AW-18393725809/Z2j9COSs6OIcEPH258JE"`, con la
+      etiqueta íntegra y bien unida al identificador. La conversión de
+      formulario dejó de estar inerte.
 
       La etiqueta de la conversión **no está** en el bloque de la etiqueta base
       que la interfaz muestra primero: hay que abrir *Ver fragmento de evento*,
@@ -255,8 +266,11 @@ plan de conservar el WordPress recuperable 60 días sigue intacto.
       tomarla a sabiendas y con el criterio legal correcto: Colombia se rige por
       la Ley 1581 de 2012, que no exige el consentimiento previo para analítica
       igual que el RGPD. Vale la pena que lo mire quien revisó `/garantias/`.
-- [ ] **Conservación de datos en GA4.** Viene en 2 meses. Subirla a 14 en
-      Administrar → Configuración de datos. No es retroactivo.
+- [x] **Conservación de datos en GA4: subida a 14 meses el 2026-08-18.**
+      Venía en 2. El camino exacto —la interfaz está en inglés— es
+      *Admin → Data collection and modification → **Data retention** → Event
+      data*. El de *User data* ya estaba en 14 y *Reset on new user activity*
+      activado. No es retroactivo: lo que GA4 ya borró no vuelve.
 - [ ] **`www` → 301.** Hoy `www.mipc.com.co` responde 200 con el mismo
       contenido. El `canonical` ya apunta al raíz, así que Google consolida,
       pero un 301 ahorra rastreo. Se hace con una Redirect Rule de Cloudflare,
@@ -375,9 +389,40 @@ Configuración correcta —confirmada en el proyecto real de Workers el 2026-08-
   El día que se pongan, se activa Consent Mode v2 con **todo denegado de
   entrada** y aparece el banner. Nada se mide hasta que el visitante acepta.
 
-- [ ] **En GA4, marcar `clic_whatsapp` y `clic_telefono` como eventos clave**,
-      y luego importarlos en Google Ads como conversiones (Ads → Objetivos →
-      Conversiones → Importar → Google Analytics 4).
+- [x] **Hecho el 2026-08-18: `clic_whatsapp` y `clic_telefono` marcados como
+      eventos clave en GA4 e importados en Ads** con categoría **Contacto**,
+      acción principal, *Recuento: Solo una*, ventana post-clic 30 días.
+      `generate_lead` **no** se importó: `/gracias/` ya manda su conversión
+      directa con el `send_to` e importarla contaría cada formulario dos veces.
+
+  **El camino documentado aquí antes —Ads → Objetivos → Conversiones →
+  Importar— ya no existe**, y buscarlo costó dos sesiones. Esta cuenta usa el
+  asistente nuevo («medición de conversiones simplificada»), donde la ficha
+  «Importar» desapareció: el `+` de la lista y «Crear acción de conversión»
+  llevan los dos al mismo asistente de tres pasos. El camino real es
+  *Objetivos → Conversiones → Resumen → `+` → paso 1 → tarjeta «Conversiones en
+  un sitio web» → enlace «**Editar fuentes de datos**»*.
+
+  Y la causa de fondo era una casilla apagada: ahí la propiedad GA4
+  `550105266` figuraba «Vinculada a esta cuenta» pero **sin marcar** como
+  fuente de datos; solo estaba activa la etiqueta `AW-…`. Marcarla es lo que
+  hace aparecer la lista de eventos clave. No faltaban datos ni vínculo.
+
+  Tres trampas más, todas silenciosas:
+
+  - **Ads no lista un evento clave que no tenga ni una conversión registrada**,
+    y marcar un evento como clave **no es retroactivo**. Secuencia buena:
+    marcar → dispararlo de verdad → esperar → importar.
+  - **Al probarlo a mano**, si en ese navegador se pulsó «Rechazar» en el
+    aviso, queda `mipc-consentimiento=rechazado` en `localStorage` y no se mide
+    nada, sin señal visible. Incógnito o borrar la clave.
+  - **El resumen final ofrece «fragmentos de evento»** `gtag('event','clic_…')`
+    para pegar en el `<head>`. **No se pegan**: se dispararían en cada carga de
+    página. Es un genérico del asistente, ajeno a que vienen importadas.
+
+  Las dos acciones seguirán marcando **0 conversiones mientras no haya campaña,
+  y es correcto**: una conversión importada de GA4 solo se registra en Ads si
+  el visitante llegó tras un clic en anuncio.
 
   Este paso no está en el código y no hay forma de que lo esté: esos dos
   eventos se envían a GA4, no a Ads, porque un clic en WhatsApp no es una

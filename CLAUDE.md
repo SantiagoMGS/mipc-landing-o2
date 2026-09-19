@@ -27,6 +27,7 @@ node --experimental-strip-types scripts/check-redirecciones.mjs https://mipc.com
 node scripts/check-dns.mjs
 node scripts/gsc.mjs propiedades   # Search Console por API, sin dependencias
 node scripts/ga4.mjs asistentes    # GA4 por API: tráfico de asistentes de IA
+node scripts/indexnow.mjs          # avisa a Bing de lo publicado — DESPUÉS de desplegar
 ```
 
 `gsc.mjs` y `ga4.mjs` comparten las MISMAS credenciales de cuenta de servicio,

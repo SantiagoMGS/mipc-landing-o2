@@ -144,9 +144,8 @@ medio rotar.
 
 ## Pendiente
 
-1. **Volver en 48 horas.** Bing avisa de que los datos tardan hasta dos días:
-   Search Performance está vacío. Hay que mirar entonces consultas, posiciones
-   y si el sitemap se rastreó sin errores.
+1. **Volver otra vez.** A las 48 horas —comprobado el 2026-09-21— tres de las
+   cuatro secciones siguen vacías. Ver el apartado siguiente.
 2. ~~Enviar el sitemap también en Search Console.~~ **Ya estaba enviado**; ver
    arriba.
 3. **Correr `indexnow.mjs` después de cada despliegue** que publique o cambie
@@ -218,3 +217,64 @@ futuro, esta es la razón de no hacerlo.
 Lo único que queda abierto es si existen **enlaces externos** apuntando a esas
 rutas, que es lo que explicaría que un rastreador las conserve en su lista.
 Eso se mira en Backlinks cuando Bing termine de procesar.
+
+## Revisión a las 48 horas (2026-09-21)
+
+### Lo que ya responde, y es el resultado que importa
+
+**`/rionegro/`, publicada el 2026-09-19, está indexada en Bing y sigue siendo
+desconocida para Google.**
+
+| | Bing | Google |
+|---|---|---|
+| `/rionegro/` | `Indexed successfully` · sin problemas de SEO/GEO · 2 tipos de marcado | `URL is unknown to Google` |
+
+Dos días para entrar en un índice y no en el otro. Como el sitio nuevo tarda en
+ser citable por un asistente lo que tarda Bing en verlo, esto es exactamente lo
+que se quería.
+
+**Lo que NO se puede afirmar: que fuera IndexNow.** El mismo 2026-09-19 se
+enviaron a Bing dos cosas —el sitemap y el aviso de IndexNow— y Bing pudo haber
+llegado por cualquiera de las dos. Los mecanismos no se pueden separar con este
+dato. Lo que sí queda medido es el resultado: **Bing dos días, Google más de
+dos.**
+
+### Lo que sigue sin responder
+
+| Sección | Estado a las 48 h |
+|---|---|
+| Search Performance | «Please check back in 48 hours» |
+| Backlinks | `No data available` |
+| Site Explorer | `No data available` |
+| AI Performance | funcionaba desde el primer día (0 citaciones) |
+| URL Inspection | funciona desde el primer día |
+
+El patrón: **lo que consulta el índice en vivo responde ya; lo que son informes
+agregados necesita más tiempo del anunciado.** Así que la pregunta de los
+enlaces de spam sigue abierta, y hay que volver.
+
+### El sitemap, y un susto que no era
+
+Bing lo rastreó el 2026-09-19 con estado `Success`, 0 errores y 0 avisos. La
+columna **«URLs discovered» marca 1**, que a primera vista parece que no
+expandió nada.
+
+**No es un fallo.** Esa fila es de tipo `Sitemap Index`, y el 1 son sus
+sitemaps hijos: `sitemap-index.xml` apunta a un único `sitemap-0.xml`, que
+contiene las 35 URL. Comprobado en `dist/`.
+
+*(Con un tropiezo por el camino: un `grep -c '<loc>'` sobre el hijo devolvía 1,
+porque el XML de Astro va todo en una sola línea y `-c` cuenta líneas, no
+apariciones. Es `grep -o … | wc -l`. Vale la pena recordarlo antes de declarar
+rota una medición.)*
+
+### IndexNow en el panel: no muestra nada, y da igual
+
+La sección IndexNow sigue enseñando la página de bienvenida con «Get Started»,
+sin estadísticas de envíos. **No significa que los avisos fallaran**: la API
+respondió `202` y `/rionegro/` está indexada. El panel parece reportar solo las
+claves generadas desde ahí, y la nuestra se generó en el repositorio, que es la
+forma que el protocolo contempla.
+
+No hay que «activar» nada allí. Si algún día hiciera falta comprobar un envío,
+lo que vale es la respuesta de la API y la inspección de la URL.

@@ -27,10 +27,28 @@ importación reveló de paso algo de Google:
 
 > **Total Sitemaps found: –** · **Sitemaps Count: 0**
 
-**Search Console tampoco tiene ningún sitemap enviado explícitamente.** No es
-grave: Google lo descubre por la línea `Sitemap:` de `robots.txt`, y la
-indexación del sitio lo demuestra. Pero enviarlo a mano es gratis y queda
-**pendiente**.
+De eso se concluyó que Search Console tampoco tenía sitemap enviado. **Era
+falso.** Comprobado por API el 2026-09-21:
+
+```
+path: https://mipc.com.co/sitemap-index.xml
+lastSubmitted: 2026-08-17    lastDownloaded: 2026-09-20
+warnings: 0                  errors: 0
+```
+
+Estaba enviado desde el día siguiente al corte y Google lo descarga con
+normalidad. **El cero era de la importación de Bing, no de Google**: la
+importación no lo recogió, por el motivo que sea, y se leyó como un hueco en
+Google que no existía.
+
+La lección, que es la misma de otras veces en este repositorio: **un cero en la
+herramienta A sobre los datos de la herramienta B es una afirmación sobre A.**
+Antes de apuntarlo como pendiente había que preguntárselo a B, que aquí
+costaba una llamada a la API.
+
+*(Nota sobre esa misma respuesta: el campo `contents.indexed` viene en `0`. No
+significa nada — es un campo que Google dejó de mantener. La inspección de URL
+confirma que hay páginas indexadas.)*
 
 ### Coste de la importación, para que conste
 
@@ -129,7 +147,8 @@ medio rotar.
 1. **Volver en 48 horas.** Bing avisa de que los datos tardan hasta dos días:
    Search Performance está vacío. Hay que mirar entonces consultas, posiciones
    y si el sitemap se rastreó sin errores.
-2. **Enviar el sitemap también en Search Console**, que no lo tiene.
+2. ~~Enviar el sitemap también en Search Console.~~ **Ya estaba enviado**; ver
+   arriba.
 3. **Correr `indexnow.mjs` después de cada despliegue** que publique o cambie
    páginas. No está automatizado a propósito: el build corre en Cloudflare,
    antes de que el sitio esté vivo, y automatizarlo ahí sería anunciar lo que

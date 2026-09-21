@@ -194,31 +194,37 @@ conversiones instrumentada, huecos de schema, FAQ a 5 o más por servicio
 
 ### Vivo y roto ahora mismo
 
-- **`mipctecnologia.com` redirige a un dominio que no existe.** Es la página de
-  inicio de Chrome de cientos de equipos de clientes, puesta ahí durante años al
-  formatear. Hoy responde `302` a `https://app.mipc.com.co`, que es `NXDOMAIN`:
-  cada mañana esos clientes ven una pantalla de error con la marca de MiPC
-  encima. Comprobado el 2026-09-19, sigue roto un mes después de detectarse.
-  Arreglo: `301` a `https://mipc.com.co/` en el panel de Hostinger, fuera de
-  este repositorio. Ver `medicion-ga4-pagina-de-inicio.md`.
-  *(El vencimiento del dominio que ese documento daba como urgente ya está
-  resuelto: se renovó el 2026-08-23 y expira en 2028.)*
-
-  **El dominio no lo administra MiPC: lo organiza su dueño** (confirmado el
-  2026-09-19). O sea que ni el arreglo ni su fecha dependen de este equipo, y
-  no tiene sentido volver a plantear «entramos al panel y lo cambiamos». Lo
-  que sí depende de aquí es **comprobarlo**, porque nadie va a avisar cuando
-  se haga y porque un `301` mal puesto —a `app.mipc.com.co`, a `/index.php` o
-  en cadena— se ve igual de bien desde fuera que uno correcto:
-
-  ```bash
-  curl -sI https://mipctecnologia.com/ | head -3
-  ```
-
-  Tiene que responder `301` y `location: https://mipc.com.co/`. Mientras diga
-  `302`, o apunte a cualquier otra cosa, sigue roto.
+*(Nada urgente. Lo que estaba aquí se arregló el fin de semana del 2026-09-20;
+el resto pasó a «Pendiente».)*
 
 ### Pendiente
+
+- **`mipctecnologia.com` redirige, pero con `302` y solo la raíz.** Es la página
+  de inicio de cientos de equipos de clientes, puesta ahí al formatear durante
+  años. **Lo grave ya se arregló**: hasta el 2026-09-19 respondía `302` a
+  `https://app.mipc.com.co`, que era `NXDOMAIN`, y esos clientes veían una
+  pantalla de error con la marca de MiPC encima cada mañana. Comprobado el
+  2026-09-21, ahora lleva a `https://mipc.com.co` y carga.
+
+  Queda lo menor, en este orden de importancia:
+  1. Es `302`, temporal. Para el uso real —abrir el navegador— da igual; para
+     traspasar cualquier señal del dominio viejo hace falta `301`.
+  2. Solo redirige la raíz. `mipctecnologia.com/contacto/` sigue dando `404`.
+
+  **El dominio no lo administra MiPC: lo organiza su dueño** (confirmado el
+  2026-09-19), así que ni el arreglo ni su fecha dependen de este equipo. Lo
+  que sí depende de aquí es comprobarlo, porque nadie avisa:
+
+  ```bash
+  curl -sIL https://mipctecnologia.com/ | grep -iE "^HTTP|^location"
+  ```
+
+- **Las impresiones de orgánico cayeron un 85% hacia el 2026-09-11 y eso NO es
+  una caída.** De ~2.000 diarias a ~250. Se fueron dos consultas en inglés
+  —`laptop repair` y `computer repair`— que sumaban el 97% de las impresiones y
+  **nunca dieron un solo clic**. En el mismo salto, las consultas con datos
+  pasaron de 67 a 103, los clics de 1 a 4 y la marca `mipc` de 0 clics a 3. El
+  ruido se fue y la señal mejoró. No abrir una investigación por esto.
 
 - **La campaña de Ads nunca se lanzó.** La ventana fijada era 2026-09-15 →
   2026-10-06 y ya empezó; hay que confirmar si está sirviendo. Antes de lanzar

@@ -1,5 +1,18 @@
 # La campaña no puede lanzarse: el anuncio está rechazado
 
+> **CIERRE (2026-09-23).** Este documento propone conseguir la certificación
+> de «Third Party Consumer Technical Support» y prepara un texto para soporte.
+> **Ese camino no existe.** Comprobado en la propia cuenta: la lista de
+> categorías que admiten solicitud de certificación **no incluye soporte
+> técnico al consumidor**. No hay formulario que llenar ni apelación que
+> ganar. Ver «El cierre: no hay certificación que pedir», al final.
+>
+> Lo que sí se resolvió: la verificación de anunciante quedó completa el
+> 2026-09-22. No desbloquea nada de esto.
+>
+> **Decisión:** se deja de insistir por reparación y la pauta se mueve a las
+> líneas B2B, que esa política no toca.
+
 Descubierto el **2026-09-19** al intentar lanzar la campaña de reparación,
 cuenta `230-212-2952`.
 
@@ -214,3 +227,92 @@ mide pequeñas, pero anunciables—.
 prohibición que impida lanzar. La hay, es previa, y es la explicación más
 probable de por qué esa campaña «nunca se envió»: puede que sí se intentara y
 que el rechazo pasara inadvertido.
+
+---
+
+## El cierre: no hay certificación que pedir (2026-09-23)
+
+### Lo que se comprobó
+
+En **Admin → Policy → Account**, el botón «See if your product or service
+needs an application» abre la lista **completa** de categorías que admiten
+solicitud de certificación en la cuenta:
+
+> Abortion-related keywords · Addiction services · Alcohol · Complex
+> speculative financial products · Copyrights · Cryptocurrency-related ·
+> Dating & companionship · Dating services in Japan · Debt services ·
+> Elections · Event ticket sale · Financial products & services · Financial
+> services in the United Kingdom · Free desktop software · Gambling & games ·
+> Government documents and services · Healthcare · Personalized · Prediction
+> markets · Recreational drugs · Social casino games
+
+**«Third Party Consumer Technical Support» no está.** Veintiuna categorías y
+ninguna es esta.
+
+Eso convierte la pregunta abierta desde el 19 —«¿hay certificación de soporte
+técnico para Colombia?»— en una respuesta: **no por la vía de autoservicio.**
+No hay formulario, así que el texto preparado más arriba para soporte no tiene
+dónde entregarse por esta ruta.
+
+### Estado del anuncio ese día
+
+| | |
+|---|---|
+| Campaña «Reparacion Medellin Computadores» | `Not eligible` |
+| Anuncio | `Disapproved (Third Party Consumer Technical Support)` |
+| Impresiones · clics · gasto | 0 · 0 · **COP 0** |
+
+Sin tocar nada: editar el anuncio lo reenvía a revisión.
+
+### La verificación sí se completó, y no sirve para esto
+
+Todas las tareas de **Advertiser Verification** en verde:
+
+| Tarea | Fecha |
+|---|---|
+| Preguntas sobre la organización | 2026-08-16 |
+| Datos de Dun & Bradstreet | 2026-09-21 |
+| **Google Ads verificó la afiliación** | **2026-09-22** |
+| Anuncios políticos de la UE (no aplica) | 2026-09-19 |
+| Quién paga los anuncios | 2026-09-19 |
+
+`MI PC TECNOLOGIA S.A.S` queda verificada. **No desbloquea el rechazo**: son
+dos requisitos distintos, y este documento ya lo advertía en «Lo que NO
+desbloqueó».
+
+*(El **resumen** de políticas seguía listando la verificación como asunto
+abierto el 2026-09-23, con un botón «Start». Está desactualizado. Manda la
+página de detalle, `Admin → Policy → Account`.)*
+
+### Qué significa de verdad
+
+No es un trámite atascado. **La reparación de computadores a particulares es
+justamente el servicio que Google no deja anunciar.** La política existe por
+el fraude de soporte remoto y no distingue entre eso y un taller con dirección
+física, NIT y quince años de operación.
+
+Duele menos de lo que parece, y hay un dato de este mismo repositorio que lo
+dice: `planificador-palabras-clave-medellin.md` midió que la pauta podía traer
+**8–15 equipos al mes, un 7–15% de la capacidad** de dos técnicos. El canal
+pagado nunca iba a llenar el taller. Lo que se pierde es un complemento, no el
+motor.
+
+### Lo que sí está abierto
+
+**Las otras cuatro líneas no caen en esa política.** Redes de datos, cámaras de
+seguridad, instalaciones eléctricas y soporte TI **empresarial** son B2B, no
+«consumer technical support». Su volumen ya está medido en
+`planificador-otros-servicios-2026-09-19.md`.
+
+Decidido el 2026-09-23: **la siguiente campaña se arma sobre cámaras de
+seguridad.**
+
+### Lo que NO hay que volver a intentar
+
+- **Apelar el anuncio.** No hay apelación que ganar cuando la categoría exige
+  una certificación que no se puede solicitar.
+- **Escribir a soporte pidiendo la certificación.** El texto de más arriba se
+  conserva como registro de lo que se creyó; no hay ruta donde entregarlo.
+- **Reescribir el anuncio para que «no parezca» soporte técnico.** La política
+  mira el servicio, no las palabras. Y disfrazarlo sería la clase de
+  declaración falsa que este mismo documento estuvo a punto de hacer una vez.

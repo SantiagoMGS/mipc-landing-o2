@@ -226,11 +226,15 @@ el resto pasó a «Pendiente».)*
   pasaron de 67 a 103, los clics de 1 a 4 y la marca `mipc` de 0 clics a 3. El
   ruido se fue y la señal mejoró. No abrir una investigación por esto.
 
-- **La campaña de Ads nunca se lanzó.** La ventana fijada era 2026-09-15 →
-  2026-10-06 y ya empezó; hay que confirmar si está sirviendo. Antes de lanzar
-  queda por cerrar una anomalía: GA4 registró 10 sesiones de `Paid Search` con
-  la campaña sin publicar, y hasta explicarlas no se puede dar por hecho que el
-  gasto es cero.
+- **La campaña de reparación NO se puede lanzar, y no es un trámite pendiente.**
+  El anuncio está rechazado por «Third Party Consumer Technical Support», que
+  exige una certificación previa. El 2026-09-23 se comprobó en la cuenta que
+  **esa categoría no aparece en la lista de certificaciones solicitables**: no
+  hay formulario, ni apelación, ni texto que mandar a soporte. La verificación
+  de anunciante sí se completó el 2026-09-22 y **no desbloquea esto**.
+  Antes de volver a proponer nada sobre reparación pagada, leer el cierre de
+  `ads-anuncio-rechazado-2026-09-19.md`. La pauta se mueve a las líneas B2B,
+  empezando por cámaras de seguridad. Gasto acumulado: COP 0.
 - **Nadie ha comprobado que las conversiones lleguen a Ads.** Toda la Prioridad
   1 del diagnóstico se construyó para eso. Que la etiqueta cargue y que la
   conversión se registre son cosas distintas.

@@ -163,7 +163,12 @@ existe `mensajeWhatsApp` en el esquema.
 - `planificador-palabras-clave-medellin.md` — **el techo del canal pagado,
   medido**. Léelo antes de proponer cualquier cosa sobre Google Ads.
 - `campana-reparacion-especificacion.md` — la campaña, lista para montar y
-  **nunca lanzada**. Lleva su propia corrección al principio.
+  **nunca lanzada**. Lleva su propia corrección al principio, y el cierre está
+  en `ads-anuncio-rechazado-2026-09-19.md`: no se puede lanzar nunca.
+- `campana-camaras-especificacion.md` — la que sí se puede lanzar. Léela entera
+  antes de montarla: el volumen alto de cámaras es de gente comprando aparatos,
+  no contratando instalación, y la mitad del trabajo son las negativas —que no
+  protegen el presupuesto sino contra un rechazo por vigilancia encubierta.
 - `medicion-ga4-pagina-de-inicio.md` — cómo mide GA4 y el asunto de
   `mipctecnologia.com`.
 - `medicion-ga4-asistentes-ia-2026-09-19.md` — el canal de los asistentes de IA,
